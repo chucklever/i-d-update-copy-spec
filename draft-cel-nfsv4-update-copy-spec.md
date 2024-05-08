@@ -3,7 +3,7 @@ title: "Clarifications to the Specification of the Network File System version 4
 abbrev: "Update COPY Specification"
 category: std
 
-docname: draft-cel-nfsv4-update-copy-spec
+docname: draft-cel-nfsv4-update-copy-spec-latest
 submissiontype: IETF
 ipr: trust200902
 v: 3
@@ -24,7 +24,6 @@ author:
     email: chuck.lever@oracle.com
 
 normative:
-  RFC7862
 
 informative:
 
@@ -59,7 +58,7 @@ data on the network between client and server during the copy operation.
 This reduces latency, network bandwidth requirements, and the exposure
 of file data to third parties during the copy.
 
-As a result of implementing the COPY operation as described by {{RFC7862}}, 
+As a result of implementing the COPY operation as described by {{RFC7862}},
 the author found several areas where specification wording could be
 clarified or made explicit in order to better guarantee interoperation.
 
