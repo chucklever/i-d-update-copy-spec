@@ -1,19 +1,24 @@
 ---
-title: "Clarifications to the Specification of the Network File System version 4.2 COPY Operation"
+
+title: "Updates to the Specification of the Network File System version 4.2 COPY Operation"
 abbrev: "Update COPY Specification"
 category: std
 
 docname: draft-cel-nfsv4-update-copy-spec-latest
+pi: [toc, sortrefs, symrefs, docmapping]
+stand_alone: yes
+v: 3
+
 submissiontype: IETF
 ipr: trust200902
-v: 3
 area: Transport
 workgroup:  Network File System Version 4
 obsoletes:
 updates: rfc7862
 keyword:
- - Network File System version 4
- - COPY offload
+ - NFSv4.2
+ - COPY
+ - offload
 
 author:
  -
@@ -24,9 +29,7 @@ author:
     email: chuck.lever@oracle.com
 
 normative:
-RFC7862:
-
-informative:
+  RFC7862:
 
 --- abstract
 
