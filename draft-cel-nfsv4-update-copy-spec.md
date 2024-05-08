@@ -128,7 +128,7 @@ COPY is simpler to implement.
 * What is the COPY state ID lifetime for a synchronous COPY? An asynchronous COPY?
 
 Regarding asynchronous COPY operations,
-the second paragraph of {{Section of 4.8 of RFC7862}} states:
+the second paragraph of {{Section 4.8 of RFC7862}} states:
 
    A copy offload stateid will be valid until either (A) the client or
    server restarts or (B) the client returns the resource by issuing an
