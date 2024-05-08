@@ -11,8 +11,8 @@ v: 3
 
 submissiontype: IETF
 ipr: trust200902
-area: Transport
-workgroup:  Network File System Version 4
+area: "Web and Internet Transport"
+workgroup: "Network File System Version 4"
 obsoletes:
 updates: rfc7862
 keyword:
