@@ -24,6 +24,7 @@ author:
     email: chuck.lever@oracle.com
 
 normative:
+RFC7862:
 
 informative:
 
@@ -151,7 +152,7 @@ than a few seconds and stop it.
 
    If a failure does occur for a synchronous copy, wr_count will be set
    to the number of bytes copied to the destination file before the
-   error occurred. 
+   error occurred.
 
 This text considers only a failure status and not a short COPY, where
 the COPY response contains a byte count shorter than the client's
