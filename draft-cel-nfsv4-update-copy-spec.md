@@ -148,7 +148,7 @@ to prevent server resources from blocking. A server implementation
 might, for example, notice that a COPY operation is taking longer
 than a few seconds and stop it.
 
-{{ Section 15.2.3 of RFC 7862 }} states:
+{{Section 15.2.3 of RFC 7862}} states:
 
    If a failure does occur for a synchronous copy, wr_count will be set
    to the number of bytes copied to the destination file before the
@@ -172,7 +172,7 @@ in this way. The specification could add the following:
 
 ## OFFLOAD_STATUS
 
-Paragraph 2 of {{ Section 15.9.3 of RFC 7862}} states:
+Paragraph 2 of {{Section 15.9.3 of RFC 7862}} states:
 
    If the optional osr_complete field is present, the asynchronous
    operation has completed.  In this case, the status value indicates
@@ -214,7 +214,7 @@ a COPY operation, it bears stating explicitly that:
 
    When a single element is present in osr_complete, that element
    MUST contain one of status codes permitted for the COPY operation
-   (see {{ Section 11.2 of RFC 7862 }}), or NFS4_OK.
+   (see {{Section 11.2 of RFC 7862}}), or NFS4_OK.
 
 ## Completion Reliability
 
