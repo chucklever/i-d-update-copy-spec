@@ -82,10 +82,10 @@ Table of Contents
    5.  OFFLOAD_STATUS
    6.  Asynchronous Copy Completion Reliability
    7.  Security Considerations
-     7.1.  Limiting size of individual COPY operations
-     7.2.  Limiting the number of outstanding asynchronous COPY
-           operations
-     7.3.  Pruning COPY state on server
+     7.1.  Limiting Size of Individual COPY Operations
+     7.2.  Limiting the Number of Outstanding Asynchronous COPY
+           Operations
+     7.3.  Pruning COPY State on the Server
    8.  IANA Considerations
    9.  Normative References
    Acknowledgments
@@ -128,32 +128,33 @@ Table of Contents
 
    [RFC7862] does not take a position on whether a client or server is
    mandated to implement either or both forms of COPY.  However, the
-   implementation requirements for these two forms of the COPY operation
-   are quite distinct from each other, and some implementers have chosen
-   to avoid the more complex asynchronous form of COPY.
+   implementation requirements for these two forms of copy offload are
+   quite distinct from each other, and some implementers have chosen to
+   avoid the more complex asynchronous form of COPY.
 
 3.1.  Detecting Support For COPY
 
    To interoperate successfully, the client and server must be able to
    determine which forms of COPY are implemented and fall back to a
-   normal READ/WRITE-based copy if necessary.
+   normal READ/WRITE-based copy if necessary.  The following addition
+   makes this more clear:
 
-   Given the operation of the signaling in the ca_synchronous field as
-   described in Section 15.2.3 of [RFC7862], an implementation that
-   supports COPY MUST support either only synchronous copy or both
-   synchronous and asynchronous copy.
+      Given the operation of the signaling in the ca_synchronous field
+      as described in Section 15.2.3 of [RFC7862], an implementation
+      that supports COPY MUST support either only synchronous copy or
+      both synchronous and asynchronous copy.
 
 3.2.  Mandatory-To-Implement Operations
 
-   The synchronous form of COPY does not need a client or server to
-   implement the OFFLOAD_CANCEL, OFFLOAD_STATUS, or CB_OFFLOAD
-   operations.  Moreover, COPY_NOTIFY is required only when an
-   implementation provides inter-server copy offload.  Thus a minimum
-   viable synchronous-only copy implementation can get away with
+   The synchronous form of copy offload does not need a client or server
+   to implement the OFFLOAD_CANCEL, OFFLOAD_STATUS, or CB_OFFLOAD
+   operations.  Moreover, the COPY_NOTIFY operation is required only
+   when an implementation provides inter-server copy offload.  Thus a
+   minimum viable synchronous-only copy implementation can get away with
    implementing only the COPY operation and can leave the others
    unimplemented.
 
-   The asynchronous form of COPY is not possible without the
+   The asynchronous form of copy offload is not possible without the
    implementation of CB_OFFLOAD, and not reliable without the
    implementation of OFFLOAD_STATUS.  The original specification of copy
    offload does not make these two operations mandatory-to-implement
@@ -166,12 +167,13 @@ Table of Contents
 
 3.3.  COPY state ID Lifetime Requirements
 
-   A server that implements only synchronous copy does not require the
-   stricter COPY state ID lifetime requirements described in Section 4.8
-   of [RFC7862].  A state ID used with a synchronous copy behaves lives
-   as long as a state ID used for non-copy-related purposes.
+   An NFS server that implements only synchronous copy does not require
+   the stricter COPY state ID lifetime requirements described in
+   Section 4.8 of [RFC7862].  A state ID used with a synchronous copy
+   lives as long as a state ID that is used for purposes not related to
+   COPY.
 
-   Regarding asynchronous COPY operations, the second paragraph of
+   Regarding asynchronous copy offload, the second paragraph of
    Section 4.8 of [RFC7862] states:
 
       A copy offload stateid will be valid until either (A) the client
@@ -185,22 +187,23 @@ Table of Contents
    act during state recovery.  A stronger statement about COPY state ID
    lifetime improves the guarantee of interoperability:
 
-      An NFS server MUST retain a COPY state ID, except as follows.  An
-      NFS server MAY invalidate a COPY state ID in the following
-      circumstances:
+      When a COPY state ID is used for an asynchronous copy, an NFS
+      server MUST retain the COPY state ID, except as follows below.  An
+      NFS server MAY invalidate and purge a COPY state ID in the
+      following circumstances:
 
       o The server instance restarts.
 
       o The server expires the owning client's lease.
 
-      o The server receives an EXCHANGE_ID or DESTROY_CLIENTID from the
-      owning client that results in the destruction of the client's
-      lease.
+      o The server receives an EXCHANGE_ID or DESTROY_CLIENTID request
+      from the owning client that results in the destruction of that
+      client's lease.
 
-      o The server receives an OFFLOAD_CANCEL operation from the owning
+      o The server receives an OFFLOAD_CANCEL request from the owning
       client that matches the COPY state ID.
 
-      o The server receives a reply to a CB_OFFLOAD operation from the
+      o The server receives a reply to a CB_OFFLOAD request from the
       owning client that matches the COPY state ID.
 
    Implementers have found the following behavior to work well for
@@ -209,12 +212,13 @@ Table of Contents
       When an NFS client discovers that a server instance has restarted,
       it must recover state, including the state that manages offloaded
       copy operations.  When an NFS server restart is detected, the
-      client purges existing COPY state and redrives incomplete COPY
-      operations from the beginning.
+      client purges existing COPY state and redrives its incompleted
+      COPY requests from their beginning.  No other state recovery is
+      needed.
 
 4.  Short COPY results
 
-   In cases where a COPY operation might take a long while, it is useful
+   In cases where a COPY request might take a long while, it is useful
    to prevent server resources from blocking.  A server implementation
    might, for example, notice that a COPY operation is taking longer
    than a few seconds and stop it.
@@ -257,72 +261,71 @@ Table of Contents
    This is due to the conflation of "optional" with the common use of
    the compliance keyword OPTIONAL in other NFS-related documents.
 
-   Moreover, this field (as an XDR data item) is always present.  The
-   XDR definition does not permit the server not to include the field in
-   its response.  The imprecision of the construct "If the optional...
-   field is present" can be confusing.
+   Moreover, this XDR data item is always present.  The XDR definition
+   does not permit the server not to include the field in its response.
+   The imprecision of the construct "If the optional... field is
+   present" can be confusing and should be replaced.
 
-   The following replacement makes it more clear what was originally
-   intended:
+   The following text makes it more clear what was originally intended:
 
-      To process an OFFLOAD_STATUS operation, the server must first find
-      a COPY operation that matches the COPY state ID.
+      To process an OFFLOAD_STATUS request, the server must first find
+      an outstanding COPY operation that matches the COPY state ID.
 
       If that COPY operation is still ongoing, the server forms a
       response with an osr_complete array containing zero elements,
-      fills in the number of bytes processed by the COPY operation, and
-      sets the status code for the OFFLOAD_STATUS operation to NFS4_OK.
+      fills in the osr_count field with the number of bytes processed by
+      the COPY operation, and sets the osr_status field to NFS4_OK.
 
       If the matching copy has completed but the server has not
       processed the client's CB_OFFLOAD reply, the server forms a
       response with an osr_complete array containing one element which
       is set to the final status code of the copy operation.  It fills
-      in the number of bytes that were processed by the COPY operation,
-      and sets the status code for the OFFLOAD_STATUS operation to
+      in the osr_count field with the number of bytes that were
+      processed by the COPY operation, and sets the osr_status to
       NFS4_OK.
 
-      If no copy operation matches the presented COPY state ID, the
-      server sets the status code for the OFFLOAD_STATUS operation to
+      If the server can find no copy operation that matches the
+      presented COPY state ID, the server sets the osr_status field to
       NFS4ERR_BAD_STATEID.
 
    Since a single-element osr_complete array contains the status code of
-   a COPY operation, the specification should state explicitly that:
+   a COPY operation, the specification needs to state explicitly that:
 
-      When a single element is present in osr_complete, that element
-      MUST contain only one of status codes permitted for the COPY
-      operation (see Section 11.2 of [RFC7862]) or NFS4_OK.
+      When a single element is present in the osr_complete array, that
+      element MUST contain only one of status codes permitted for the
+      COPY operation (see Section 11.2 of [RFC7862]) or NFS4_OK.
 
 6.  Asynchronous Copy Completion Reliability
 
-   Typically, NFSv4 server backchannel operations are not retransmitted.
+   Typically, NFSv4 server backchannel requests are not retransmitted.
    There are common scenarios where lack of a retransmit can result in a
-   backchannel operation getting dropped entirely.  Such scenarios
+   backchannel request getting dropped entirely.  Common scenarios
    include:
 
    *  The server dropped the connection because it lost a forechannel
-      NFSv4 request and wishes to force the client to retransmit
+      NFSv4 request and wishes to force the client to retransmit all of
+      its pending forechannel requests
 
    *  The GSS sequence number window under-flowed
 
    *  A network partition occurred
 
-   In these cases, all pending NFSv4 callback operations are commonly
-   lost.
+   In these cases, pending NFSv4 callback requests are lost.
 
    NFSv4 clients and servers can recover when operations such as
-   CB_RECALL and CB_GETATTR go missing.  After a delay, the server
+   CB_RECALL and CB_GETATTR go missing: After a delay, the server
    revokes the delegation and operation continues.
 
-   A lost CB_OFFLOAD means that a client workload is waiting for a
-   completion event that never arrives, unless that client has a
-   mechanism for probing the pending COPY (usually this means sending an
-   OFFLOAD_STATUS).  The specification can make this implementation
+   A lost CB_OFFLOAD means that a client workload waits for a completion
+   event that never arrives, unless that client has a mechanism for
+   probing the pending COPY.  Usually this means sending an
+   OFFLOAD_STATUS.  The specification can make this implementation
    quality issue more clear:
 
       NFSv4 servers are not required to retransmit lost backchannel
-      operations.  If an NFS client implements an asynchronous copy
+      requests.  If an NFS client implements an asynchronous copy
       capability, it MUST implement a mechanism for recovering from a
-      lost CB_OFFLOAD operation.  The NFSv4.2 protocol provides one such
+      lost CB_OFFLOAD request.  The NFSv4.2 protocol provides one such
       mechanism in the form of OFFLOAD_STATUS.
 
 7.  Security Considerations
@@ -332,7 +335,7 @@ Table of Contents
    opportunity for NFS clients to maliciously or unintentionally cause a
    denial-of-service scenario.
 
-7.1.  Limiting size of individual COPY operations
+7.1.  Limiting Size of Individual COPY Operations
 
    Server implementations have so far chosen to limit the byte range of
    COPY operations, either statically (by setting a fixed limit on the
@@ -344,12 +347,12 @@ Table of Contents
    for the remainder of the byte range, until the full byte range has
    been processed.
 
-7.2.  Limiting the number of outstanding asynchronous COPY operations
+7.2.  Limiting the Number of Outstanding Asynchronous COPY Operations
 
-   It is easily possible for NFS clients to request more asynchronous
-   COPY operations than server resources can handle.  For example, a
-   client could create a large file, and then request multiple copies of
-   that file's contents to /dev/null.
+   It is easily possible for NFS clients to send more asynchronous COPY
+   requests than server resources can handle.  For example, a client
+   could create a large file, and then request multiple copies of that
+   file's contents to /dev/null.
 
    A good quality server implementation SHOULD block clients from
    starting many COPY operations.  The implementation can apply a fixed
@@ -358,15 +361,15 @@ Table of Contents
    COPY requests will receive NFS4ERR_OFFLOAD_NO_REQS in response until
    more server resources become available.
 
-7.3.  Pruning COPY state on server
+7.3.  Pruning COPY State on the Server
 
    A related issue is how much COPY state can accrue on a server when
-   CB_OFFLOAD requests are lost.  The requirements in Section 3.3
-   require a server to retain this abandoned COPY state indefinitely.
+   CB_OFFLOAD requests are lost.  The mandates in Section 3.3 require a
+   server to retain this abandoned COPY state indefinitely.
 
    A good quality server implementation SHOULD launder the list of
    abandoned COPY state on occasion so that it does not grow without
-   bounds.
+   bound.
 
 8.  IANA Considerations
 
