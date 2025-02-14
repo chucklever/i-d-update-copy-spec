@@ -1053,7 +1053,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Lever</td>
-<td class="center">Expires 14 August 2025</td>
+<td class="center">Expires 18 August 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1069,12 +1069,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <a href="https://www.rfc-editor.org/rfc/rfcrfc7862" class="eref">rfc7862</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-02-10" class="published">10 February 2025</time>
+<time datetime="2025-02-14" class="published">14 February 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-08-14">14 August 2025</time></dd>
+<dd class="expires"><time datetime="2025-08-18">18 August 2025</time></dd>
 <dt class="label-authors">Author:</dt>
 <dd class="authors">
 <div class="author">
@@ -1127,7 +1127,7 @@ on-the-wire behavior of current implementations.<a href="#section-abstract-1" cl
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 14 August 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 18 August 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1171,70 +1171,81 @@ on-the-wire behavior of current implementations.<a href="#section-abstract-1" cl
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2">
                 <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-mandatory-to-implement-oper" class="internal xref">Mandatory-To-Implement Operations</a></p>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.3">
-                <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="auto internal xref">3.3</a>.  <a href="#name-copy-state-id-lifetime-requ" class="internal xref">COPY state ID Lifetime Requirements</a></p>
-</li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4">
-            <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-status-codes-their-meanings" class="internal xref">Status Codes, Their Meanings, and Their Usage</a></p>
+            <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-copy-state-ids" class="internal xref">Copy state IDs</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.1">
-                <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="auto internal xref">4.1</a>.  <a href="#name-status-codes-for-the-cb_off" class="internal xref">Status Codes for the CB_OFFLOAD Operation</a></p>
+                <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="auto internal xref">4.1</a>.  <a href="#name-use-as-a-completion-cookie" class="internal xref">Use As A Completion Cookie</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2">
-                <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="auto internal xref">4.2</a>.  <a href="#name-status-codes-for-the-offloa" class="internal xref">Status Codes for the OFFLOAD_CANCEL and OFFLOAD_STATUS Operations</a></p>
+                <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="auto internal xref">4.2</a>.  <a href="#name-copy-reply-races-with-cb_of" class="internal xref">COPY Reply Races With CB_OFFLOAD Request</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.3">
-                <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="auto internal xref">4.3</a>.  <a href="#name-status-codes-returned-for-c" class="internal xref">Status Codes Returned for Completed Asynchronous Copy Operations</a></p>
+                <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="auto internal xref">4.3</a>.  <a href="#name-lifetime-requirements" class="internal xref">Lifetime Requirements</a></p>
 </li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
-            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-offload_cancel-implementati" class="internal xref">OFFLOAD_CANCEL Implementation Notes</a></p>
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-status-codes-their-meanings" class="internal xref">Status Codes, Their Meanings, and Their Usage</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1">
+                <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="auto internal xref">5.1</a>.  <a href="#name-status-codes-for-the-cb_off" class="internal xref">Status Codes for the CB_OFFLOAD Operation</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.2">
+                <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="auto internal xref">5.2</a>.  <a href="#name-status-codes-for-the-offloa" class="internal xref">Status Codes for the OFFLOAD_CANCEL and OFFLOAD_STATUS Operations</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.3">
+                <p id="section-toc.1-1.5.2.3.1"><a href="#section-5.3" class="auto internal xref">5.3</a>.  <a href="#name-status-codes-returned-for-c" class="internal xref">Status Codes Returned for Completed Asynchronous Copy Operations</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
-            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-short-copy-results" class="internal xref">Short COPY results</a></p>
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-offload_cancel-implementati" class="internal xref">OFFLOAD_CANCEL Implementation Notes</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
             <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-offload_status-implementati" class="internal xref">OFFLOAD_STATUS Implementation Notes</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
-            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-asynchronous-copy-completio" class="internal xref">Asynchronous Copy Completion Reliability</a></p>
+            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-short-copy-results" class="internal xref">Short COPY results</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
-            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-handling-nfs-server-shutdow" class="internal xref">Handling NFS Server Shutdown</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1">
-                <p id="section-toc.1-1.9.2.1.1"><a href="#section-9.1" class="auto internal xref">9.1</a>.  <a href="#name-graceful-shutdown" class="internal xref">Graceful Shutdown</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.2">
-                <p id="section-toc.1-1.9.2.2.1"><a href="#section-9.2" class="auto internal xref">9.2</a>.  <a href="#name-client-recovery-actions" class="internal xref">Client Recovery Actions</a></p>
-</li>
-            </ul>
+            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-asynchronous-copy-completio" class="internal xref">Asynchronous Copy Completion Reliability</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
-            <p id="section-toc.1-1.10.1"><a href="#section-10" class="auto internal xref">10</a>. <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
-</li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
-            <p id="section-toc.1-1.11.1"><a href="#section-11" class="auto internal xref">11</a>. <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
-</li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
-            <p id="section-toc.1-1.12.1"><a href="#section-12" class="auto internal xref">12</a>. <a href="#name-references" class="internal xref">References</a></p>
+            <p id="section-toc.1-1.10.1"><a href="#section-10" class="auto internal xref">10</a>. <a href="#name-handling-nfs-server-shutdow" class="internal xref">Handling NFS Server Shutdown</a></p>
 <ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.1">
-                <p id="section-toc.1-1.12.2.1.1"><a href="#section-12.1" class="auto internal xref">12.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.1">
+                <p id="section-toc.1-1.10.2.1.1"><a href="#section-10.1" class="auto internal xref">10.1</a>.  <a href="#name-graceful-shutdown" class="internal xref">Graceful Shutdown</a></p>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.2">
-                <p id="section-toc.1-1.12.2.2.1"><a href="#section-12.2" class="auto internal xref">12.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.2">
+                <p id="section-toc.1-1.10.2.2.1"><a href="#section-10.2" class="auto internal xref">10.2</a>.  <a href="#name-client-recovery-actions" class="internal xref">Client Recovery Actions</a></p>
 </li>
             </ul>
 </li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
+            <p id="section-toc.1-1.11.1"><a href="#section-11" class="auto internal xref">11</a>. <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
+            <p id="section-toc.1-1.12.1"><a href="#section-12" class="auto internal xref">12</a>. <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
+</li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13">
-            <p id="section-toc.1-1.13.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+            <p id="section-toc.1-1.13.1"><a href="#section-13" class="auto internal xref">13</a>. <a href="#name-references" class="internal xref">References</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.1">
+                <p id="section-toc.1-1.13.2.1.1"><a href="#section-13.1" class="auto internal xref">13.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.2">
+                <p id="section-toc.1-1.13.2.2.1"><a href="#section-13.2" class="auto internal xref">13.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14">
-            <p id="section-toc.1-1.14.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-authors-address" class="internal xref">Author's Address</a></p>
+            <p id="section-toc.1-1.14.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.15">
+            <p id="section-toc.1-1.15.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-authors-address" class="internal xref">Author's Address</a></p>
 </li>
         </ul>
 </nav>
@@ -1284,8 +1295,8 @@ operation or not. However, COPY comes in two distinct flavors:<a href="#section-
 operation directly in the response to the client's COPY request<a href="#section-3-2.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-3-2.2">
-          <p id="section-3-2.2.1">asynchronous, where the server agrees to report the status of
-the operation at a later time via a callback operation.<a href="#section-3-2.2.1" class="pilcrow">¶</a></p>
+          <p id="section-3-2.2.1">asynchronous, where the server agrees to report the final status
+of the operation at a later time via a callback operation<a href="#section-3-2.2.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="section-3-3"><span>[<a href="#RFC7862" class="cite xref">RFC7862</a>]</span> does not take a position on whether a client or server
@@ -1319,13 +1330,13 @@ copy.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
 <p id="section-3.1-4">To interoperate successfully, the client and server must be able
 to determine which forms of COPY are implemented and fall back to
 a normal READ/WRITE-based copy if necessary. The following
-addition makes this more clear:<a href="#section-3.1-4" class="pilcrow">¶</a></p>
+additional text makes this more clear:<a href="#section-3.1-4" class="pilcrow">¶</a></p>
 <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.1-5.1">
             <p id="section-3.1-5.1.1">Given the operation of the signaling in the ca_synchronous field
 as described in <span><a href="https://rfc-editor.org/rfc/rfc7862#section-15.2.3" class="relref">Section 15.2.3</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span>, an implementation
-that supports COPY <span class="bcp14">MUST</span> support either only synchronous copy or
-both synchronous and asynchronous copy.<a href="#section-3.1-5.1.1" class="pilcrow">¶</a></p>
+that supports the NFSv4.2 COPY operation <span class="bcp14">MUST</span> support synchronous
+copy and <span class="bcp14">MAY</span> support asynchronous copy.<a href="#section-3.1-5.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -1335,80 +1346,176 @@ both synchronous and asynchronous copy.<a href="#section-3.1-5.1.1" class="pilcr
         <h3 id="name-mandatory-to-implement-oper">
 <a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-mandatory-to-implement-oper" class="section-name selfRef">Mandatory-To-Implement Operations</a>
         </h3>
-<p id="section-3.2-1">The synchronous form of copy offload does not need a client or
-server to implement the OFFLOAD_CANCEL, OFFLOAD_STATUS, or
-CB_OFFLOAD operations.
-Moreover, the COPY_NOTIFY operation is required only when an
+<p id="section-3.2-1">The synchronous form of copy offload does not need the client or
+server to implement the NFSv4.2 OFFLOAD_CANCEL, OFFLOAD_STATUS, or
+CB_OFFLOAD operations.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
+<p id="section-3.2-2">Moreover, the COPY_NOTIFY operation is required only when an
 implementation provides inter-server copy offload. Thus a minimum
 viable synchronous-only copy implementation can get away with
-implementing only the COPY operation and can leave the others
-unimplemented.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
-<p id="section-3.2-2">The asynchronous form of copy offload is not possible without
+implementing only the COPY operation and can leave the other
+three operations mentioned here unimplemented.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
+<p id="section-3.2-3">The asynchronous form of copy offload is not possible without
 the implementation of CB_OFFLOAD, and not reliable without the
 implementation of OFFLOAD_STATUS. The original specification of
 copy offload does not make these two operations mandatory-to-implement
 when an implementation claims to support asynchronous COPY. The
-addition of the following text makes this requirement clear:<a href="#section-3.2-2" class="pilcrow">¶</a></p>
+addition of the following text makes this requirement clear:<a href="#section-3.2-3" class="pilcrow">¶</a></p>
 <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-3.2-3.1">
-            <p id="section-3.2-3.1.1">When an NFS server implementation provides an asynchronous copy
+<li class="normal ulEmpty" id="section-3.2-4.1">
+            <p id="section-3.2-4.1.1">When an NFS server implementation provides an asynchronous copy
 capability, it <span class="bcp14">MUST</span> implement the CB_OFFLOAD and OFFLOAD_STATUS
-operations.<a href="#section-3.2-3.1.1" class="pilcrow">¶</a></p>
+operations.<a href="#section-3.2-4.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
-<div id="lifetime">
-<section id="section-3.3">
-        <h3 id="name-copy-state-id-lifetime-requ">
-<a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-copy-state-id-lifetime-requ" class="section-name selfRef">COPY state ID Lifetime Requirements</a>
+</section>
+</div>
+<div id="copy-state-ids">
+<section id="section-4">
+      <h2 id="name-copy-state-ids">
+<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-copy-state-ids" class="section-name selfRef">Copy state IDs</a>
+      </h2>
+<p id="section-4-1">There appear to be a number of areas where <span>[<a href="#RFC7862" class="cite xref">RFC7862</a>]</span> is
+silent on the details of copy state IDs.<a href="#section-4-1" class="pilcrow">¶</a></p>
+<div id="use-as-a-completion-cookie">
+<section id="section-4.1">
+        <h3 id="name-use-as-a-completion-cookie">
+<a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-use-as-a-completion-cookie" class="section-name selfRef">Use As A Completion Cookie</a>
         </h3>
-<p id="section-3.3-1">An NFS server that implements only synchronous copy does not require
-the stricter COPY state ID lifetime requirements described in
-<span><a href="https://rfc-editor.org/rfc/rfc7862#section-4.8" class="relref">Section 4.8</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span>. A state ID used with a synchronous
-copy lives until the COPY operation has completed.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
-<p id="section-3.3-2">Regarding asynchronous copy offload,
-the second paragraph of <span><a href="https://rfc-editor.org/rfc/rfc7862#section-4.8" class="relref">Section 4.8</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span> states:<a href="#section-3.3-2" class="pilcrow">¶</a></p>
-<ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-3.3-3.1">
-            <p id="section-3.3-3.1.1">A copy offload stateid will be valid until either (A) the client or
-server restarts or (B) the client returns the resource by issuing an
-OFFLOAD_CANCEL operation or the client replies to a CB_OFFLOAD
-operation.<a href="#section-3.3-3.1.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.1-1.1">
+            <p id="section-4.1-1.1.1">How is sequence number in a copy state ID handled?  Under
+what circumstances is its sequence number bumped? Do peers
+match copy state IDs via only their "other" fields, or must
+they match everything including the sequence number?<a href="#section-4.1-1.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.1-1.2">
+            <p id="section-4.1-1.2.1">Under what circumstances may a server re-use the same copy
+state ID during one NFSv4.1 session?<a href="#section-4.1-1.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.1-1.3">
+            <p id="section-4.1-1.3.1">How long does the client's callback service have to remember
+copy state IDs? Is the callback service responsible for
+remembering and reporting previously-used copy state IDs?<a href="#section-4.1-1.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.1-1.4">
+            <p id="section-4.1-1.4.1">When does the client's callback service return
+NFS4ERR_BAD_STATEID to a CB_OFFLOAD operation, and what
+action should the server take, since there's no open state
+recovery to be done on the server?<a href="#section-4.1-1.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-3.3-4">This paragraph is unclear about what "client restart" means, at least
+</section>
+</div>
+<div id="copy-reply-races-with-cboffload-request">
+<section id="section-4.2">
+        <h3 id="name-copy-reply-races-with-cb_of">
+<a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-copy-reply-races-with-cb_of" class="section-name selfRef">COPY Reply Races With CB_OFFLOAD Request</a>
+        </h3>
+<p id="section-4.2-1">Due to the design of the NFSv4.2 COPY and CB_OFFLOAD protocol
+elements, an NFS client's callback service cannot recognize
+a copy state ID presented by a CB_OFFLOAD request until it has
+received and processed the COPY response that reports that an
+asynchronous copy operation has been started and provides
+the copy state ID to wait for. Under some conditions, it is
+possible for the client to process the CB_OFFLOAD request
+before it has processed the COPY reply containing the matching
+copy state ID.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
+<p id="section-4.2-2">There are a few alternatives to consider when designing the
+client callback service implementation of the CB_OFFLOAD
+operation. Among other designs, client implementers might
+choose to:<a href="#section-4.2-2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.2-3.1">
+            <p id="section-4.2-3.1.1">Maintain a cache of unmatched CB_OFFLOAD requests in the
+expectation of a matching COPY response arriving imminently.
+(Danger of accruing unmatched copy state IDs over time).<a href="#section-4.2-3.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.2-3.2">
+            <p id="section-4.2-3.2.1">Have CB_OFFLOAD return NFS4ERR_DELAY if the copy state ID
+is not recognized. (Danger of infinite looping).<a href="#section-4.2-3.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.2-3.3">
+            <p id="section-4.2-3.3.1">Utilize a referring call list contained in the CB_SEQUENCE
+in the same COMPOUND (as described in
+<span><a href="https://rfc-editor.org/rfc/rfc8881#section-20.9.3" class="relref">Section 20.9.3</a> of [<a href="#RFC8881" class="cite xref">RFC8881</a>]</span>) to determine whether an
+ingress CB_OFFLOAD is likely to match a COPY operation the
+client sent previously.<a href="#section-4.2-3.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-4.2-4">While the third alternative might appear to be the most
+bullet-proof, there are still issues with it:<a href="#section-4.2-4" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.2-5.1">
+            <p id="section-4.2-5.1.1">There is no normative requirement in <span>[<a href="#RFC8881" class="cite xref">RFC8881</a>]</span> or <span>[<a href="#RFC7862" class="cite xref">RFC7862</a>]</span>
+that a server implement referring call lists, and it is known
+that some popular server implementations in fact do not
+implement them. Thus a client callback service cannot depend
+on a referring call list being available.<a href="#section-4.2-5.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.2-5.2">
+            <p id="section-4.2-5.2.1">Client implementations must take care to place no more than
+one non-synchronous COPY operation per COMPOUND. If there are
+any more than one, then the referring call list becomes useless
+for disambiguating CB_OFFLOAD requests.<a href="#section-4.2-5.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-4.2-6">We recommend that the implementation notes for the CB_OFFLOAD
+request contain appropriate guidance for tackling this race.<a href="#section-4.2-6" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="lifetime">
+<section id="section-4.3">
+        <h3 id="name-lifetime-requirements">
+<a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-lifetime-requirements" class="section-name selfRef">Lifetime Requirements</a>
+        </h3>
+<p id="section-4.3-1">An NFS server that implements only synchronous copy does not
+require the stricter COPY state ID lifetime requirements described
+in <span><a href="https://rfc-editor.org/rfc/rfc7862#section-4.8" class="relref">Section 4.8</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span>. A state ID used with a synchronous
+copy lives until the COPY operation has completed.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
+<p id="section-4.3-2">Regarding asynchronous copy offload,
+the second paragraph of <span><a href="https://rfc-editor.org/rfc/rfc7862#section-4.8" class="relref">Section 4.8</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span> states:<a href="#section-4.3-2" class="pilcrow">¶</a></p>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-4.3-3.1">
+            <p id="section-4.3-3.1.1">A copy offload stateid will be valid until either (A) the client or
+server restarts or (B) the client returns the resource by issuing an
+OFFLOAD_CANCEL operation or the client replies to a CB_OFFLOAD
+operation.<a href="#section-4.3-3.1.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-4.3-4">This paragraph is unclear about what "client restart" means, at least
 in terms of what specific actions a server should take and when, how
 long a COPY state ID is required to remain valid, and how a client
 needs to act during state recovery. A stronger statement about
-COPY state ID lifetime improves the guarantee of interoperability:<a href="#section-3.3-4" class="pilcrow">¶</a></p>
+COPY state ID lifetime improves the guarantee of interoperability:<a href="#section-4.3-4" class="pilcrow">¶</a></p>
 <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-3.3-5.1">
-            <p id="section-3.3-5.1.1">When a COPY state ID is used for an asynchronous copy, an NFS
+<li class="normal ulEmpty" id="section-4.3-5.1">
+            <p id="section-4.3-5.1.1">When a COPY state ID is used for an asynchronous copy, an NFS
 server <span class="bcp14">MUST</span> retain the COPY state ID, except as follows below.
 An NFS server <span class="bcp14">MAY</span> invalidate and purge a COPY state ID in the
-following circumstances:<a href="#section-3.3-5.1.1" class="pilcrow">¶</a></p>
-<p id="section-3.3-5.1.2">o The server instance restarts.<a href="#section-3.3-5.1.2" class="pilcrow">¶</a></p>
-<p id="section-3.3-5.1.3">o The server expires the owning client's lease.<a href="#section-3.3-5.1.3" class="pilcrow">¶</a></p>
-<p id="section-3.3-5.1.4">o The server receives an EXCHANGE_ID or DESTROY_CLIENTID request
+following circumstances:<a href="#section-4.3-5.1.1" class="pilcrow">¶</a></p>
+<p id="section-4.3-5.1.2">o The server instance restarts.<a href="#section-4.3-5.1.2" class="pilcrow">¶</a></p>
+<p id="section-4.3-5.1.3">o The server expires the owning client's lease.<a href="#section-4.3-5.1.3" class="pilcrow">¶</a></p>
+<p id="section-4.3-5.1.4">o The server receives an EXCHANGE_ID or DESTROY_CLIENTID request
   from the owning client that results in the destruction of that
-  client's lease.<a href="#section-3.3-5.1.4" class="pilcrow">¶</a></p>
-<p id="section-3.3-5.1.5">o The server receives an OFFLOAD_CANCEL request from the owning
-  client that matches the COPY state ID.<a href="#section-3.3-5.1.5" class="pilcrow">¶</a></p>
-<p id="section-3.3-5.1.6">o The server receives a reply to a CB_OFFLOAD request from the
-  owning client that matches the COPY state ID.<a href="#section-3.3-5.1.6" class="pilcrow">¶</a></p>
+  client's lease.<a href="#section-4.3-5.1.4" class="pilcrow">¶</a></p>
+<p id="section-4.3-5.1.5">o The server receives an OFFLOAD_CANCEL request from the owning
+  client that matches the COPY state ID.<a href="#section-4.3-5.1.5" class="pilcrow">¶</a></p>
+<p id="section-4.3-5.1.6">o The server receives a reply to a CB_OFFLOAD request from the
+  owning client that matches the COPY state ID.<a href="#section-4.3-5.1.6" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-3.3-6">Implementers have found the following behavior to work well for
-clients when recovering state after a server restart:<a href="#section-3.3-6" class="pilcrow">¶</a></p>
+<p id="section-4.3-6">Implementers have found the following behavior to work well for
+clients when recovering state after a server restart:<a href="#section-4.3-6" class="pilcrow">¶</a></p>
 <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-3.3-7.1">
-            <p id="section-3.3-7.1.1">When an NFSv4 client discovers that a server instance has restarted,
+<li class="normal ulEmpty" id="section-4.3-7.1">
+            <p id="section-4.3-7.1.1">When an NFSv4 client discovers that a server instance has restarted,
 it must recover state associated with files on that server, including
 state that manages offloaded copy operations. When an NFS server
 restart is detected, the client purges existing COPY state and
 redrives its incompleted COPY requests from their beginning. No
-other recovery is needed for pending asynchronous copy operations.<a href="#section-3.3-7.1.1" class="pilcrow">¶</a></p>
+other recovery is needed for pending asynchronous copy operations.<a href="#section-4.3-7.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -1416,83 +1523,83 @@ other recovery is needed for pending asynchronous copy operations.<a href="#sect
 </section>
 </div>
 <div id="status-codes-their-meanings-and-their-usage">
-<section id="section-4">
+<section id="section-5">
       <h2 id="name-status-codes-their-meanings">
-<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-status-codes-their-meanings" class="section-name selfRef">Status Codes, Their Meanings, and Their Usage</a>
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-status-codes-their-meanings" class="section-name selfRef">Status Codes, Their Meanings, and Their Usage</a>
       </h2>
 <div id="status-codes-for-the-cboffload-operation">
-<section id="section-4.1">
+<section id="section-5.1">
         <h3 id="name-status-codes-for-the-cb_off">
-<a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-status-codes-for-the-cb_off" class="section-name selfRef">Status Codes for the CB_OFFLOAD Operation</a>
+<a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-status-codes-for-the-cb_off" class="section-name selfRef">Status Codes for the CB_OFFLOAD Operation</a>
         </h3>
-<p id="section-4.1-1"><span><a href="https://rfc-editor.org/rfc/rfc7862#section-16.1.3" class="relref">Section 16.1.3</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span> describes the CB_OFFLOAD command, but
+<p id="section-5.1-1"><span><a href="https://rfc-editor.org/rfc/rfc7862#section-16.1.3" class="relref">Section 16.1.3</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span> describes the CB_OFFLOAD command, but
 provides no information, normative or otherwise, about the NFS client's
 callback service is to use CB_OFFLOAD's response status codes. The set
-of permitted status codes is listed in <span><a href="https://rfc-editor.org/rfc/rfc7862#section-11.3" class="relref">Section 11.3</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span>.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
-<p id="section-4.1-2">The usual collection of status codes related to compound structure
+of permitted status codes is listed in <span><a href="https://rfc-editor.org/rfc/rfc7862#section-11.3" class="relref">Section 11.3</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span>.<a href="#section-5.1-1" class="pilcrow">¶</a></p>
+<p id="section-5.1-2">The usual collection of status codes related to compound structure
 and session parameters are available.
 However, Section 11.3 also lists NFS4ERR_BADHANDLE, NFS4ERR_BAD_STATEID,
-and NFS4ERR_DELAY.<a href="#section-4.1-2" class="pilcrow">¶</a></p>
-<p id="section-4.1-3"><span><a href="https://rfc-editor.org/rfc/rfc8881#section-15.1.2.1" class="relref">Section 15.1.2.1</a> of [<a href="#RFC8881" class="cite xref">RFC8881</a>]</span> defines NFS4ERR_BADHANDLE this way:<a href="#section-4.1-3" class="pilcrow">¶</a></p>
+and NFS4ERR_DELAY.<a href="#section-5.1-2" class="pilcrow">¶</a></p>
+<p id="section-5.1-3"><span><a href="https://rfc-editor.org/rfc/rfc8881#section-15.1.2.1" class="relref">Section 15.1.2.1</a> of [<a href="#RFC8881" class="cite xref">RFC8881</a>]</span> defines NFS4ERR_BADHANDLE this way:<a href="#section-5.1-3" class="pilcrow">¶</a></p>
 <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-4.1-4.1">
-            <p id="section-4.1-4.1.1">Illegal NFS filehandle for the current server. The current filehandle
-failed internal consistency checks.<a href="#section-4.1-4.1.1" class="pilcrow">¶</a></p>
+<li class="normal ulEmpty" id="section-5.1-4.1">
+            <p id="section-5.1-4.1.1">Illegal NFS filehandle for the current server. The current filehandle
+failed internal consistency checks.<a href="#section-5.1-4.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-4.1-5">There is no filesystem on an NFS client to determine whether a filehandle
-is valid. What other checking should the client's callback server perform?<a href="#section-4.1-5" class="pilcrow">¶</a></p>
-<p id="section-4.1-6">Instead of NFS4ERR_BADHANDLE, the NFS client's callback service might
+<p id="section-5.1-5">There is no filesystem on an NFS client to determine whether a filehandle
+is valid. What other checking should the client's callback service perform?<a href="#section-5.1-5" class="pilcrow">¶</a></p>
+<p id="section-5.1-6">Instead of NFS4ERR_BADHANDLE, the NFS client's callback service might
 instead return either NFS4ERR_INVAL (which is currently not a permitted
-status code for CB_OFFLOAD) or NFS4ERR_SERVERFAULT.<a href="#section-4.1-6" class="pilcrow">¶</a></p>
-<p id="section-4.1-7"><span><a href="https://rfc-editor.org/rfc/rfc8881#section-15.1.5.2" class="relref">Section 15.1.5.2</a> of [<a href="#RFC8881" class="cite xref">RFC8881</a>]</span> states that NFS4ERR_BAD_STATEID means that<a href="#section-4.1-7" class="pilcrow">¶</a></p>
+status code for CB_OFFLOAD) or NFS4ERR_SERVERFAULT.<a href="#section-5.1-6" class="pilcrow">¶</a></p>
+<p id="section-5.1-7"><span><a href="https://rfc-editor.org/rfc/rfc8881#section-15.1.5.2" class="relref">Section 15.1.5.2</a> of [<a href="#RFC8881" class="cite xref">RFC8881</a>]</span> states that NFS4ERR_BAD_STATEID means that<a href="#section-5.1-7" class="pilcrow">¶</a></p>
 <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-4.1-8.1">
-            <p id="section-4.1-8.1.1">A stateid does not properly designate any valid state.<a href="#section-4.1-8.1.1" class="pilcrow">¶</a></p>
+<li class="normal ulEmpty" id="section-5.1-8.1">
+            <p id="section-5.1-8.1.1">A stateid does not properly designate any valid state.<a href="#section-5.1-8.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-4.1-9">But note that:<a href="#section-4.1-9" class="pilcrow">¶</a></p>
+<p id="section-5.1-9">But note that:<a href="#section-5.1-9" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.1-10.1">
-            <p id="section-4.1-10.1.1">The NFS server manages the state ID that appears in the wr_callback_id
+<li class="normal" id="section-5.1-10.1">
+            <p id="section-5.1-10.1.1">The NFS server manages the state ID that appears in the wr_callback_id
 field of the CB_OFFLOAD response. The NFS client's callback service is
-not in a position to validate that state ID since it did not create it.<a href="#section-4.1-10.1.1" class="pilcrow">¶</a></p>
+not in a position to validate that state ID since it did not create it.<a href="#section-5.1-10.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-4.1-10.2">
-            <p id="section-4.1-10.2.1">The client might receive and process the CB_OFFLOAD before it has
+          <li class="normal" id="section-5.1-10.2">
+            <p id="section-5.1-10.2.1">The client might receive and process the CB_OFFLOAD before it has
 received and processed the COPY that contains the copy state ID it has
 to match the CB_OFFLOAD against. In that case, the copy state ID is
-certainly valid but the client has not yet been made aware of it.<a href="#section-4.1-10.2.1" class="pilcrow">¶</a></p>
+certainly valid but the client has not yet been made aware of it.<a href="#section-5.1-10.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-4.1-10.3">
-            <p id="section-4.1-10.3.1">The NFS client's callback service will already have validated the
+          <li class="normal" id="section-5.1-10.3">
+            <p id="section-5.1-10.3.1">The NFS client's callback service will already have validated the
 client ID contained in the CB_SEQUENCE operation that accompanies
 the CB_OFFLOAD. State ID sequence number validation does not seem
-relevant for copy state IDs.<a href="#section-4.1-10.3.1" class="pilcrow">¶</a></p>
+relevant for copy state IDs.<a href="#section-5.1-10.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-4.1-10.4">
-            <p id="section-4.1-10.4.1">Upon receipt of NFS4ERR_BAD_STATEID, the receiver typically initiates
+          <li class="normal" id="section-5.1-10.4">
+            <p id="section-5.1-10.4.1">Upon receipt of NFS4ERR_BAD_STATEID, the receiver typically initiates
 state recovery. In this case, there is no protocol defined anywhere
-that can recover the state ID.<a href="#section-4.1-10.4.1" class="pilcrow">¶</a></p>
+that can recover the state ID.<a href="#section-5.1-10.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-4.1-11">One must conclude that implementations of CB_OFFLOAD <span class="bcp14">MUST NOT</span> use
+<p id="section-5.1-11">One must conclude that implementations of CB_OFFLOAD <span class="bcp14">MUST NOT</span> use
 NFS4ERR_BAD_STATEID. We recommend that it be removed from the list of
-permissible state codes for CB_OFFLOAD.<a href="#section-4.1-11" class="pilcrow">¶</a></p>
-<p id="section-4.1-12"><span><a href="https://rfc-editor.org/rfc/rfc8881#section-15.1.1.3" class="relref">Section 15.1.1.3</a> of [<a href="#RFC8881" class="cite xref">RFC8881</a>]</span> has this to say about NFS4ERR_DELAY:<a href="#section-4.1-12" class="pilcrow">¶</a></p>
+permissible state codes for CB_OFFLOAD.<a href="#section-5.1-11" class="pilcrow">¶</a></p>
+<p id="section-5.1-12"><span><a href="https://rfc-editor.org/rfc/rfc8881#section-15.1.1.3" class="relref">Section 15.1.1.3</a> of [<a href="#RFC8881" class="cite xref">RFC8881</a>]</span> has this to say about NFS4ERR_DELAY:<a href="#section-5.1-12" class="pilcrow">¶</a></p>
 <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-4.1-13.1">
-            <p id="section-4.1-13.1.1">For any of a number of reasons, the replier could not process this
+<li class="normal ulEmpty" id="section-5.1-13.1">
+            <p id="section-5.1-13.1.1">For any of a number of reasons, the replier could not process this
 operation in what was deemed a reasonable time. The client should wait
-and then try the request with a new slot and sequence value.<a href="#section-4.1-13.1.1" class="pilcrow">¶</a></p>
+and then try the request with a new slot and sequence value.<a href="#section-5.1-13.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-4.1-14">When the NFS client does not recognize the copy state ID in the
+<p id="section-5.1-14">When the NFS client does not recognize the copy state ID in the
 wr_callback_id field, it's probable that the matching COPY response
 has not yet been processed on the client. A simple and appropriate
 response to that situation is for the NFS client's callback service
-to respond with NFS4ERR_DELAY.<a href="#section-4.1-14" class="pilcrow">¶</a></p>
-<p id="section-4.1-15">A refreshed version of Table 3 in <span>[<a href="#RFC7862" class="cite xref">RFC7862</a>]</span> might look like this:<a href="#section-4.1-15" class="pilcrow">¶</a></p>
+to respond with NFS4ERR_DELAY.<a href="#section-5.1-14" class="pilcrow">¶</a></p>
+<p id="section-5.1-15">A refreshed version of Table 3 in <span>[<a href="#RFC7862" class="cite xref">RFC7862</a>]</span> might look like this:<a href="#section-5.1-15" class="pilcrow">¶</a></p>
 <table class="center" id="table-1">
           <caption><a href="#table-1" class="selfRef">Table 1</a></caption>
 <thead>
@@ -1508,48 +1615,48 @@ to respond with NFS4ERR_DELAY.<a href="#section-4.1-14" class="pilcrow">¶</a></
             </tr>
           </tbody>
         </table>
-<p id="section-4.1-17">Valid Error Returns for Each New Protocol Callback Operation<a href="#section-4.1-17" class="pilcrow">¶</a></p>
+<p id="section-5.1-17">Valid Error Returns for Each New Protocol Callback Operation<a href="#section-5.1-17" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="status-codes-for-the-offloadcancel-and-offloadstatus-operations">
-<section id="section-4.2">
+<section id="section-5.2">
         <h3 id="name-status-codes-for-the-offloa">
-<a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-status-codes-for-the-offloa" class="section-name selfRef">Status Codes for the OFFLOAD_CANCEL and OFFLOAD_STATUS Operations</a>
+<a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-status-codes-for-the-offloa" class="section-name selfRef">Status Codes for the OFFLOAD_CANCEL and OFFLOAD_STATUS Operations</a>
         </h3>
-<p id="section-4.2-1">The NFSv4.2 OFFLOAD_STATUS and OFFLOAD_CANCEL operations both list
+<p id="section-5.2-1">The NFSv4.2 OFFLOAD_STATUS and OFFLOAD_CANCEL operations both list
 NFS4ERR_COMPLETE_ALREADY as a permitted status code. However, it
 is not otherwise mentioned or defined in <span>[<a href="#RFC7862" class="cite xref">RFC7862</a>]</span>. <span>[<a href="#RFC7863" class="cite xref">RFC7863</a>]</span>
 defines a value of 10054 for that status code, but is not otherwise
-forthcoming about what its purpose is.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
-<p id="section-4.2-2">We find a definition of NFS4ERR_COMPLETE_ALREADY in <span>[<a href="#RFC5661" class="cite xref">RFC5661</a>]</span>.
+forthcoming about what its purpose is.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
+<p id="section-5.2-2">We find a definition of NFS4ERR_COMPLETE_ALREADY in <span>[<a href="#RFC5661" class="cite xref">RFC5661</a>]</span>.
 The definition is directly related to the new-to-NFSv4.1
 RECLAIM_COMPLETE operation, but is otherwise not used by other
-operations.<a href="#section-4.2-2" class="pilcrow">¶</a></p>
-<p id="section-4.2-3">We recommend removing NFS4ERR_COMPLETE_ALREADY from the list of
+operations.<a href="#section-5.2-2" class="pilcrow">¶</a></p>
+<p id="section-5.2-3">We recommend removing NFS4ERR_COMPLETE_ALREADY from the list of
 permissible status codes for the OFFLOAD_CANCEL and OFFLOAD_STATUS
-operations.<a href="#section-4.2-3" class="pilcrow">¶</a></p>
+operations.<a href="#section-5.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="status-codes-returned-for-completed-asynchronous-copy-operations">
-<section id="section-4.3">
+<section id="section-5.3">
         <h3 id="name-status-codes-returned-for-c">
-<a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-status-codes-returned-for-c" class="section-name selfRef">Status Codes Returned for Completed Asynchronous Copy Operations</a>
+<a href="#section-5.3" class="section-number selfRef">5.3. </a><a href="#name-status-codes-returned-for-c" class="section-name selfRef">Status Codes Returned for Completed Asynchronous Copy Operations</a>
         </h3>
-<p id="section-4.3-1">Once an asynchronous copy operation is complete,
+<p id="section-5.3-1">Once an asynchronous copy operation is complete,
 the NFSv4.2 OFFLOAD_STATUS response and the NFSv4.2 CB_OFFLOAD request
 can both report a status code that reflects the success or failure of
 the copy. This status code is reported in osr_complete field of the
 OFFLOAD_STATUS response, and the coa_status field of the CB_OFFLOAD
-request.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
-<p id="section-4.3-2">Both fields have a type of nfsstat4. Typically an NFSv4 protocol
+request.<a href="#section-5.3-1" class="pilcrow">¶</a></p>
+<p id="section-5.3-2">Both fields have a type of nfsstat4. Typically an NFSv4 protocol
 specification will constrain the values that are permitted in a
 field that contains an operation status code, but <span>[<a href="#RFC7862" class="cite xref">RFC7862</a>]</span> does
 not appear to do so. Implementers might assume that the list of
 permitted values in these two fields is the same as the COPY
-operation itself; that is:<a href="#section-4.3-2" class="pilcrow">¶</a></p>
-<ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-4.3-3.1">
-            <p id="section-4.3-3.1.1">+----------------+--------------------------------------------------+
+operation itself; that is:<a href="#section-5.3-2" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.3-3">
+<pre>
+ +----------------+--------------------------------------------------+
  | COPY           | NFS4ERR_ACCESS, NFS4ERR_ADMIN_REVOKED,           |
  |                | NFS4ERR_BADXDR, NFS4ERR_BAD_STATEID,             |
  |                | NFS4ERR_DEADSESSION, NFS4ERR_DELAY,              |
@@ -1569,28 +1676,38 @@ operation itself; that is:<a href="#section-4.3-2" class="pilcrow">¶</a></p>
  |                | NFS4ERR_ROFS, NFS4ERR_SERVERFAULT,               |
  |                | NFS4ERR_STALE, NFS4ERR_SYMLINK,                  |
  |                | NFS4ERR_TOO_MANY_OPS, NFS4ERR_WRONG_TYPE         |
- +----------------+--------------------------------------------------+<a href="#section-4.3-3.1.1" class="pilcrow">¶</a></p>
-</li>
-        </ul>
-<p id="section-4.3-4">However, a number of these do not make sense outside the context of
-a forward channel NFSv4 COMPOUND operation, including:<a href="#section-4.3-4" class="pilcrow">¶</a></p>
-<p id="section-4.3-5">NFS4ERR_BADXDR,
+ +----------------+--------------------------------------------------+
+</pre><a href="#section-5.3-3" class="pilcrow">¶</a>
+</div>
+<p id="section-5.3-4">However, a number of these do not make sense outside the context of
+a forward channel NFSv4 COMPOUND operation, including:<a href="#section-5.3-4" class="pilcrow">¶</a></p>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-5.3-5.1">
+            <p id="section-5.3-5.1.1">NFS4ERR_BADXDR,
 NFS4ERR_DEADSESSION,
 NFS4ERR_OP_NOT_IN_SESSION,
 NFS4ERR_REP_TOO_BIG,
 NFS4ERR_REP_TOO_BIG_TO_CACHE,
 NFS4ERR_REQ_TOO_BIG,
 NFS4ERR_RETRY_UNCACHED_REP,
-NFS4ERR_TOO_MANY_OPS<a href="#section-4.3-5" class="pilcrow">¶</a></p>
-<p id="section-4.3-6">Some are temporary conditions that can be retried by the NFS server
-and therefore do not make sense to report as a copy completion status:<a href="#section-4.3-6" class="pilcrow">¶</a></p>
-<p id="section-4.3-7">NFS4ERR_DELAY,
+NFS4ERR_TOO_MANY_OPS<a href="#section-5.3-5.1.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-5.3-6">Some are temporary conditions that can be retried by the NFS server
+and therefore do not make sense to report as a copy completion status:<a href="#section-5.3-6" class="pilcrow">¶</a></p>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-5.3-7.1">
+            <p id="section-5.3-7.1.1">NFS4ERR_DELAY,
 NFS4ERR_GRACE,
-NFS4ERR_EXPIRED<a href="#section-4.3-7" class="pilcrow">¶</a></p>
-<p id="section-4.3-8">Some report an invalid argument or file object type, or some other
+NFS4ERR_EXPIRED<a href="#section-5.3-7.1.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-5.3-8">Some report an invalid argument or file object type, or some other
 operational set up issue that should be reported only via the status
-code of the COPY operation:<a href="#section-4.3-8" class="pilcrow">¶</a></p>
-<p id="section-4.3-9">NFS4ERR_BAD_STATEID,
+code of the COPY operation:<a href="#section-5.3-8" class="pilcrow">¶</a></p>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-5.3-9.1">
+            <p id="section-5.3-9.1.1">NFS4ERR_BAD_STATEID,
 NFS4ERR_DELEG_REVOKED,
 NFS4ERR_INVAL,
 NFS4ERR_ISDIR,
@@ -1605,106 +1722,72 @@ NFS4ERR_PARTNER_NO_AUTH,
 NFS4ERR_PARTNER_NOTSUPP,
 NFS4ERR_ROFS,
 NFS4ERR_SYMLINK,
-NFS4ERR_WRONG_TYPE<a href="#section-4.3-9" class="pilcrow">¶</a></p>
-<p id="section-4.3-10">This leaves only a few sensible status codes remaining to report
-issues that could have arisen during the offloaded copy:<a href="#section-4.3-10" class="pilcrow">¶</a></p>
-<p id="section-4.3-11">NFS4ERR_DQUOT,
+NFS4ERR_WRONG_TYPE<a href="#section-5.3-9.1.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-5.3-10">This leaves only a few sensible status codes remaining to report
+issues that could have arisen during the offloaded copy:<a href="#section-5.3-10" class="pilcrow">¶</a></p>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-5.3-11.1">
+            <p id="section-5.3-11.1.1">NFS4ERR_DQUOT,
 NFS4ERR_FHEXPIRED,
 NFS4ERR_IO,
 NFS4ERR_NOSPC,
 NFS4ERR_PNFS_IO_HOLE,
 NFS4ERR_PNFS_NO_LAYOUT,
 NFS4ERR_SERVERFAULT,
-NFS4ERR_STALE<a href="#section-4.3-11" class="pilcrow">¶</a></p>
-<p id="section-4.3-12">We recommend including a section and table that gives the valid
+NFS4ERR_STALE<a href="#section-5.3-11.1.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-5.3-12">We recommend including a section and table that gives the valid
 status codes that the osr_complete and coa_status fields may contain.
 The status code NFS4_OK (indicating no error occurred during the
 copy operation) is not listed but should be understood to be a
 valid value for these fields. The meaning for each of these values
-is defined in <span><a href="https://rfc-editor.org/rfc/rfc5661#section-15.3" class="relref">Section 15.3</a> of [<a href="#RFC5661" class="cite xref">RFC5661</a>]</span>.<a href="#section-4.3-12" class="pilcrow">¶</a></p>
-<p id="section-4.3-13">It would also be helpful to implementers to provide guidance about
+is defined in <span><a href="https://rfc-editor.org/rfc/rfc5661#section-15.3" class="relref">Section 15.3</a> of [<a href="#RFC5661" class="cite xref">RFC5661</a>]</span>.<a href="#section-5.3-12" class="pilcrow">¶</a></p>
+<p id="section-5.3-13">It would also be helpful to implementers to provide guidance about
 when these values are appropriate to use, or when they <span class="bcp14">MUST NOT</span> be
-used.<a href="#section-4.3-13" class="pilcrow">¶</a></p>
+used.<a href="#section-5.3-13" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
 </div>
 <div id="offloadcancel-implementation-notes">
-<section id="section-5">
+<section id="section-6">
       <h2 id="name-offload_cancel-implementati">
-<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-offload_cancel-implementati" class="section-name selfRef">OFFLOAD_CANCEL Implementation Notes</a>
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-offload_cancel-implementati" class="section-name selfRef">OFFLOAD_CANCEL Implementation Notes</a>
       </h2>
-<p id="section-5-1">The NFSv4.2 OFFLOAD_CANCEL operation, described in
+<p id="section-6-1">The NFSv4.2 OFFLOAD_CANCEL operation, described in
 <span><a href="https://rfc-editor.org/rfc/rfc7862#section-15.8.3" class="relref">Section 15.8.3</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span>, is used to terminate an offloaded
 copy operation before it completes normally. A CB_OFFLOAD is
 not necessary when an offloaded operation completes because of
-a cancelation due to CB_OFFLOAD.<a href="#section-5-1" class="pilcrow">¶</a></p>
-<p id="section-5-2">However, the server <span class="bcp14">MUST</span> send a CB_OFFLOAD operation if the
+a cancelation due to CB_OFFLOAD.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-6-2">However, the server <span class="bcp14">MUST</span> send a CB_OFFLOAD operation if the
 offloaded copy operation completes because of an administrator
-action that terminates the copy early.<a href="#section-5-2" class="pilcrow">¶</a></p>
-<p id="section-5-3">In both cases, a subsequent OFFLOAD_STATUS returns the number
+action that terminates the copy early.<a href="#section-6-2" class="pilcrow">¶</a></p>
+<p id="section-6-3">In both cases, a subsequent OFFLOAD_STATUS returns the number
 of bytes actually copied and a status code of NFS4_OK to
 signify that the copy operation is no longer running. The
 server should obey the usual lifetime rules for the copy
 state ID associated with a canceled asynchronous copy
 operation so that an NFS client can determine the status of
-the operation as usual.<a href="#section-5-3" class="pilcrow">¶</a></p>
-<p id="section-5-4">The following is a recommended addendum to <span>[<a href="#RFC7862" class="cite xref">RFC7862</a>]</span>:<a href="#section-5-4" class="pilcrow">¶</a></p>
+the operation as usual.<a href="#section-6-3" class="pilcrow">¶</a></p>
+<p id="section-6-4">The following is a recommended addendum to <span>[<a href="#RFC7862" class="cite xref">RFC7862</a>]</span>:<a href="#section-6-4" class="pilcrow">¶</a></p>
 <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-5-5.1">
-          <p id="section-5-5.1.1">When an offloaded copy operation completes, the NFS server sends
+<li class="normal ulEmpty" id="section-6-5.1">
+          <p id="section-6-5.1.1">When an offloaded copy operation completes, the NFS server sends
 a CB_OFFLOAD callback to the requesting client. When an NFS
 client cancels an asynchronous copy operation, however, the
 server need not send a CB_OFFLOAD notification for the canceled
 copy. A client should not depend on receiving completion notification
 after it cancels an offloaded copy operation using the OFFLOAD_CANCEL
-operation.<a href="#section-5-5.1.1" class="pilcrow">¶</a></p>
-<p id="section-5-5.1.2">An NFS server is still <span class="bcp14">REQUIRED</span> to send a CB_OFFLOAD notification
+operation.<a href="#section-6-5.1.1" class="pilcrow">¶</a></p>
+<p id="section-6-5.1.2">An NFS server is still <span class="bcp14">REQUIRED</span> to send a CB_OFFLOAD notification
 if an asynchronous copy operation is terminated by administrator
-action.<a href="#section-5-5.1.2" class="pilcrow">¶</a></p>
-<p id="section-5-5.1.3">For a canceled asynchronous copy operation, CB_OFFLOAD and
+action.<a href="#section-6-5.1.2" class="pilcrow">¶</a></p>
+<p id="section-6-5.1.3">For a canceled asynchronous copy operation, CB_OFFLOAD and
 OFFLOAD_STATUS report the number of bytes copied and a
-completion status of NFS4_OK.<a href="#section-5-5.1.3" class="pilcrow">¶</a></p>
-</li>
-      </ul>
-</section>
-</div>
-<div id="short-copy-results">
-<section id="section-6">
-      <h2 id="name-short-copy-results">
-<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-short-copy-results" class="section-name selfRef">Short COPY results</a>
-      </h2>
-<p id="section-6-1">When a COPY request might take a long time, an NFS server must
-ensure it can continue to remain responsive to other requests.
-To prevent other requests from blocking, an NFS server
-implementation might, for example, notice that a COPY operation
-is taking longer than a few seconds and stop it.<a href="#section-6-1" class="pilcrow">¶</a></p>
-<p id="section-6-2"><span><a href="https://rfc-editor.org/rfc/rfc7862#section-15.2.3" class="relref">Section 15.2.3</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span> states:<a href="#section-6-2" class="pilcrow">¶</a></p>
-<ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-6-3.1">
-          <p id="section-6-3.1.1">If a failure does occur for a synchronous copy, wr_count will be set
-to the number of bytes copied to the destination file before the
-error occurred.<a href="#section-6-3.1.1" class="pilcrow">¶</a></p>
-</li>
-      </ul>
-<p id="section-6-4">This text considers only a failure status and not a short COPY, where
-the COPY response contains a byte count shorter than the client's
-request and a final status of NFS4_OK. Both the Linux and FreeBSD
-implementations of the COPY operation truncate large COPY requests
-in this way. The reason for returning a short COPY result is that
-the NFS server has need to break up a long byte range to schedule
-its resources more fairly amongst its clients.<a href="#section-6-4" class="pilcrow">¶</a></p>
-<p id="section-6-5">The following text makes a short COPY result explicitly permissible:<a href="#section-6-5" class="pilcrow">¶</a></p>
-<ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-6-6.1">
-          <p id="section-6-6.1.1">If a server chooses to terminate a COPY before it has completed
-copying the full requested range of bytes, either because of a
-pending shutdown request, an administrative cancel, or because
-the server wants to avoid a possible denial of service, it <span class="bcp14">MAY</span>
-return a short COPY result, where the response contains the
-actual number of bytes copied and a final status of NFS4_OK.
-In this way, a client can send a subsequent COPY for the
-remaining byte range, ensure that forward progress is made.<a href="#section-6-6.1.1" class="pilcrow">¶</a></p>
+completion status of NFS4_OK.<a href="#section-6-5.1.3" class="pilcrow">¶</a></p>
 </li>
       </ul>
 </section>
@@ -1761,190 +1844,214 @@ COPY operation (see <span><a href="https://rfc-editor.org/rfc/rfc7862#section-11
       </ul>
 </section>
 </div>
-<div id="asynchronous-copy-completion-reliability">
+<div id="short-copy-results">
 <section id="section-8">
-      <h2 id="name-asynchronous-copy-completio">
-<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-asynchronous-copy-completio" class="section-name selfRef">Asynchronous Copy Completion Reliability</a>
+      <h2 id="name-short-copy-results">
+<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-short-copy-results" class="section-name selfRef">Short COPY results</a>
       </h2>
-<p id="section-8-1">Typically, NFSv4 server backchannel requests are not retransmitted.
-There are common scenarios where lack of a retransmit can result in
-a backchannel request getting dropped entirely. Common scenarios
-include:<a href="#section-8-1" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-8-2.1">
-          <p id="section-8-2.1.1">The server dropped the connection because it lost a forechannel
-NFSv4 request and wishes to force the client to retransmit all
-of its pending forechannel requests<a href="#section-8-2.1.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-8-2.2">
-          <p id="section-8-2.2.1">The GSS sequence number window under-flowed<a href="#section-8-2.2.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-8-2.3">
-          <p id="section-8-2.3.1">A network partition occurred<a href="#section-8-2.3.1" class="pilcrow">¶</a></p>
+<p id="section-8-1">When a COPY request might take a long time, an NFS server must
+ensure it can continue to remain responsive to other requests.
+To prevent other requests from blocking, an NFS server
+implementation might, for example, notice that a COPY operation
+is taking longer than a few seconds and stop it.<a href="#section-8-1" class="pilcrow">¶</a></p>
+<p id="section-8-2"><span><a href="https://rfc-editor.org/rfc/rfc7862#section-15.2.3" class="relref">Section 15.2.3</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span> states:<a href="#section-8-2" class="pilcrow">¶</a></p>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-8-3.1">
+          <p id="section-8-3.1.1">If a failure does occur for a synchronous copy, wr_count will be set
+to the number of bytes copied to the destination file before the
+error occurred.<a href="#section-8-3.1.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="section-8-3">In these cases, pending NFSv4 callback requests are lost.<a href="#section-8-3" class="pilcrow">¶</a></p>
-<p id="section-8-4">NFSv4 clients and servers can recover when operations such as
+<p id="section-8-4">This text considers only a failure status and not a short COPY, where
+the COPY response contains a byte count shorter than the client's
+request and a final status of NFS4_OK. Both the Linux and FreeBSD
+implementations of the COPY operation truncate large COPY requests
+in this way. The reason for returning a short COPY result is that
+the NFS server has need to break up a long byte range to schedule
+its resources more fairly amongst its clients.<a href="#section-8-4" class="pilcrow">¶</a></p>
+<p id="section-8-5">The following text makes a short COPY result explicitly permissible:<a href="#section-8-5" class="pilcrow">¶</a></p>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-8-6.1">
+          <p id="section-8-6.1.1">If a server chooses to terminate a COPY before it has completed
+copying the full requested range of bytes, either because of a
+pending shutdown request, an administrative cancel, or because
+the server wants to avoid a possible denial of service, it <span class="bcp14">MAY</span>
+return a short COPY result, where the response contains the
+actual number of bytes copied and a final status of NFS4_OK.
+In this way, a client can send a subsequent COPY for the
+remaining byte range, ensure that forward progress is made.<a href="#section-8-6.1.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+</section>
+</div>
+<div id="asynchronous-copy-completion-reliability">
+<section id="section-9">
+      <h2 id="name-asynchronous-copy-completio">
+<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-asynchronous-copy-completio" class="section-name selfRef">Asynchronous Copy Completion Reliability</a>
+      </h2>
+<p id="section-9-1">Typically, NFSv4 server backchannel requests are not retransmitted.
+There are common scenarios where lack of a retransmit can result in
+a backchannel request getting dropped entirely. Common scenarios
+include:<a href="#section-9-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-9-2.1">
+          <p id="section-9-2.1.1">The server dropped the connection because it lost a forechannel
+NFSv4 request and wishes to force the client to retransmit all
+of its pending forechannel requests<a href="#section-9-2.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-9-2.2">
+          <p id="section-9-2.2.1">The GSS sequence number window under-flowed<a href="#section-9-2.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-9-2.3">
+          <p id="section-9-2.3.1">A network partition occurred<a href="#section-9-2.3.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-9-3">In these cases, pending NFSv4 callback requests are lost.<a href="#section-9-3" class="pilcrow">¶</a></p>
+<p id="section-9-4">NFSv4 clients and servers can recover when operations such as
 CB_RECALL and CB_GETATTR go missing: After a delay, the server
-revokes the delegation and operation continues.<a href="#section-8-4" class="pilcrow">¶</a></p>
-<p id="section-8-5">A lost CB_OFFLOAD means that the client workload waits for a
+revokes the delegation and operation continues.<a href="#section-9-4" class="pilcrow">¶</a></p>
+<p id="section-9-5">A lost CB_OFFLOAD means that the client workload waits for a
 completion event that never arrives, unless that client has a
-mechanism for probing the pending COPY.<a href="#section-8-5" class="pilcrow">¶</a></p>
-<p id="section-8-6">Typically, polling for completion means the client sends
+mechanism for probing the pending COPY.<a href="#section-9-5" class="pilcrow">¶</a></p>
+<p id="section-9-6">Typically, polling for completion means the client sends
 an OFFLOAD_STATUS request. Note however that Table 5 in
-<span><a href="https://rfc-editor.org/rfc/rfc7862#section-13" class="relref">Section 13</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span> labels OFFLOAD_STATUS <span class="bcp14">OPTIONAL</span>.<a href="#section-8-6" class="pilcrow">¶</a></p>
-<p id="section-8-7">Implementers of the SCSI protocol have reported that it is
+<span><a href="https://rfc-editor.org/rfc/rfc7862#section-13" class="relref">Section 13</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span> labels OFFLOAD_STATUS <span class="bcp14">OPTIONAL</span>.<a href="#section-9-6" class="pilcrow">¶</a></p>
+<p id="section-9-7">Implementers of the SCSI protocol have reported that it is
 in fact not possible to make SCSI XCOPY <span>[<a href="#XCOPY" class="cite xref">XCOPY</a>]</span> reliable
 without the use of polling. The NFSv4.2 COPY use case seems
-no different.<a href="#section-8-7" class="pilcrow">¶</a></p>
-<p id="section-8-8">The following is a recommended addendum to <span>[<a href="#RFC7862" class="cite xref">RFC7862</a>]</span>:<a href="#section-8-8" class="pilcrow">¶</a></p>
+no different.<a href="#section-9-7" class="pilcrow">¶</a></p>
+<p id="section-9-8">The following is a recommended addendum to <span>[<a href="#RFC7862" class="cite xref">RFC7862</a>]</span>:<a href="#section-9-8" class="pilcrow">¶</a></p>
 <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-8-9.1">
-          <p id="section-8-9.1.1">NFSv4 servers are not required to retransmit lost backchannel
+<li class="normal ulEmpty" id="section-9-9.1">
+          <p id="section-9-9.1.1">NFSv4 servers are not required to retransmit lost backchannel
 requests. If an NFS client implements an asynchronous copy
 capability, it <span class="bcp14">MUST</span> implement a mechanism for recovering from
 a lost CB_OFFLOAD request. The NFSv4.2 protocol provides
-one such mechanism in the form of the OFFLOAD_STATUS operation.<a href="#section-8-9.1.1" class="pilcrow">¶</a></p>
+one such mechanism in the form of the OFFLOAD_STATUS operation.<a href="#section-9-9.1.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="section-8-10">In addition, Table 5 should be updated to make OFFLOAD_STATUS
+<p id="section-9-10">In addition, Table 5 should be updated to make OFFLOAD_STATUS
 <span class="bcp14">REQUIRED</span> (i.e., column 3 of the OFFLOAD_STATUS row should
-read the same as column 3 of the CB_OFFLOAD row in Table 6).<a href="#section-8-10" class="pilcrow">¶</a></p>
+read the same as column 3 of the CB_OFFLOAD row in Table 6).<a href="#section-9-10" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="handling-nfs-server-shutdown">
-<section id="section-9">
+<section id="section-10">
       <h2 id="name-handling-nfs-server-shutdow">
-<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-handling-nfs-server-shutdow" class="section-name selfRef">Handling NFS Server Shutdown</a>
+<a href="#section-10" class="section-number selfRef">10. </a><a href="#name-handling-nfs-server-shutdow" class="section-name selfRef">Handling NFS Server Shutdown</a>
       </h2>
 <div id="graceful-shutdown">
-<section id="section-9.1">
+<section id="section-10.1">
         <h3 id="name-graceful-shutdown">
-<a href="#section-9.1" class="section-number selfRef">9.1. </a><a href="#name-graceful-shutdown" class="section-name selfRef">Graceful Shutdown</a>
+<a href="#section-10.1" class="section-number selfRef">10.1. </a><a href="#name-graceful-shutdown" class="section-name selfRef">Graceful Shutdown</a>
         </h3>
-<p id="section-9.1-1">This section discusses what happens to ongoing asynchronous copy
+<p id="section-10.1-1">This section discusses what happens to ongoing asynchronous copy
 operations when an NFS server shuts down due to an administrator
-action.<a href="#section-9.1-1" class="pilcrow">¶</a></p>
-<p id="section-9.1-2">When an NFS server shuts down, it typically stops accepting work
+action.<a href="#section-10.1-1" class="pilcrow">¶</a></p>
+<p id="section-10.1-2">When an NFS server shuts down, it typically stops accepting work
 from the network. Asynchronous copy is work the NFS server has
 already accepted. Normal network corking will not terminate ongoing
-work; it will only stop new work from being accepted.<a href="#section-9.1-2" class="pilcrow">¶</a></p>
-<p id="section-9.1-3">Thus, as an early part of NFS server shut down processing, the NFS
+work; it will only stop new work from being accepted.<a href="#section-10.1-2" class="pilcrow">¶</a></p>
+<p id="section-10.1-3">Thus, as an early part of NFS server shut down processing, the NFS
 server must explicitly terminate ongoing asynchronous copy operations.
 This includes sending CB_OFFLOAD notifications for each terminated
-copy operation prior to the backchannel closing down.<a href="#section-9.1-3" class="pilcrow">¶</a></p>
-<p id="section-9.1-4">To prevent the destruction of the backchannel while asynchronous
+copy operation prior to the backchannel closing down.<a href="#section-10.1-3" class="pilcrow">¶</a></p>
+<p id="section-10.1-4">To prevent the destruction of the backchannel while asynchronous
 copy operations are ongoing, DESTROY_CLIENTID <span class="bcp14">MUST</span> return a status
 of NFS4ERR_CLIENTID_BUSY until pending asynchronous copy operations
-have terminated (see <span><a href="https://rfc-editor.org/rfc/rfc8881#section-18.50.3" class="relref">Section 18.50.3</a> of [<a href="#RFC8881" class="cite xref">RFC8881</a>]</span>).<a href="#section-9.1-4" class="pilcrow">¶</a></p>
-<p id="section-9.1-5">{aside: maybe DESTROY_SESSION should be made to wait as well}<a href="#section-9.1-5" class="pilcrow">¶</a></p>
-<p id="section-9.1-6">Once copy activity has completed, shut down processing can also
+have terminated (see <span><a href="https://rfc-editor.org/rfc/rfc8881#section-18.50.3" class="relref">Section 18.50.3</a> of [<a href="#RFC8881" class="cite xref">RFC8881</a>]</span>).<a href="#section-10.1-4" class="pilcrow">¶</a></p>
+<p id="section-10.1-5">{aside: maybe DESTROY_SESSION should be made to wait as well}<a href="#section-10.1-5" class="pilcrow">¶</a></p>
+<p id="section-10.1-6">Once copy activity has completed, shut down processing can also
 proceed to remove all copy completion state (copy state IDs and
-copy completion status codes).<a href="#section-9.1-6" class="pilcrow">¶</a></p>
+copy completion status codes).<a href="#section-10.1-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="client-recovery-actions">
-<section id="section-9.2">
+<section id="section-10.2">
         <h3 id="name-client-recovery-actions">
-<a href="#section-9.2" class="section-number selfRef">9.2. </a><a href="#name-client-recovery-actions" class="section-name selfRef">Client Recovery Actions</a>
+<a href="#section-10.2" class="section-number selfRef">10.2. </a><a href="#name-client-recovery-actions" class="section-name selfRef">Client Recovery Actions</a>
         </h3>
-<p id="section-9.2-1">In order to ensure the proper completion of asynchronous COPY
+<p id="section-10.2-1">In order to ensure the proper completion of asynchronous COPY
 operations that were active during an NFS server restart, clients
 need to track these operations and restart them as part of NFSv4
-state recovery.<a href="#section-9.2-1" class="pilcrow">¶</a></p>
+state recovery.<a href="#section-10.2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
 </div>
 <div id="security-considerations">
-<section id="section-10">
+<section id="section-11">
       <h2 id="name-security-considerations">
-<a href="#section-10" class="section-number selfRef">10. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
+<a href="#section-11" class="section-number selfRef">11. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
-<p id="section-10-1">One critical responsibility of an NFS server implementation is
+<p id="section-11-1">One critical responsibility of an NFS server implementation is
 to manage its finite set of resources in a way that minimizes the
 opportunity for network actors (such as NFS clients) to maliciously
 or unintentionally cause a denial-of-service scenario. The following
-text is an addendum to <span><a href="https://rfc-editor.org/rfc/rfc7862#section-4.9" class="relref">Section 4.9</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span>.<a href="#section-10-1" class="pilcrow">¶</a></p>
+text is an addendum to <span><a href="https://rfc-editor.org/rfc/rfc7862#section-4.9" class="relref">Section 4.9</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span>.<a href="#section-11-1" class="pilcrow">¶</a></p>
 <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-10-2.1">
-          <p id="section-10-2.1.1">Limiting Size of Individual COPY Operations<a href="#section-10-2.1.1" class="pilcrow">¶</a></p>
-<p id="section-10-2.1.2">NFS server implementations have so far chosen to limit the byte
+<li class="normal ulEmpty" id="section-11-2.1">
+          <p id="section-11-2.1.1">Limiting Size of Individual COPY Operations<a href="#section-11-2.1.1" class="pilcrow">¶</a></p>
+<p id="section-11-2.1.2">NFS server implementations have so far chosen to limit the byte
 range of COPY operations, either by setting a fixed limit on the
 number of bytes a single COPY can process, where the server
 truncates the copied byte range, or by setting a timeout). In
-either case, the NFS server returns a short COPY result.<a href="#section-10-2.1.2" class="pilcrow">¶</a></p>
-<p id="section-10-2.1.3">Client implementations accommodate a short COPY result by sending
+either case, the NFS server returns a short COPY result.<a href="#section-11-2.1.2" class="pilcrow">¶</a></p>
+<p id="section-11-2.1.3">Client implementations accommodate a short COPY result by sending
 a fresh COPY for the remainder of the byte range, until the
-full byte range has been processed.<a href="#section-10-2.1.3" class="pilcrow">¶</a></p>
-<p id="section-10-2.1.4">An alternative approach is to convert all large synchronous copy
+full byte range has been processed.<a href="#section-11-2.1.3" class="pilcrow">¶</a></p>
+<p id="section-11-2.1.4">An alternative approach is to convert all large synchronous copy
 requests into asynchronous copy requests, if the server supports
-asynchronous copy.<a href="#section-10-2.1.4" class="pilcrow">¶</a></p>
-<p id="section-10-2.1.5">Limiting the Number of Outstanding Asynchronous COPY Operations<a href="#section-10-2.1.5" class="pilcrow">¶</a></p>
-<p id="section-10-2.1.6">It is easily possible for NFS clients to send more asynchronous
+asynchronous copy.<a href="#section-11-2.1.4" class="pilcrow">¶</a></p>
+<p id="section-11-2.1.5">Limiting the Number of Outstanding Asynchronous COPY Operations<a href="#section-11-2.1.5" class="pilcrow">¶</a></p>
+<p id="section-11-2.1.6">It is easily possible for NFS clients to send more asynchronous
 COPY requests than NFS server resources can handle. For example, a
 client could create a large file, and then request multiple copies
-of that file's contents to /dev/null.<a href="#section-10-2.1.6" class="pilcrow">¶</a></p>
-<p id="section-10-2.1.7">A good quality server implementation <span class="bcp14">SHOULD</span> block clients from
+of that file's contents to /dev/null.<a href="#section-11-2.1.6" class="pilcrow">¶</a></p>
+<p id="section-11-2.1.7">A good quality server implementation <span class="bcp14">SHOULD</span> block clients from
 starting many COPY operations. The implementation might apply a
 fixed per-client limit, a per-server limit, or a dynamic limit
 based on available resources. When that limit has been reached,
 subsequent COPY requests will receive NFS4ERR_OFFLOAD_NO_REQS
-in response until more server resources become available.<a href="#section-10-2.1.7" class="pilcrow">¶</a></p>
-<p id="section-10-2.1.8">Managing Abandoned COPY State on the Server<a href="#section-10-2.1.8" class="pilcrow">¶</a></p>
-<p id="section-10-2.1.9">A related issue is how much COPY state can accrue on a server
-due to lost CB_OFFLOAD requests. The mandates in <a href="#lifetime" class="auto internal xref">Section 3.3</a>
+in response until more server resources become available.<a href="#section-11-2.1.7" class="pilcrow">¶</a></p>
+<p id="section-11-2.1.8">Managing Abandoned COPY State on the Server<a href="#section-11-2.1.8" class="pilcrow">¶</a></p>
+<p id="section-11-2.1.9">A related issue is how much COPY state can accrue on a server
+due to lost CB_OFFLOAD requests. The mandates in <a href="#lifetime" class="auto internal xref">Section 4.3</a>
 require a server to retain abandoned COPY state indefinitely.
 A server can reject new asynchronous COPY requests using
 NFS4ERR_OFFLOAD_NO_REQS when there are many abandoned COPY
-state IDs.<a href="#section-10-2.1.9" class="pilcrow">¶</a></p>
-<p id="section-10-2.1.10">Considerations For The NFSv4 Callback Service<a href="#section-10-2.1.10" class="pilcrow">¶</a></p>
-<p id="section-10-2.1.11">There is a network service running on each NFSv4.2 client to
+state IDs.<a href="#section-11-2.1.9" class="pilcrow">¶</a></p>
+<p id="section-11-2.1.10">Considerations For The NFSv4 Callback Service<a href="#section-11-2.1.10" class="pilcrow">¶</a></p>
+<p id="section-11-2.1.11">There is a network service running on each NFSv4.2 client to
 handle CB_OFFLOAD operations. This service might handle only
 reverse-direction operations on an existing forward channel
 RPC transport, or it could also be available via separate
-transport connections from the NFS server.<a href="#section-10-2.1.11" class="pilcrow">¶</a></p>
-<p id="section-10-2.1.12">A client implementation cannot recognize the server-generated
-copy state ID contained in a CB_OFFLOAD request until it has
-received and processed the COPY response that reports that an
-asynchronous copy operation has been started and that provides
-the copy state ID to wait for.<a href="#section-10-2.1.12" class="pilcrow">¶</a></p>
-<p id="section-10-2.1.13">Should the CB_OFFLOAD request arrive before the client has
-fully processed the COPY response, the client will not yet
-recognize the operation. Client implementers might choose to
-implement a cache of CB_OFFLOAD requests in the expectation
-of a matching COPY response arriving imminently.<a href="#section-10-2.1.13" class="pilcrow">¶</a></p>
-<p id="section-10-2.1.14">However, this design can enable a broken or malicious server
-to overrun a client's cache by sending CB_OFFLOAD requests
-with junk copy state IDs. A client that implements such a
-cache needs to manage the content and size of that cache to
-avoid a denial of service.<a href="#section-10-2.1.14" class="pilcrow">¶</a></p>
-<p id="section-10-2.1.15">Alternately, the client implementation could simply return
-NFS4ERR_DELAY when it does not recognize a copy state ID
-presented in a CB_OFFLOAD operation. This introduces an extra
-delay and round trip, but completely avoids an overrun of
-cached copy completions.<a href="#section-10-2.1.15" class="pilcrow">¶</a></p>
+transport connections from the NFS server.<a href="#section-11-2.1.11" class="pilcrow">¶</a></p>
+<p id="section-11-2.1.12">The CB_OFFLOAD operation manages state IDs that can have a
+lifetime longer than a single NFSv4 callback operation. The
+client's callback service must take care to prune any cached
+state in order to avoid a potential denial of service.<a href="#section-11-2.1.12" class="pilcrow">¶</a></p>
 </li>
       </ul>
 </section>
 </div>
 <div id="iana-considerations">
-<section id="section-11">
+<section id="section-12">
       <h2 id="name-iana-considerations">
-<a href="#section-11" class="section-number selfRef">11. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
+<a href="#section-12" class="section-number selfRef">12. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
-<p id="section-11-1">This document requests no IANA actions.<a href="#section-11-1" class="pilcrow">¶</a></p>
+<p id="section-12-1">This document requests no IANA actions.<a href="#section-12-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-combined-references">
-<section id="section-12">
+<section id="section-13">
       <h2 id="name-references">
-<a href="#section-12" class="section-number selfRef">12. </a><a href="#name-references" class="section-name selfRef">References</a>
+<a href="#section-13" class="section-number selfRef">13. </a><a href="#name-references" class="section-name selfRef">References</a>
       </h2>
 <div id="sec-normative-references">
-<section id="section-12.1">
+<section id="section-13.1">
         <h3 id="name-normative-references">
-<a href="#section-12.1" class="section-number selfRef">12.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+<a href="#section-13.1" class="section-number selfRef">13.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
         </h3>
 <dl class="references">
 <dt id="RFC2119">[RFC2119]</dt>
@@ -1975,9 +2082,9 @@ cached copy completions.<a href="#section-10-2.1.15" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-informative-references">
-<section id="section-12.2">
+<section id="section-13.2">
         <h3 id="name-informative-references">
-<a href="#section-12.2" class="section-number selfRef">12.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+<a href="#section-13.2" class="section-number selfRef">13.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
         </h3>
 <dl class="references">
 <dt id="XCOPY">[XCOPY]</dt>
@@ -1996,8 +2103,8 @@ cached copy completions.<a href="#section-10-2.1.15" class="pilcrow">¶</a></p>
       </h2>
 <p id="appendix-A-1">Special thanks to Olga Kornievskaia, Rick Macklem, and Dai Ngo for
 their insights and work on implementations of NFSv4.2 COPY.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
-<p id="appendix-A-2">The author is grateful to Bill Baker, Greg Marsden, and Martin Thomson
-for their input and support.<a href="#appendix-A-2" class="pilcrow">¶</a></p>
+<p id="appendix-A-2">The author is grateful to Bill Baker, Jeff Layton, Greg Marsden,
+and Martin Thomson for their input and support.<a href="#appendix-A-2" class="pilcrow">¶</a></p>
 <p id="appendix-A-3">Special thanks to Transport Area Directors Martin Duke and
 Zaheduzzaman Sarker, NFSV4 Working Group Chairs Chris Inacio and
 Brian Pawlowski, and NFSV4 Working Group Secretary Thomas Haynes for
