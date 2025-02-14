@@ -96,8 +96,8 @@ operation or not. However, COPY comes in two distinct flavors:
 
 - synchronous, where the server reports the final status of the
   operation directly in the response to the client's COPY request
-- asynchronous, where the server agrees to report the status of
-  the operation at a later time via a callback operation.
+- asynchronous, where the server agrees to report the final status
+  of the operation at a later time via a callback operation
 
 {{RFC7862}} does not take a position on whether a client or server
 is mandated to implement either or both forms of COPY.
@@ -124,29 +124,27 @@ support inter-server or intra-server copy, but does not differentiate
 between implementations that support synchronous versus asynchronous
 copy.
 
-
-
-
 To interoperate successfully, the client and server must be able
 to determine which forms of COPY are implemented and fall back to
 a normal READ/WRITE-based copy if necessary. The following
-addition makes this more clear:
+additional text makes this more clear:
 
 > Given the operation of the signaling in the ca_synchronous field
 > as described in {{Section 15.2.3 of RFC7862}}, an implementation
-> that supports COPY MUST support either only synchronous copy or
-> both synchronous and asynchronous copy.
+> that supports the NFSv4.2 COPY operation MUST support synchronous
+> copy and MAY support asynchronous copy.
 
 ## Mandatory-To-Implement Operations
 
-The synchronous form of copy offload does not need a client or
-server to implement the OFFLOAD_CANCEL, OFFLOAD_STATUS, or
+The synchronous form of copy offload does not need the client or
+server to implement the NFSv4.2 OFFLOAD_CANCEL, OFFLOAD_STATUS, or
 CB_OFFLOAD operations.
+
 Moreover, the COPY_NOTIFY operation is required only when an
 implementation provides inter-server copy offload. Thus a minimum
 viable synchronous-only copy implementation can get away with
-implementing only the COPY operation and can leave the others
-unimplemented.
+implementing only the COPY operation and can leave the other
+three operations mentioned here unimplemented.
 
 The asynchronous form of copy offload is not possible without
 the implementation of CB_OFFLOAD, and not reliable without the
@@ -159,11 +157,82 @@ addition of the following text makes this requirement clear:
 > capability, it MUST implement the CB_OFFLOAD and OFFLOAD_STATUS
 > operations.
 
-## COPY state ID Lifetime Requirements {#lifetime}
+# Copy state IDs
 
-An NFS server that implements only synchronous copy does not require
-the stricter COPY state ID lifetime requirements described in
-{{Section 4.8 of RFC7862}}. A state ID used with a synchronous
+There appear to be a number of areas where {{RFC7862}} is
+silent on the details of copy state IDs.
+
+## Use As A Completion Cookie
+
+- How is sequence number in a copy state ID handled?  Under
+  what circumstances is its sequence number bumped? Do peers
+  match copy state IDs via only their "other" fields, or must
+  they match everything including the sequence number?
+
+- Under what circumstances may a server re-use the same copy
+  state ID during one NFSv4.1 session?
+
+- How long does the client's callback service have to remember
+  copy state IDs? Is the callback service responsible for
+  remembering and reporting previously-used copy state IDs?
+
+- When does the client's callback service return
+  NFS4ERR_BAD_STATEID to a CB_OFFLOAD operation, and what
+  action should the server take, since there's no open state
+  recovery to be done on the server?
+
+## COPY Reply Races With CB_OFFLOAD Request
+
+Due to the design of the NFSv4.2 COPY and CB_OFFLOAD protocol
+elements, an NFS client's callback service cannot recognize
+a copy state ID presented by a CB_OFFLOAD request until it has
+received and processed the COPY response that reports that an
+asynchronous copy operation has been started and provides
+the copy state ID to wait for. Under some conditions, it is
+possible for the client to process the CB_OFFLOAD request
+before it has processed the COPY reply containing the matching
+copy state ID.
+
+There are a few alternatives to consider when designing the
+client callback service implementation of the CB_OFFLOAD
+operation. Among other designs, client implementers might
+choose to:
+
+- Maintain a cache of unmatched CB_OFFLOAD requests in the
+  expectation of a matching COPY response arriving imminently.
+  (Danger of accruing unmatched copy state IDs over time).
+
+- Have CB_OFFLOAD return NFS4ERR_DELAY if the copy state ID
+  is not recognized. (Danger of infinite looping).
+
+- Utilize a referring call list contained in the CB_SEQUENCE
+  in the same COMPOUND (as described in
+  {{Section 20.9.3 of RFC8881}}) to determine whether an
+  ingress CB_OFFLOAD is likely to match a COPY operation the
+  client sent previously.
+
+While the third alternative might appear to be the most
+bullet-proof, there are still issues with it:
+
+- There is no normative requirement in {{RFC8881}} or {{RFC7862}}
+  that a server implement referring call lists, and it is known
+  that some popular server implementations in fact do not
+  implement them. Thus a client callback service cannot depend
+  on a referring call list being available.
+
+- Client implementations must take care to place no more than
+  one non-synchronous COPY operation per COMPOUND. If there are
+  any more than one, then the referring call list becomes useless
+  for disambiguating CB_OFFLOAD requests.
+
+We recommend that the implementation notes for the CB_OFFLOAD
+request contain appropriate guidance for tackling this race.
+
+## Lifetime Requirements {#lifetime}
+
+An NFS server that implements only synchronous copy does not
+require the stricter COPY state ID lifetime requirements described
+in {{Section 4.8 of RFC7862}}. A state ID used with a synchronous
 copy lives until the COPY operation has completed.
 
 Regarding asynchronous copy offload,
@@ -229,7 +298,7 @@ and NFS4ERR_DELAY.
 > failed internal consistency checks.
 
 There is no filesystem on an NFS client to determine whether a filehandle
-is valid. What other checking should the client's callback server perform?
+is valid. What other checking should the client's callback service perform?
 
 Instead of NFS4ERR_BADHANDLE, the NFS client's callback service might
 instead return either NFS4ERR_INVAL (which is currently not a permitted
@@ -315,79 +384,81 @@ not appear to do so. Implementers might assume that the list of
 permitted values in these two fields is the same as the COPY
 operation itself; that is:
 
->  +----------------+--------------------------------------------------+
->  | COPY           | NFS4ERR_ACCESS, NFS4ERR_ADMIN_REVOKED,           |
->  |                | NFS4ERR_BADXDR, NFS4ERR_BAD_STATEID,             |
->  |                | NFS4ERR_DEADSESSION, NFS4ERR_DELAY,              |
->  |                | NFS4ERR_DELEG_REVOKED, NFS4ERR_DQUOT,            |
->  |                | NFS4ERR_EXPIRED, NFS4ERR_FBIG,                   |
->  |                | NFS4ERR_FHEXPIRED, NFS4ERR_GRACE, NFS4ERR_INVAL, |
->  |                | NFS4ERR_IO, NFS4ERR_ISDIR, NFS4ERR_LOCKED,       |
->  |                | NFS4ERR_MOVED, NFS4ERR_NOFILEHANDLE,             |
->  |                | NFS4ERR_NOSPC, NFS4ERR_OFFLOAD_DENIED,           |
->  |                | NFS4ERR_OLD_STATEID, NFS4ERR_OPENMODE,           |
->  |                | NFS4ERR_OP_NOT_IN_SESSION,                       |
->  |                | NFS4ERR_PARTNER_NO_AUTH,                         |
->  |                | NFS4ERR_PARTNER_NOTSUPP, NFS4ERR_PNFS_IO_HOLE,   |
->  |                | NFS4ERR_PNFS_NO_LAYOUT, NFS4ERR_REP_TOO_BIG,     |
->  |                | NFS4ERR_REP_TOO_BIG_TO_CACHE,                    |
->  |                | NFS4ERR_REQ_TOO_BIG, NFS4ERR_RETRY_UNCACHED_REP, |
->  |                | NFS4ERR_ROFS, NFS4ERR_SERVERFAULT,               |
->  |                | NFS4ERR_STALE, NFS4ERR_SYMLINK,                  |
->  |                | NFS4ERR_TOO_MANY_OPS, NFS4ERR_WRONG_TYPE         |
->  +----------------+--------------------------------------------------+
+~~~
+ +----------------+--------------------------------------------------+
+ | COPY           | NFS4ERR_ACCESS, NFS4ERR_ADMIN_REVOKED,           |
+ |                | NFS4ERR_BADXDR, NFS4ERR_BAD_STATEID,             |
+ |                | NFS4ERR_DEADSESSION, NFS4ERR_DELAY,              |
+ |                | NFS4ERR_DELEG_REVOKED, NFS4ERR_DQUOT,            |
+ |                | NFS4ERR_EXPIRED, NFS4ERR_FBIG,                   |
+ |                | NFS4ERR_FHEXPIRED, NFS4ERR_GRACE, NFS4ERR_INVAL, |
+ |                | NFS4ERR_IO, NFS4ERR_ISDIR, NFS4ERR_LOCKED,       |
+ |                | NFS4ERR_MOVED, NFS4ERR_NOFILEHANDLE,             |
+ |                | NFS4ERR_NOSPC, NFS4ERR_OFFLOAD_DENIED,           |
+ |                | NFS4ERR_OLD_STATEID, NFS4ERR_OPENMODE,           |
+ |                | NFS4ERR_OP_NOT_IN_SESSION,                       |
+ |                | NFS4ERR_PARTNER_NO_AUTH,                         |
+ |                | NFS4ERR_PARTNER_NOTSUPP, NFS4ERR_PNFS_IO_HOLE,   |
+ |                | NFS4ERR_PNFS_NO_LAYOUT, NFS4ERR_REP_TOO_BIG,     |
+ |                | NFS4ERR_REP_TOO_BIG_TO_CACHE,                    |
+ |                | NFS4ERR_REQ_TOO_BIG, NFS4ERR_RETRY_UNCACHED_REP, |
+ |                | NFS4ERR_ROFS, NFS4ERR_SERVERFAULT,               |
+ |                | NFS4ERR_STALE, NFS4ERR_SYMLINK,                  |
+ |                | NFS4ERR_TOO_MANY_OPS, NFS4ERR_WRONG_TYPE         |
+ +----------------+--------------------------------------------------+
+~~~
 
 However, a number of these do not make sense outside the context of
 a forward channel NFSv4 COMPOUND operation, including:
 
-NFS4ERR_BADXDR,
-NFS4ERR_DEADSESSION,
-NFS4ERR_OP_NOT_IN_SESSION,
-NFS4ERR_REP_TOO_BIG,
-NFS4ERR_REP_TOO_BIG_TO_CACHE,
-NFS4ERR_REQ_TOO_BIG,
-NFS4ERR_RETRY_UNCACHED_REP,
-NFS4ERR_TOO_MANY_OPS
+> NFS4ERR_BADXDR,
+> NFS4ERR_DEADSESSION,
+> NFS4ERR_OP_NOT_IN_SESSION,
+> NFS4ERR_REP_TOO_BIG,
+> NFS4ERR_REP_TOO_BIG_TO_CACHE,
+> NFS4ERR_REQ_TOO_BIG,
+> NFS4ERR_RETRY_UNCACHED_REP,
+> NFS4ERR_TOO_MANY_OPS
 
 Some are temporary conditions that can be retried by the NFS server
 and therefore do not make sense to report as a copy completion status:
 
-NFS4ERR_DELAY,
-NFS4ERR_GRACE,
-NFS4ERR_EXPIRED
+> NFS4ERR_DELAY,
+> NFS4ERR_GRACE,
+> NFS4ERR_EXPIRED
 
 Some report an invalid argument or file object type, or some other
 operational set up issue that should be reported only via the status
 code of the COPY operation:
 
-NFS4ERR_BAD_STATEID,
-NFS4ERR_DELEG_REVOKED,
-NFS4ERR_INVAL,
-NFS4ERR_ISDIR,
-NFS4ERR_FBIG,
-NFS4ERR_LOCKED,
-NFS4ERR_MOVED,
-NFS4ERR_NOFILEHANDLE,
-NFS4ERR_OFFLOAD_DENIED,
-NFS4ERR_OLD_STATEID,
-NFS4ERR_OPENMODE,
-NFS4ERR_PARTNER_NO_AUTH,
-NFS4ERR_PARTNER_NOTSUPP,
-NFS4ERR_ROFS,
-NFS4ERR_SYMLINK,
-NFS4ERR_WRONG_TYPE
+> NFS4ERR_BAD_STATEID,
+> NFS4ERR_DELEG_REVOKED,
+> NFS4ERR_INVAL,
+> NFS4ERR_ISDIR,
+> NFS4ERR_FBIG,
+> NFS4ERR_LOCKED,
+> NFS4ERR_MOVED,
+> NFS4ERR_NOFILEHANDLE,
+> NFS4ERR_OFFLOAD_DENIED,
+> NFS4ERR_OLD_STATEID,
+> NFS4ERR_OPENMODE,
+> NFS4ERR_PARTNER_NO_AUTH,
+> NFS4ERR_PARTNER_NOTSUPP,
+> NFS4ERR_ROFS,
+> NFS4ERR_SYMLINK,
+> NFS4ERR_WRONG_TYPE
 
 This leaves only a few sensible status codes remaining to report
 issues that could have arisen during the offloaded copy:
 
-NFS4ERR_DQUOT,
-NFS4ERR_FHEXPIRED,
-NFS4ERR_IO,
-NFS4ERR_NOSPC,
-NFS4ERR_PNFS_IO_HOLE,
-NFS4ERR_PNFS_NO_LAYOUT,
-NFS4ERR_SERVERFAULT,
-NFS4ERR_STALE
+> NFS4ERR_DQUOT,
+> NFS4ERR_FHEXPIRED,
+> NFS4ERR_IO,
+> NFS4ERR_NOSPC,
+> NFS4ERR_PNFS_IO_HOLE,
+> NFS4ERR_PNFS_NO_LAYOUT,
+> NFS4ERR_SERVERFAULT,
+> NFS4ERR_STALE
 
 We recommend including a section and table that gives the valid
 status codes that the osr_complete and coa_status fields may contain.
@@ -438,39 +509,6 @@ The following is a recommended addendum to {{RFC7862}}:
 > OFFLOAD_STATUS report the number of bytes copied and a
 > completion status of NFS4_OK.
 
-# Short COPY results
-
-When a COPY request might take a long time, an NFS server must
-ensure it can continue to remain responsive to other requests.
-To prevent other requests from blocking, an NFS server
-implementation might, for example, notice that a COPY operation
-is taking longer than a few seconds and stop it.
-
-{{Section 15.2.3 of RFC7862}} states:
-
-> If a failure does occur for a synchronous copy, wr_count will be set
-> to the number of bytes copied to the destination file before the
-> error occurred.
-
-This text considers only a failure status and not a short COPY, where
-the COPY response contains a byte count shorter than the client's
-request and a final status of NFS4_OK. Both the Linux and FreeBSD
-implementations of the COPY operation truncate large COPY requests
-in this way. The reason for returning a short COPY result is that
-the NFS server has need to break up a long byte range to schedule
-its resources more fairly amongst its clients.
-
-The following text makes a short COPY result explicitly permissible:
-
-> If a server chooses to terminate a COPY before it has completed
-> copying the full requested range of bytes, either because of a
-> pending shutdown request, an administrative cancel, or because
-> the server wants to avoid a possible denial of service, it MAY
-> return a short COPY result, where the response contains the
-> actual number of bytes copied and a final status of NFS4_OK.
-> In this way, a client can send a subsequent COPY for the
-> remaining byte range, ensure that forward progress is made.
-
 # OFFLOAD_STATUS Implementation Notes
 
 Paragraph 2 of {{Section 15.9.3 of RFC7862}} states:
@@ -516,6 +554,39 @@ a COPY operation, the specification needs to state explicitly that:
 > When a single element is present in the osr_complete array, that
 > element MUST contain only one of status codes permitted for the
 > COPY operation (see {{Section 11.2 of RFC7862}}) or NFS4_OK.
+
+# Short COPY results
+
+When a COPY request might take a long time, an NFS server must
+ensure it can continue to remain responsive to other requests.
+To prevent other requests from blocking, an NFS server
+implementation might, for example, notice that a COPY operation
+is taking longer than a few seconds and stop it.
+
+{{Section 15.2.3 of RFC7862}} states:
+
+> If a failure does occur for a synchronous copy, wr_count will be set
+> to the number of bytes copied to the destination file before the
+> error occurred.
+
+This text considers only a failure status and not a short COPY, where
+the COPY response contains a byte count shorter than the client's
+request and a final status of NFS4_OK. Both the Linux and FreeBSD
+implementations of the COPY operation truncate large COPY requests
+in this way. The reason for returning a short COPY result is that
+the NFS server has need to break up a long byte range to schedule
+its resources more fairly amongst its clients.
+
+The following text makes a short COPY result explicitly permissible:
+
+> If a server chooses to terminate a COPY before it has completed
+> copying the full requested range of bytes, either because of a
+> pending shutdown request, an administrative cancel, or because
+> the server wants to avoid a possible denial of service, it MAY
+> return a short COPY result, where the response contains the
+> actual number of bytes copied and a final status of NFS4_OK.
+> In this way, a client can send a subsequent COPY for the
+> remaining byte range, ensure that forward progress is made.
 
 # Asynchronous Copy Completion Reliability
 
@@ -652,29 +723,10 @@ text is an addendum to {{Section 4.9 of RFC7862}}.
 > RPC transport, or it could also be available via separate
 > transport connections from the NFS server.
 >
-> A client implementation cannot recognize the server-generated
-> copy state ID contained in a CB_OFFLOAD request until it has
-> received and processed the COPY response that reports that an
-> asynchronous copy operation has been started and that provides
-> the copy state ID to wait for.
->
-> Should the CB_OFFLOAD request arrive before the client has
-> fully processed the COPY response, the client will not yet
-> recognize the operation. Client implementers might choose to
-> implement a cache of CB_OFFLOAD requests in the expectation
-> of a matching COPY response arriving imminently.
->
-> However, this design can enable a broken or malicious server
-> to overrun a client's cache by sending CB_OFFLOAD requests
-> with junk copy state IDs. A client that implements such a
-> cache needs to manage the content and size of that cache to
-> avoid a denial of service.
->
-> Alternately, the client implementation could simply return
-> NFS4ERR_DELAY when it does not recognize a copy state ID
-> presented in a CB_OFFLOAD operation. This introduces an extra
-> delay and round trip, but completely avoids an overrun of
-> cached copy completions.
+> The CB_OFFLOAD operation manages state IDs that can have a
+> lifetime longer than a single NFSv4 callback operation. The
+> client's callback service must take care to prune any cached
+> state in order to avoid a potential denial of service.
 
 # IANA Considerations
 
@@ -688,8 +740,8 @@ This document requests no IANA actions.
 Special thanks to Olga Kornievskaia, Rick Macklem, and Dai Ngo for
 their insights and work on implementations of NFSv4.2 COPY.
 
-The author is grateful to Bill Baker, Greg Marsden, and Martin Thomson
-for their input and support.
+The author is grateful to Bill Baker, Jeff Layton, Greg Marsden,
+and Martin Thomson for their input and support.
 
 Special thanks to Transport Area Directors Martin Duke and
 Zaheduzzaman Sarker, NFSV4 Working Group Chairs Chris Inacio and
