@@ -2,11 +2,11 @@
 
 
 
-Network File System Version 4                                   C. Lever
-Internet-Draft                                                    Oracle
-Updates: rfc7862 (if approved)                          14 February 2025
-Intended status: Standards Track                                        
-Expires: 18 August 2025
+Network File System Version 4                            O. Kornievskaia
+Internet-Draft                                                    RedHat
+Updates: rfc7862 (if approved)                             C. Lever, Ed.
+Intended status: Standards Track                                  Oracle
+Expires: 24 August 2025                                 20 February 2025
 
 
 Updates to the Specification of the Network File System version 4.2 COPY
@@ -54,7 +54,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 18 August 2025.
+   This Internet-Draft will expire on 24 August 2025.
 
 Copyright Notice
 
@@ -95,12 +95,13 @@ Table of Contents
      10.1.  Graceful Shutdown
      10.2.  Client Recovery Actions
    11. Security Considerations
+     11.1.  Use of RPC-with-TLS for Server-to-server COPY
    12. IANA Considerations
    13. References
      13.1.  Normative References
      13.2.  Informative References
    Acknowledgments
-   Author's Address
+   Authors' Addresses
 
 1.  Introduction
 
@@ -756,6 +757,24 @@ Table of Contents
       client's callback service must take care to prune any cached state
       in order to avoid a potential denial of service.
 
+11.1.  Use of RPC-with-TLS for Server-to-server COPY
+
+   To date, there have been no implementations of RPCSEC GSSv3
+   [RFC7861], which is mandatory-to-implement for security server-to-
+   server copy (see Section 4.9 of [RFC7862].
+
+   There are several implementations of RPC-with-TLS [RFC9289],
+   including on systems that also implement the NFSv4.2 COPY operation.
+   There has been some discussion of using TLS to secure the server-to-
+   server copy mechanism.
+
+   Although TLS can provide integrity and confidentiality of in-flight
+   copy data, the user authentication capability provided by RPCSEC
+   GSSv3 is still missing.  What is missing is the ability to pass a
+   capability.  GSSv3 generates a capability on the source server that
+   is passed through the client to the destination server to be used
+   against the source server.
+
 12.  IANA Considerations
 
    This document requests no IANA actions.
@@ -794,14 +813,23 @@ Table of Contents
 
 13.2.  Informative References
 
+   [RFC7861]  Adamson, A. and N. Williams, "Remote Procedure Call (RPC)
+              Security Version 3", RFC 7861, DOI 10.17487/RFC7861,
+              November 2016, <https://www.rfc-editor.org/rfc/rfc7861>.
+
+   [RFC9289]  Myklebust, T. and C. Lever, Ed., "Towards Remote Procedure
+              Call Encryption by Default", RFC 9289,
+              DOI 10.17487/RFC9289, September 2022,
+              <https://www.rfc-editor.org/rfc/rfc9289>.
+
    [XCOPY]    Unknown, "T10/99-143r1: 7.1 EXTENDED COPY command", ISBN ,
               DOI , 2 April 1999,
               <https://www.t10.org/ftp/t10/document.99/99-143r1.pdf>.
 
 Acknowledgments
 
-   Special thanks to Olga Kornievskaia, Rick Macklem, and Dai Ngo for
-   their insights and work on implementations of NFSv4.2 COPY.
+   Special thanks to Rick Macklem and Dai Ngo for their insights and
+   work on implementations of NFSv4.2 COPY.
 
    The author is grateful to Bill Baker, Jeff Layton, Greg Marsden, and
    Martin Thomson for their input and support.
@@ -811,9 +839,15 @@ Acknowledgments
    Brian Pawlowski, and NFSV4 Working Group Secretary Thomas Haynes for
    their guidance and oversight.
 
-Author's Address
+Authors' Addresses
 
-   Chuck Lever
+   Olga Kornievskaia
+   Red Hat
+   United States of America
+   Email: okorniev@redhat.com
+
+
+   Chuck Lever (editor)
    Oracle Corporation
    United States of America
    Email: chuck.lever@oracle.com
