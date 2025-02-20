@@ -22,7 +22,14 @@ keyword:
 
 author:
  -
+    fullname: Olga Kornievskaia
+    organization: Red Hat
+    abbrev: RedHat
+    country: United States of America
+    email: okorniev@redhat.com
+ -
     fullname: Chuck Lever
+    role: editor
     organization: Oracle Corporation
     abbrev: Oracle
     country: United States of America
@@ -737,8 +744,8 @@ This document requests no IANA actions.
 # Acknowledgments
 {:numbered="false"}
 
-Special thanks to Olga Kornievskaia, Rick Macklem, and Dai Ngo for
-their insights and work on implementations of NFSv4.2 COPY.
+Special thanks to Rick Macklem and Dai Ngo for their insights
+and work on implementations of NFSv4.2 COPY.
 
 The author is grateful to Bill Baker, Jeff Layton, Greg Marsden,
 and Martin Thomson for their input and support.
