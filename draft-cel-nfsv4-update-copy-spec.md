@@ -42,6 +42,8 @@ normative:
   RFC8881:
 
 informative:
+  RFC7861:
+  RFC9289:
   XCOPY:
     -: XCOPY
     target: https://www.t10.org/ftp/t10/document.99/99-143r1.pdf
@@ -734,6 +736,25 @@ text is an addendum to {{Section 4.9 of RFC7862}}.
 > lifetime longer than a single NFSv4 callback operation. The
 > client's callback service must take care to prune any cached
 > state in order to avoid a potential denial of service.
+
+## Use of RPC-with-TLS for Server-to-server COPY
+
+To date, there have been no implementations of RPCSEC GSSv3
+{{RFC7861}}, which is mandatory-to-implement for security
+server-to-server copy (see {{Section 4.9 of RFC7862}}.
+
+There are several implementations of RPC-with-TLS {{RFC9289}},
+including on systems that also implement the NFSv4.2 COPY
+operation. There has been some discussion of using TLS to
+secure the server-to-server copy mechanism.
+
+Although TLS can provide integrity and confidentiality of
+in-flight copy data, the user authentication capability
+provided by RPCSEC GSSv3 is still missing. What is missing
+is the ability to pass a capability. GSSv3 generates a
+capability on the source server that is passed through the
+client to the destination server to be used against the
+source server.
 
 # IANA Considerations
 
