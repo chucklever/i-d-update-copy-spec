@@ -163,8 +163,8 @@ when an implementation claims to support asynchronous COPY. The
 addition of the following text makes this requirement clear:
 
 > When an NFS server implementation provides an asynchronous copy
-> capability, it MUST implement the CB_OFFLOAD and OFFLOAD_STATUS
-> operations.
+> capability, it MUST implement the OFFLOAD_CANCEL and OFFLOAD_STATUS
+> operations and the CB_OFFLOAD callback operation.
 
 # Copy state IDs
 
