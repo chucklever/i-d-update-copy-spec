@@ -699,25 +699,33 @@ operations when an NFS server shuts down due to an administrator
 action.
 
 When an NFS server shuts down, it typically stops accepting work
-from the network. Asynchronous copy is work the NFS server has
-already accepted. Normal network corking will not terminate ongoing
-work; it will only stop new work from being accepted.
+from the network. However, asynchronous copy is work the NFS server
+has already accepted. Normal network corking will not terminate
+ongoing work; corking stops only new work from being accepted.
 
 Thus, as an early part of NFS server shut down processing, the NFS
-server must explicitly terminate ongoing asynchronous copy operations.
-This includes sending CB_OFFLOAD notifications for each terminated
-copy operation prior to the backchannel closing down.
+server SHOULD explicitly terminate ongoing asynchronous copy operations.
+This triggers sending CB_OFFLOAD notifications for each terminated
+copy operation prior to the backchannel closing down. Each completion
+notification shows how many bytes the NFS server successfully copied
+before the copy operation was terminated by the shutdown.
 
 To prevent the destruction of the backchannel while asynchronous
-copy operations are ongoing, DESTROY_CLIENTID MUST return a status
-of NFS4ERR_CLIENTID_BUSY until pending asynchronous copy operations
-have terminated (see {{Section 18.50.3 of RFC8881}}).
-
-{aside: maybe DESTROY_SESSION should be made to wait as well}
+copy operations are ongoing, the DESTROY_SESSION and DESTROY_CLIENTID
+operations MUST return a status of NFS4ERR_CLIENTID_BUSY until pending
+asynchronous copy operations have terminated
+(see {{Section 18.50.3 of RFC8881}}).
 
 Once copy activity has completed, shut down processing can also
-proceed to remove all copy completion state (copy state IDs and
-copy completion status codes).
+proceed to remove all copy completion state (copy state IDs, copy
+offload state IDs, and copy completion status codes).
+
+An alternative implementation is that ongoing COPY operations are
+simply terminated without a CB_OFFLOAD notification. In that case,
+NFS clients recognize that the NFS server has restarted, and as part
+of their state recovery, they can reissue any COPY operations that
+were pending during the previous server epoch, as described in the
+next subsection.
 
 ## Client Recovery Actions
 
