@@ -235,7 +235,8 @@ bullet-proof, there are still issues with it:
   for disambiguating CB_OFFLOAD requests.
 
 We recommend that the implementation notes for the CB_OFFLOAD
-request contain appropriate guidance for tackling this race.
+request contain appropriate and explicity guidance for tackling
+this race.
 
 ## Lifetime Requirements {#lifetime}
 
@@ -299,47 +300,86 @@ of permitted status codes is listed in {{Section 11.3 of RFC7862}}.
 The usual collection of status codes related to compound structure
 and session parameters are available.
 However, Section 11.3 also lists NFS4ERR_BADHANDLE, NFS4ERR_BAD_STATEID,
-and NFS4ERR_DELAY.
+and NFS4ERR_DELAY, but {{Section 16.1.3 of RFC7862}} does not give any
+direction about when an NFS client's callback service should return them.
+In a protocol specification, it is usual practice to describe server
+responses to a malformed request, but that is entirely missing here.
+
+### NFS4ERR_BADHANDLE
 
 {{Section 15.1.2.1 of RFC8881}} defines NFS4ERR_BADHANDLE this way:
 
 > Illegal NFS filehandle for the current server. The current filehandle
 > failed internal consistency checks.
 
-There is no filesystem on an NFS client to determine whether a filehandle
-is valid. What other checking should the client's callback service perform?
+There is no filesystem on an NFS client to determine whether a
+filehandle is valid, thus this definition of NFS4ERR_BADHANDLE is not
+sensible for the CB_OFFLOAD operation.
 
-Instead of NFS4ERR_BADHANDLE, the NFS client's callback service might
-instead return either NFS4ERR_INVAL (which is currently not a permitted
-status code for CB_OFFLOAD) or NFS4ERR_SERVERFAULT.
+The CB_RECALL operation might have been the model for the CB_OFFLOAD
+operation. {{Section 20.2.3 of RFC8881}} states:
 
-{{Section 15.1.5.2 of RFC8881}} states that NFS4ERR_BAD_STATEID means that
+> If the handle specified is not one for which the client holds a
+> delegation, an NFS4ERR_BADHANDLE error is returned.
+
+Thus, if the coa_fh argument specifies a filehandle for which the
+NFS client currently has no pending copy operation, the NFS client's
+callback service returns the status code NFS4ERR_BADHANDLE. There is
+no requirement that the NFS client's callback service remember
+filehandles after a copy operation has completed.
+
+{:aside}
+> Is the NFS server permitted to purge the copy offload state ID if the
+> CB_OFFLOAD status code is NFS4ERR_BADHANDLE ?
+
+We recommend that {{Section 16.1.3 of RFC7862}} should be updated to
+describe this use of NFS4ERR_BADHANDLE.
+
+### NFS4ERR_BAD_STATEID
+
+{{Section 15.1.5.2 of RFC8881}} states that NFS4ERR_BAD_STATEID means
+that:
 
 > A stateid does not properly designate any valid state.
 
-But note that:
+In the context of a CB_OFFLOAD operation, "valid state" refers to
+either the coa_stateid argument, which is a copy state ID, or the
+wr_callback_id argument, which is a copy offload state ID.
 
- * The NFS server manages the state ID that appears in the wr_callback_id
-   field of the CB_OFFLOAD response. The NFS client's callback service is
-   not in a position to validate that state ID since it did not create it.
+If the NFS client's callback service does not recognize the state ID
+contained in the coa_stateid argument, the NFS client's callback
+service responds with a status code of NFS4ERR_BAD_STATEID.
 
- * The client might receive and process the CB_OFFLOAD before it has
-   received and processed the COPY that contains the copy state ID it has
-   to match the CB_OFFLOAD against. In that case, the copy state ID is
-   certainly valid but the client has not yet been made aware of it.
+The NFS client is made aware of the copy offload state ID by a response
+to a COPY operation. If the CB_OFFLOAD request arrives before the
+COPY response, the NFS client's callback service will not recognize that
+copy offload state ID.
 
- * The NFS client's callback service will already have validated the
-   client ID contained in the CB_SEQUENCE operation that accompanies
-   the CB_OFFLOAD. State ID sequence number validation does not seem
-   relevant for copy state IDs.
+ * The NFS server might have provided a referring call in the CB_SEQUENCE
+   operation included in the COMPOUND with the CB_OFFLOAD (see
+   {{Section 2.10.6.3 of RFC8881}}. In that case the NFS client's
+   callback service waits for the matching COPY response before taking
+   further action.
 
- * Upon receipt of NFS4ERR_BAD_STATEID, the receiver typically initiates
-   state recovery. In this case, there is no protocol defined anywhere
-   that can recover the state ID.
+ * If the NFS server provided referring call information but the NFS
+   client can not find a matching pending COPY request, or if the NFS
+   server did not provide referring call information, the NFS client's
+   callback service may proceed immediately.
 
-One must conclude that implementations of CB_OFFLOAD MUST NOT use
-NFS4ERR_BAD_STATEID. We recommend that it be removed from the list of
-permissible state codes for CB_OFFLOAD.
+Once the NFS client's callback service is ready to proceed, it can
+resolve whether the copy offload state ID contained in the wr_state_id
+argument matches a currently pending copy operation. If it does not,
+the NFS client's callback service responds with a status code of
+NFS4ERR_BAD_STATEID.
+
+{:aside}
+> Is the NFS server permitted to purge the copy offload state ID if the
+> CB_OFFLOAD status code is NFS4ERR_BAD_STATEID ?
+
+We recommend that {{Section 16.1.3 of RFC7862}} should be updated to
+describe this use of NFS4ERR_BAD_STATEID.
+
+### NFS4ERR_DELAY
 
 {{Section 15.1.1.3 of RFC8881}} has this to say about NFS4ERR_DELAY:
 
@@ -347,18 +387,27 @@ permissible state codes for CB_OFFLOAD.
 > operation in what was deemed a reasonable time. The client should wait
 > and then try the request with a new slot and sequence value.
 
-When the NFS client does not recognize the copy state ID in the
-wr_callback_id field, it's probable that the matching COPY response
-has not yet been processed on the client. A simple and appropriate
-response to that situation is for the NFS client's callback service
-to respond with NFS4ERR_DELAY.
+When an NFS client's callback service does not recognize the copy
+offload state ID in the wr_callback_id argument but the NFS server has
+not provided a referring call information, an appropriate response
+to that situation is for the NFS client's callback service
+to respond with a status code of NFS4ERR_DELAY.
 
-A refreshed version of Table 3 in {{RFC7862}} might look like this:
+The NFS server should retry the CB_OFFLOAD operation only a limited
+number of times:
 
-| Callback Operation | Errors |
-| CB_OFFLOAD | NFS4ERR_BADXDR, NFS4ERR_DELAY, NFS4ERR_OP_NOT_IN_SESSION, NFS4ERR_REP_TOO_BIG, NFS4ERR_REP_TOO_BIG_TO_CACHE, NFS4ERR_REQ_TOO_BIG, NFS4ERR_RETRY_UNCACHED_REP, NFS4ERR_SERVERFAULT, NFS4ERR_TOO_MANY_OPS |
+ * The NFS client can subsequently poll for the completion status
+   of the copy operation using the OFFLOAD_STATUS operation.
 
-Valid Error Returns for Each New Protocol Callback Operation
+ * A buggy or malicious NFS client callback service might always return
+   an NFS4ERR_DELAY status code, resulting in an infinite loop if the
+   NFS server never stops retrying.
+
+The NFS server is not permitted to purge the copy offload state ID if
+the CB_OFFLOAD status code is NFS4ERR_DELAY.
+
+We recommend that {{Section 16.1.3 of RFC7862}} should be updated to
+describe this use of NFS4ERR_BAD_STATEID.
 
 ## Status Codes for the OFFLOAD_CANCEL and OFFLOAD_STATUS Operations
 
