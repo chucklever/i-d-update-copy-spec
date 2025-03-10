@@ -235,7 +235,7 @@ bullet-proof, there are still issues with it:
   for disambiguating CB_OFFLOAD requests.
 
 We recommend that the implementation notes for the CB_OFFLOAD
-request contain appropriate and explicity guidance for tackling
+request contain appropriate and explicit guidance for tackling
 this race.
 
 ## Lifetime Requirements {#lifetime}
@@ -734,6 +734,14 @@ opportunity for network actors (such as NFS clients) to maliciously
 or unintentionally cause a denial-of-service scenario. The following
 text is an addendum to {{Section 4.9 of RFC7862}}.
 
+> Restricting Copies of Special Files
+>
+> Certain files on Unix-based systems act as an infinite source of
+> data. One example is /dev/null. Another example is the system's
+> random data generator. Server implementators should recognize
+> these data sources and prevent unlimited copy operations from
+> them (or to their sink counterparts).
+>
 > Limiting Size of Individual COPY Operations
 >
 > NFS server implementations have so far chosen to limit the byte
@@ -755,7 +763,7 @@ text is an addendum to {{Section 4.9 of RFC7862}}.
 > It is easily possible for NFS clients to send more asynchronous
 > COPY requests than NFS server resources can handle. For example, a
 > client could create a large file, and then request multiple copies
-> of that file's contents to /dev/null.
+> of that file's contents.
 >
 > A good quality server implementation SHOULD block clients from
 > starting many COPY operations. The implementation might apply a
