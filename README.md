@@ -1,3 +1,5 @@
+<!-- regenerate: on (set to off if you edit this file) -->
+
 # Updates to the Specification of the Network File System version 4.2 COPY Operation
 
 This is the working area for the individual Internet-Draft, "Updates to the Specification of the Network File System version 4.2 COPY Operation".
