@@ -13,20 +13,20 @@ Based on implementation experience, several clarifications to the
 specification are made. These changes are not expected to alter the
 on-the-wire behavior of current implementations. 
     " name="description">
-<meta content="xml2rfc 3.28.0" name="generator">
+<meta content="xml2rfc 3.28.1" name="generator">
 <meta content="NFSv4.2" name="keyword">
 <meta content="COPY" name="keyword">
 <meta content="offload" name="keyword">
 <meta content="draft-cel-nfsv4-update-copy-spec-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.28.0
-    Python 3.12.9
+  xml2rfc 3.28.1
+    Python 3.12.10
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.1.0
-    Jinja2 3.1.5
+    Jinja2 3.1.6
     lxml 5.3.0
-    platformdirs 4.3.6
+    platformdirs 4.3.7
     pycountry 24.6.1
     PyYAML 6.0.2
     requests 2.32.3
@@ -1050,11 +1050,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Update COPY Specification</td>
-<td class="right">March 2025</td>
+<td class="right">April 2025</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Kornievskaia &amp; Lever</td>
-<td class="center">Expires 11 September 2025</td>
+<td class="center">Expires 20 October 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1070,12 +1070,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <a href="https://www.rfc-editor.org/rfc/rfcrfc7862" class="eref">rfc7862</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-03-10" class="published">10 March 2025</time>
+<time datetime="2025-04-18" class="published">18 April 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-09-11">11 September 2025</time></dd>
+<dd class="expires"><time datetime="2025-10-20">20 October 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1133,7 +1133,7 @@ on-the-wire behavior of current implementations.<a href="#section-abstract-1" cl
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 11 September 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 20 October 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1183,13 +1183,16 @@ on-the-wire behavior of current implementations.<a href="#section-abstract-1" cl
             <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-copy-state-ids" class="internal xref">Copy state IDs</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.1">
-                <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="auto internal xref">4.1</a>.  <a href="#name-use-as-a-completion-cookie" class="internal xref">Use As A Completion Cookie</a></p>
+                <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="auto internal xref">4.1</a>.  <a href="#name-terminology" class="internal xref">Terminology</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2">
-                <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="auto internal xref">4.2</a>.  <a href="#name-copy-reply-races-with-cb_of" class="internal xref">COPY Reply Races With CB_OFFLOAD Request</a></p>
+                <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="auto internal xref">4.2</a>.  <a href="#name-use-of-offload-stateids-as-" class="internal xref">Use of Offload Stateids As A Completion Cookie</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.3">
-                <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="auto internal xref">4.3</a>.  <a href="#name-lifetime-requirements" class="internal xref">Lifetime Requirements</a></p>
+                <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="auto internal xref">4.3</a>.  <a href="#name-copy-reply-races-with-cb_of" class="internal xref">COPY Reply Races With CB_OFFLOAD Request</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.4">
+                <p id="section-toc.1-1.4.2.4.1"><a href="#section-4.4" class="auto internal xref">4.4</a>.  <a href="#name-lifetime-requirements" class="internal xref">Lifetime Requirements</a></p>
 </li>
             </ul>
 </li>
@@ -1398,44 +1401,123 @@ operations and the CB_OFFLOAD callback operation.<a href="#section-3.2-4.1.1" cl
       <h2 id="name-copy-state-ids">
 <a href="#section-4" class="section-number selfRef">4. </a><a href="#name-copy-state-ids" class="section-name selfRef">Copy state IDs</a>
       </h2>
-<p id="section-4-1">There appear to be a number of areas where <span>[<a href="#RFC7862" class="cite xref">RFC7862</a>]</span> is
-silent on the details of copy state IDs.<a href="#section-4-1" class="pilcrow">¶</a></p>
-<div id="use-as-a-completion-cookie">
+<p id="section-4-1">There are a number of areas where <span>[<a href="#RFC7862" class="cite xref">RFC7862</a>]</span> is mute or unclear on
+the details of copy state IDs. We start by defining some terms.<a href="#section-4-1" class="pilcrow">¶</a></p>
+<div id="terminology">
 <section id="section-4.1">
-        <h3 id="name-use-as-a-completion-cookie">
-<a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-use-as-a-completion-cookie" class="section-name selfRef">Use As A Completion Cookie</a>
+        <h3 id="name-terminology">
+<a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-terminology" class="section-name selfRef">Terminology</a>
+        </h3>
+<p id="section-4.1-1">An NFSv4 stateid is a fixed-length blob of data (a hash, if you will)
+that represents operational state shared by an NFSv4 client and server.
+A stateid can represent open file state, file lock state, or a
+delegation.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
+<p id="section-4.1-2"><span>[<a href="#RFC7862" class="cite xref">RFC7862</a>]</span> introduces a new category of stateid that it calls a
+"copy stateid". A specific definition of the term is missing in
+that document. The term is applied to at least two different
+usages of a stateid, neither of which can be used for the other
+use, and neither of which can be used for existing categories of
+stateid (open, lock, and delegation).<a href="#section-4.1-2" class="pilcrow">¶</a></p>
+<p id="section-4.1-3"><span>[<a href="#RFC7862" class="cite xref">RFC7862</a>]</span> refers to what is returned in cnr_stateid result of a
+COPY_NOTIFY response (<span><a href="https://rfc-editor.org/rfc/rfc7862#section-15.3.2" class="relref">Section 15.3.2</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span>)
+and what is to be used as the ca_src_stateid argument in a COPY
+request (<span><a href="https://rfc-editor.org/rfc/rfc7862#section-15.2.2" class="relref">Section 15.2.2</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span>) as "a copy stateid":<a href="#section-4.1-3" class="pilcrow">¶</a></p>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-4.1-4.1">
+            <p id="section-4.1-4.1.1">The cnr_stateid is a copy stateid that uniquely describes the state
+needed on the source server to track the proposed COPY.<a href="#section-4.1-4.1.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-4.1-5"><span><a href="https://rfc-editor.org/rfc/rfc7862#section-15.2.3" class="relref">Section 15.2.3</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span> refers to what is returned in the
+wr_callback_id field of a COPY response as a "copy stateid":<a href="#section-4.1-5" class="pilcrow">¶</a></p>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-4.1-6.1">
+            <p id="section-4.1-6.1.1">The wr_callback_id stateid is termed a "copy stateid" in this context.<a href="#section-4.1-6.1.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-4.1-7">A field named wr_callback_id is used in the WRITE_SAME response
+for the same purpose, but <span><a href="https://rfc-editor.org/rfc/rfc7862#section-15.12.3" class="relref">Section 15.12.3</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span> avoids
+referring to this as a "copy stateid". It also appears as part of
+the argument of a CB_OFFLOAD request just like COPY's wr_callback_id.
+It is not referred to as a "copy stateid" in that section.<a href="#section-4.1-7" class="pilcrow">¶</a></p>
+<p id="section-4.1-8"><span><a href="https://rfc-editor.org/rfc/rfc7862#section-4.8" class="relref">Section 4.8</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span> is entitled "Copy Offload Stateids",
+and states:<a href="#section-4.1-8" class="pilcrow">¶</a></p>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-4.1-9.1">
+            <p id="section-4.1-9.1.1">A server may perform a copy offload operation asynchronously.  An
+asynchronous copy is tracked using a copy offload stateid.  Copy
+offload stateids are included in the COPY, OFFLOAD_CANCEL,
+OFFLOAD_STATUS, and CB_OFFLOAD operations.<a href="#section-4.1-9.1.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-4.1-10">The term "copy offload stateid" is not used anywhere else in <span>[<a href="#RFC7862" class="cite xref">RFC7862</a>]</span>,
+thus it is not clear whether this section refers only to the values
+that can appear in a wr_stateid field, or if it refers to all copy
+stateids.<a href="#section-4.1-10" class="pilcrow">¶</a></p>
+<p id="section-4.1-11">Note also that <span><a href="https://rfc-editor.org/rfc/rfc7862#section-15.8.3" class="relref">Section 15.8.3</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span> does not refer to
+the oca_stateid argument of an OFFLOAD_CANCEL request by any
+special name, nor does it restrict the category of state ID
+that may appear in this argument.
+Likewise for the osa_stateid argument of an OFFLOAD_STATUS request
+(<span><a href="https://rfc-editor.org/rfc/rfc7862#section-15.9.3" class="relref">Section 15.9.3</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span>)
+and the coa_stateid argument of a CB_OFFLOAD request
+(<span><a href="https://rfc-editor.org/rfc/rfc7862#section-16.1.3" class="relref">Section 16.1.3</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span>).<a href="#section-4.1-11" class="pilcrow">¶</a></p>
+<p id="section-4.1-12">To alleviate this confusion, it is appropriate to create definitions
+for the specific usages of stateids that represent the state of
+ongoing offloaded operations. Perhaps the following might be
+helpful:<a href="#section-4.1-12" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-4.1-13">
+          <dt id="section-4.1-13.1">copy stateid</dt>
+          <dd style="margin-left: 1.5em" id="section-4.1-13.2">
+            <p id="section-4.1-13.2.1">A stateid that uniquely and globally describes the state
+needed on the source server to track a COPY operation.<a href="#section-4.1-13.2.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-4.1-13.3">offload stateid</dt>
+          <dd style="margin-left: 1.5em" id="section-4.1-13.4">
+            <p id="section-4.1-13.4.1">A stateid that uniquely describes the completion state of an
+offloaded operation (either WRITE_SAME or COPY).<a href="#section-4.1-13.4.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+</dl>
+</section>
+</div>
+<div id="use-of-offload-stateids-as-a-completion-cookie">
+<section id="section-4.2">
+        <h3 id="name-use-of-offload-stateids-as-">
+<a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-use-of-offload-stateids-as-" class="section-name selfRef">Use of Offload Stateids As A Completion Cookie</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="section-4.1-1.1">
-            <p id="section-4.1-1.1.1">How is sequence number in a copy state ID handled?  Under
+<li class="normal" id="section-4.2-1.1">
+            <p id="section-4.2-1.1.1">How is sequence number in a copy state ID handled?  Under
 what circumstances is its sequence number bumped? Do peers
 match copy state IDs via only their "other" fields, or must
-they match everything including the sequence number?<a href="#section-4.1-1.1.1" class="pilcrow">¶</a></p>
+they match everything including the sequence number?<a href="#section-4.2-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-4.1-1.2">
-            <p id="section-4.1-1.2.1">Under what circumstances may a server re-use the same copy
-state ID during one NFSv4.1 session?<a href="#section-4.1-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-4.2-1.2">
+            <p id="section-4.2-1.2.1">Under what circumstances may a server re-use the same copy
+state ID during one NFSv4.1 session?<a href="#section-4.2-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-4.1-1.3">
-            <p id="section-4.1-1.3.1">How long does the client's callback service have to remember
+          <li class="normal" id="section-4.2-1.3">
+            <p id="section-4.2-1.3.1">How long does the client's callback service have to remember
 copy state IDs? Is the callback service responsible for
-remembering and reporting previously-used copy state IDs?<a href="#section-4.1-1.3.1" class="pilcrow">¶</a></p>
+remembering and reporting previously-used copy state IDs?<a href="#section-4.2-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-4.1-1.4">
-            <p id="section-4.1-1.4.1">When does the client's callback service return
+          <li class="normal" id="section-4.2-1.4">
+            <p id="section-4.2-1.4.1">When does the client's callback service return
 NFS4ERR_BAD_STATEID to a CB_OFFLOAD operation, and what
 action should the server take, since there's no open state
-recovery to be done on the server?<a href="#section-4.1-1.4.1" class="pilcrow">¶</a></p>
+recovery to be done on the NFSv4 server?<a href="#section-4.2-1.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="copy-reply-races-with-cboffload-request">
-<section id="section-4.2">
+<section id="section-4.3">
         <h3 id="name-copy-reply-races-with-cb_of">
-<a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-copy-reply-races-with-cb_of" class="section-name selfRef">COPY Reply Races With CB_OFFLOAD Request</a>
+<a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-copy-reply-races-with-cb_of" class="section-name selfRef">COPY Reply Races With CB_OFFLOAD Request</a>
         </h3>
-<p id="section-4.2-1">Due to the design of the NFSv4.2 COPY and CB_OFFLOAD protocol
+<p id="section-4.3-1">Due to the design of the NFSv4.2 COPY and CB_OFFLOAD protocol
 elements, an NFS client's callback service cannot recognize
 a copy state ID presented by a CB_OFFLOAD request until it has
 received and processed the COPY response that reports that an
@@ -1443,102 +1525,102 @@ asynchronous copy operation has been started and provides
 the copy state ID to wait for. Under some conditions, it is
 possible for the client to process the CB_OFFLOAD request
 before it has processed the COPY reply containing the matching
-copy state ID.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
-<p id="section-4.2-2">There are a few alternatives to consider when designing the
+copy state ID.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
+<p id="section-4.3-2">There are a few alternatives to consider when designing the
 client callback service implementation of the CB_OFFLOAD
 operation. Among other designs, client implementers might
-choose to:<a href="#section-4.2-2" class="pilcrow">¶</a></p>
+choose to:<a href="#section-4.3-2" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.2-3.1">
-            <p id="section-4.2-3.1.1">Maintain a cache of unmatched CB_OFFLOAD requests in the
+<li class="normal" id="section-4.3-3.1">
+            <p id="section-4.3-3.1.1">Maintain a cache of unmatched CB_OFFLOAD requests in the
 expectation of a matching COPY response arriving imminently.
-(Danger of accruing unmatched copy state IDs over time).<a href="#section-4.2-3.1.1" class="pilcrow">¶</a></p>
+(Danger of accruing unmatched copy state IDs over time).<a href="#section-4.3-3.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-4.2-3.2">
-            <p id="section-4.2-3.2.1">Have CB_OFFLOAD return NFS4ERR_DELAY if the copy state ID
-is not recognized. (Danger of infinite looping).<a href="#section-4.2-3.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-4.3-3.2">
+            <p id="section-4.3-3.2.1">Have CB_OFFLOAD return NFS4ERR_DELAY if the copy state ID
+is not recognized. (Danger of infinite looping).<a href="#section-4.3-3.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-4.2-3.3">
-            <p id="section-4.2-3.3.1">Utilize a referring call list contained in the CB_SEQUENCE
+          <li class="normal" id="section-4.3-3.3">
+            <p id="section-4.3-3.3.1">Utilize a referring call list contained in the CB_SEQUENCE
 in the same COMPOUND (as described in
 <span><a href="https://rfc-editor.org/rfc/rfc8881#section-20.9.3" class="relref">Section 20.9.3</a> of [<a href="#RFC8881" class="cite xref">RFC8881</a>]</span>) to determine whether an
 ingress CB_OFFLOAD is likely to match a COPY operation the
-client sent previously.<a href="#section-4.2-3.3.1" class="pilcrow">¶</a></p>
+client sent previously.<a href="#section-4.3-3.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-4.2-4">While the third alternative might appear to be the most
-bullet-proof, there are still issues with it:<a href="#section-4.2-4" class="pilcrow">¶</a></p>
+<p id="section-4.3-4">While the third alternative might appear to be the most
+bullet-proof, there are still issues with it:<a href="#section-4.3-4" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.2-5.1">
-            <p id="section-4.2-5.1.1">There is no normative requirement in <span>[<a href="#RFC8881" class="cite xref">RFC8881</a>]</span> or <span>[<a href="#RFC7862" class="cite xref">RFC7862</a>]</span>
+<li class="normal" id="section-4.3-5.1">
+            <p id="section-4.3-5.1.1">There is no normative requirement in <span>[<a href="#RFC8881" class="cite xref">RFC8881</a>]</span> or <span>[<a href="#RFC7862" class="cite xref">RFC7862</a>]</span>
 that a server implement referring call lists, and it is known
 that some popular server implementations in fact do not
 implement them. Thus a client callback service cannot depend
-on a referring call list being available.<a href="#section-4.2-5.1.1" class="pilcrow">¶</a></p>
+on a referring call list being available.<a href="#section-4.3-5.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-4.2-5.2">
-            <p id="section-4.2-5.2.1">Client implementations must take care to place no more than
+          <li class="normal" id="section-4.3-5.2">
+            <p id="section-4.3-5.2.1">Client implementations must take care to place no more than
 one non-synchronous COPY operation per COMPOUND. If there are
 any more than one, then the referring call list becomes useless
-for disambiguating CB_OFFLOAD requests.<a href="#section-4.2-5.2.1" class="pilcrow">¶</a></p>
+for disambiguating CB_OFFLOAD requests.<a href="#section-4.3-5.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-4.2-6">We recommend that the implementation notes for the CB_OFFLOAD
+<p id="section-4.3-6">We recommend that the implementation notes for the CB_OFFLOAD
 request contain appropriate and explicit guidance for tackling
-this race.<a href="#section-4.2-6" class="pilcrow">¶</a></p>
+this race, rather than a simple reference to <span>[<a href="#RFC8881" class="cite xref">RFC8881</a>]</span>.<a href="#section-4.3-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="lifetime">
-<section id="section-4.3">
+<section id="section-4.4">
         <h3 id="name-lifetime-requirements">
-<a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-lifetime-requirements" class="section-name selfRef">Lifetime Requirements</a>
+<a href="#section-4.4" class="section-number selfRef">4.4. </a><a href="#name-lifetime-requirements" class="section-name selfRef">Lifetime Requirements</a>
         </h3>
-<p id="section-4.3-1">An NFS server that implements only synchronous copy does not
+<p id="section-4.4-1">An NFS server that implements only synchronous copy does not
 require the stricter COPY state ID lifetime requirements described
 in <span><a href="https://rfc-editor.org/rfc/rfc7862#section-4.8" class="relref">Section 4.8</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span>. A state ID used with a synchronous
-copy lives until the COPY operation has completed.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
-<p id="section-4.3-2">Regarding asynchronous copy offload,
-the second paragraph of <span><a href="https://rfc-editor.org/rfc/rfc7862#section-4.8" class="relref">Section 4.8</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span> states:<a href="#section-4.3-2" class="pilcrow">¶</a></p>
+copy lives until the COPY operation has completed.<a href="#section-4.4-1" class="pilcrow">¶</a></p>
+<p id="section-4.4-2">Regarding asynchronous copy offload,
+the second paragraph of <span><a href="https://rfc-editor.org/rfc/rfc7862#section-4.8" class="relref">Section 4.8</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span> states:<a href="#section-4.4-2" class="pilcrow">¶</a></p>
 <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-4.3-3.1">
-            <p id="section-4.3-3.1.1">A copy offload stateid will be valid until either (A) the client or
+<li class="normal ulEmpty" id="section-4.4-3.1">
+            <p id="section-4.4-3.1.1">A copy offload stateid will be valid until either (A) the client or
 server restarts or (B) the client returns the resource by issuing an
 OFFLOAD_CANCEL operation or the client replies to a CB_OFFLOAD
-operation.<a href="#section-4.3-3.1.1" class="pilcrow">¶</a></p>
+operation.<a href="#section-4.4-3.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-4.3-4">This paragraph is unclear about what "client restart" means, at least
+<p id="section-4.4-4">This paragraph is unclear about what "client restart" means, at least
 in terms of what specific actions a server should take and when, how
 long a COPY state ID is required to remain valid, and how a client
 needs to act during state recovery. A stronger statement about
-COPY state ID lifetime improves the guarantee of interoperability:<a href="#section-4.3-4" class="pilcrow">¶</a></p>
+COPY state ID lifetime improves the guarantee of interoperability:<a href="#section-4.4-4" class="pilcrow">¶</a></p>
 <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-4.3-5.1">
-            <p id="section-4.3-5.1.1">When a COPY state ID is used for an asynchronous copy, an NFS
+<li class="normal ulEmpty" id="section-4.4-5.1">
+            <p id="section-4.4-5.1.1">When a COPY state ID is used for an asynchronous copy, an NFS
 server <span class="bcp14">MUST</span> retain the COPY state ID, except as follows below.
 An NFS server <span class="bcp14">MAY</span> invalidate and purge a COPY state ID in the
-following circumstances:<a href="#section-4.3-5.1.1" class="pilcrow">¶</a></p>
-<p id="section-4.3-5.1.2">o The server instance restarts.<a href="#section-4.3-5.1.2" class="pilcrow">¶</a></p>
-<p id="section-4.3-5.1.3">o The server expires the owning client's lease.<a href="#section-4.3-5.1.3" class="pilcrow">¶</a></p>
-<p id="section-4.3-5.1.4">o The server receives an EXCHANGE_ID or DESTROY_CLIENTID request
+following circumstances:<a href="#section-4.4-5.1.1" class="pilcrow">¶</a></p>
+<p id="section-4.4-5.1.2">o The server instance restarts.<a href="#section-4.4-5.1.2" class="pilcrow">¶</a></p>
+<p id="section-4.4-5.1.3">o The server expires the owning client's lease.<a href="#section-4.4-5.1.3" class="pilcrow">¶</a></p>
+<p id="section-4.4-5.1.4">o The server receives an EXCHANGE_ID or DESTROY_CLIENTID request
   from the owning client that results in the destruction of that
-  client's lease.<a href="#section-4.3-5.1.4" class="pilcrow">¶</a></p>
-<p id="section-4.3-5.1.5">o The server receives an OFFLOAD_CANCEL request from the owning
-  client that matches the COPY state ID.<a href="#section-4.3-5.1.5" class="pilcrow">¶</a></p>
-<p id="section-4.3-5.1.6">o The server receives a reply to a CB_OFFLOAD request from the
-  owning client that matches the COPY state ID.<a href="#section-4.3-5.1.6" class="pilcrow">¶</a></p>
+  client's lease.<a href="#section-4.4-5.1.4" class="pilcrow">¶</a></p>
+<p id="section-4.4-5.1.5">o The server receives an OFFLOAD_CANCEL request from the owning
+  client that matches the COPY state ID.<a href="#section-4.4-5.1.5" class="pilcrow">¶</a></p>
+<p id="section-4.4-5.1.6">o The server receives a reply to a CB_OFFLOAD request from the
+  owning client that matches the COPY state ID.<a href="#section-4.4-5.1.6" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-4.3-6">Implementers have found the following behavior to work well for
-clients when recovering state after a server restart:<a href="#section-4.3-6" class="pilcrow">¶</a></p>
+<p id="section-4.4-6">Implementers have found the following behavior to work well for
+clients when recovering state after a server restart:<a href="#section-4.4-6" class="pilcrow">¶</a></p>
 <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-4.3-7.1">
-            <p id="section-4.3-7.1.1">When an NFSv4 client discovers that a server instance has restarted,
+<li class="normal ulEmpty" id="section-4.4-7.1">
+            <p id="section-4.4-7.1.1">When an NFSv4 client discovers that a server instance has restarted,
 it must recover state associated with files on that server, including
 state that manages offloaded copy operations. When an NFS server
 restart is detected, the client purges existing COPY state and
 redrives its incompleted COPY requests from their beginning. No
-other recovery is needed for pending asynchronous copy operations.<a href="#section-4.3-7.1.1" class="pilcrow">¶</a></p>
+other recovery is needed for pending asynchronous copy operations.<a href="#section-4.4-7.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -2103,7 +2185,7 @@ subsequent COPY requests will receive NFS4ERR_OFFLOAD_NO_REQS
 in response until more server resources become available.<a href="#section-11-2.1.9" class="pilcrow">¶</a></p>
 <p id="section-11-2.1.10">Managing Abandoned COPY State on the Server<a href="#section-11-2.1.10" class="pilcrow">¶</a></p>
 <p id="section-11-2.1.11">A related issue is how much COPY state can accrue on a server
-due to lost CB_OFFLOAD requests. The mandates in <a href="#lifetime" class="auto internal xref">Section 4.3</a>
+due to lost CB_OFFLOAD requests. The mandates in <a href="#lifetime" class="auto internal xref">Section 4.4</a>
 require a server to retain abandoned COPY state indefinitely.
 A server can reject new asynchronous COPY requests using
 NFS4ERR_OFFLOAD_NO_REQS when there are many abandoned COPY
