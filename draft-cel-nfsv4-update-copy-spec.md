@@ -168,10 +168,78 @@ addition of the following text makes this requirement clear:
 
 # Copy state IDs
 
-There appear to be a number of areas where {{RFC7862}} is
-silent on the details of copy state IDs.
+There are a number of areas where {{RFC7862}} is mute or unclear on
+the details of copy state IDs. We start by defining some terms.
 
-## Use As A Completion Cookie
+## Terminology
+
+An NFSv4 stateid is a fixed-length blob of data (a hash, if you will)
+that represents operational state shared by an NFSv4 client and server.
+A stateid can represent open file state, file lock state, or a
+delegation.
+
+{{RFC7862}} introduces a new category of stateid that it calls a
+"copy stateid". A specific definition of the term is missing in
+that document. The term is applied to at least two different
+usages of a stateid, neither of which can be used for the other
+use, and neither of which can be used for existing categories of
+stateid (open, lock, and delegation).
+
+{{RFC7862}} refers to what is returned in cnr_stateid result of a
+COPY_NOTIFY response ({{Section 15.3.2 of RFC7862}})
+and what is to be used as the ca_src_stateid argument in a COPY
+request ({{Section 15.2.2 of RFC7862}}) as "a copy stateid":
+
+> The cnr_stateid is a copy stateid that uniquely describes the state
+> needed on the source server to track the proposed COPY.
+
+{{Section 15.2.3 of RFC7862}} refers to what is returned in the
+wr_callback_id field of a COPY response as a "copy stateid":
+
+> The wr_callback_id stateid is termed a "copy stateid" in this context.
+
+A field named wr_callback_id is used in the WRITE_SAME response
+for the same purpose, but {{Section 15.12.3 of RFC7862}} avoids
+referring to this as a "copy stateid". It also appears as part of
+the argument of a CB_OFFLOAD request just like COPY's wr_callback_id.
+It is not referred to as a "copy stateid" in that section.
+
+{{Section 4.8 of RFC7862}} is entitled "Copy Offload Stateids",
+and states:
+
+> A server may perform a copy offload operation asynchronously.  An
+> asynchronous copy is tracked using a copy offload stateid.  Copy
+> offload stateids are included in the COPY, OFFLOAD_CANCEL,
+> OFFLOAD_STATUS, and CB_OFFLOAD operations.
+
+The term "copy offload stateid" is not used anywhere else in {{RFC7862}},
+thus it is not clear whether this section refers only to the values
+that can appear in a wr_stateid field, or if it refers to all copy
+stateids.
+
+Note also that {{Section 15.8.3 of RFC7862}} does not refer to
+the oca_stateid argument of an OFFLOAD_CANCEL request by any
+special name, nor does it restrict the category of state ID
+that may appear in this argument.
+Likewise for the osa_stateid argument of an OFFLOAD_STATUS request
+({{Section 15.9.3 of RFC7862}})
+and the coa_stateid argument of a CB_OFFLOAD request
+({{Section 16.1.3 of RFC7862}}).
+
+To alleviate this confusion, it is appropriate to create definitions
+for the specific usages of stateids that represent the state of
+ongoing offloaded operations. Perhaps the following might be
+helpful:
+
+copy stateid
+: A stateid that uniquely and globally describes the state
+needed on the source server to track a COPY operation.
+
+offload stateid
+: A stateid that uniquely describes the completion state of an
+offloaded operation (either WRITE_SAME or COPY).
+
+## Use of Offload Stateids As A Completion Cookie
 
 - How is sequence number in a copy state ID handled?  Under
   what circumstances is its sequence number bumped? Do peers
@@ -188,7 +256,7 @@ silent on the details of copy state IDs.
 - When does the client's callback service return
   NFS4ERR_BAD_STATEID to a CB_OFFLOAD operation, and what
   action should the server take, since there's no open state
-  recovery to be done on the server?
+  recovery to be done on the NFSv4 server?
 
 ## COPY Reply Races With CB_OFFLOAD Request
 
@@ -236,7 +304,7 @@ bullet-proof, there are still issues with it:
 
 We recommend that the implementation notes for the CB_OFFLOAD
 request contain appropriate and explicit guidance for tackling
-this race.
+this race, rather than a simple reference to {{RFC8881}}.
 
 ## Lifetime Requirements {#lifetime}
 
