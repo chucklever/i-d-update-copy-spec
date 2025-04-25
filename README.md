@@ -1,8 +1,8 @@
 <!-- regenerate: on (set to off if you edit this file) -->
 
-# Updates to the Specification of the Network File System version 4.2 COPY Operation
+# Network File System version 4.2 COPY Operation Implementation Experience
 
-This is the working area for the individual Internet-Draft, "Updates to the Specification of the Network File System version 4.2 COPY Operation".
+This is the working area for the individual Internet-Draft, "Network File System version 4.2 COPY Operation Implementation Experience".
 
 * [Editor's Copy](https://chucklever.github.io/i-d-update-copy-spec/#go.draft-cel-nfsv4-update-copy-spec.html)
 * [Datatracker Page](https://datatracker.ietf.org/doc/draft-cel-nfsv4-update-copy-spec)
