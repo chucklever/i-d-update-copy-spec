@@ -2,7 +2,7 @@
 
 title: "Updates to the Specification of the Network File System version 4.2 COPY Operation"
 abbrev: "Update COPY Specification"
-category: std
+category: info
 
 docname: draft-cel-nfsv4-update-copy-spec-latest
 pi: [toc, sortrefs, symrefs, docmapping]
@@ -14,7 +14,6 @@ ipr: trust200902
 area: "Web and Internet Transport"
 workgroup: "Network File System Version 4"
 obsoletes:
-updates: rfc7862
 keyword:
  - NFSv4.2
  - COPY
@@ -70,10 +69,8 @@ venue:
 
 --- abstract
 
-This document updates the specification of the NFSv4.2 COPY operation.
-Based on implementation experience, several clarifications to the
-specification are made. These changes are not expected to alter the
-on-the-wire behavior of current implementations.
+This document describes the authors' experience implementing the
+NFSv4.2 COPY operation, as described in {{RFC7862}}.
 
 --- middle
 
@@ -84,18 +81,26 @@ to request that an NFS server copy data from one file to another.
 Because the data copy happens on the NFS server, it avoids the transit
 of file data between client and server during the copy operation.
 This reduces latency, network bandwidth requirements, and the exposure
-of file data to third parties to handle the copy request.
+of file data to third parties when handling the copy request.
 
-This document enumerates several areas where specification wording in
-{{RFC7862}} could be clarified or made explicit in order to better
-guarantee interoperation.
-They are mostly errors of omission which allow interoperability gaps to
+Based on implementation experience, the authors report on areas where
+specification wording can be improved to better guarantee interoperation.
+These are mostly errors of omission that allow interoperability gaps to
 arise due to subtleties and ambiguities in the original specification of
-the COPY operation.
+the COPY operation in {{RFC7862}}.
 
 # Requirements Language
 
 {::boilerplate bcp14-tagged}
+
+This document is Informational. However, it utilizes BCP14 compliance
+keywords in two ways:
+
+- As part of a quotation of a Normative RFC, or
+- As part of suggested improvements to Normative language found in
+  other, Normative RFCs.
+
+These keyword usages are Informational only.
 
 # Synchronous versus Asynchronous COPY
 
@@ -109,11 +114,13 @@ operation or not. However, COPY comes in two distinct flavors:
   of the operation at a later time via a callback operation
 
 {{RFC7862}} does not take a position on whether a client or server
-is mandated to implement either or both forms of COPY.
-However, the implementation requirements for these two
-forms of copy offload are quite distinct from each other,
-and some implementers have chosen to avoid the more complex
-asynchronous form of COPY.
+is mandated to implement either or both forms of COPY, though it
+does clearly state that to support inter-server copy, asynchronous
+copy is mandatory-to-implement.
+
+The implementation requirements for these two forms of copy offload
+are quite distinct from each other. Some implementers have chosen
+to avoid the more complex asynchronous form of COPY.
 
 ## Detecting Support For COPY
 
@@ -128,15 +135,15 @@ asynchronous form of COPY.
 > REQUIRED, depending on server behavior.  Clients need to use these
 > operations to successfully copy a file.
 
-The existing specification distinguishes between implementations that
-support inter-server or intra-server copy, but does not differentiate
+{{RFC7862}} distinguishes between implementations that support
+inter-server or intra-server copy, but does not differentiate
 between implementations that support synchronous versus asynchronous
 copy.
 
-To interoperate successfully, the client and server must be able
+To interoperate successfully, a client and server must be able
 to determine which forms of COPY are implemented and fall back to
-a normal READ/WRITE-based copy if necessary. The following
-additional text makes this more clear:
+a normal READ/WRITE-based copy when necessary. The following
+additional text can make this more clear:
 
 > Given the operation of the signaling in the ca_synchronous field
 > as described in {{Section 15.2.3 of RFC7862}}, an implementation
@@ -160,7 +167,7 @@ the implementation of CB_OFFLOAD, and not reliable without the
 implementation of OFFLOAD_STATUS. The original specification of
 copy offload does not make these two operations mandatory-to-implement
 when an implementation claims to support asynchronous COPY. The
-addition of the following text makes this requirement clear:
+addition of the following text can make this requirement clear:
 
 > When an NFS server implementation provides an asynchronous copy
 > capability, it MUST implement the OFFLOAD_CANCEL and OFFLOAD_STATUS
@@ -174,9 +181,9 @@ the details of copy state IDs. We start by defining some terms.
 ## Terminology
 
 An NFSv4 stateid is a fixed-length blob of data (a hash, if you will)
-that represents operational state shared by an NFSv4 client and server.
-A stateid can represent open file state, file lock state, or a
-delegation.
+that represents operational state known to both an NFSv4 client and
+server. A stateid can represent open file state, file lock state, or
+a delegation.
 
 {{RFC7862}} introduces a new category of stateid that it calls a
 "copy stateid". A specific definition of the term is missing in
@@ -198,7 +205,7 @@ wr_callback_id field of a COPY response as a "copy stateid":
 
 > The wr_callback_id stateid is termed a "copy stateid" in this context.
 
-A field named wr_callback_id is used in the WRITE_SAME response
+A field named wr_callback_id appears in the WRITE_SAME response
 for the same purpose, but {{Section 15.12.3 of RFC7862}} avoids
 referring to this as a "copy stateid". It also appears as part of
 the argument of a CB_OFFLOAD request just like COPY's wr_callback_id.
@@ -226,20 +233,25 @@ Likewise for the osa_stateid argument of an OFFLOAD_STATUS request
 and the coa_stateid argument of a CB_OFFLOAD request
 ({{Section 16.1.3 of RFC7862}}).
 
-To alleviate this confusion, it is appropriate to create definitions
-for the specific usages of stateids that represent the state of
-ongoing offloaded operations. Perhaps the following might be
-helpful:
+To alleviate this confusion, it is appropriate to construct
+definitions for the specific usages of stateids that represent
+the state of ongoing offloaded operations. Perhaps the following
+might be helpful:
 
-copy stateid
+copy stateid:
 : A stateid that uniquely and globally describes the state
 needed on the source server to track a COPY operation.
 
-offload stateid
+offload stateid:
 : A stateid that uniquely describes the completion state of an
 offloaded operation (either WRITE_SAME or COPY).
 
 ## Use of Offload Stateids As A Completion Cookie
+
+As implementation of copy offload proceeds, developers face
+a number of questions regarding the use of copy stateids to
+report operational completion. For completion, these issues
+need to be addressed by the specification:
 
 - How is sequence number in a copy state ID handled?  Under
   what circumstances is its sequence number bumped? Do peers
@@ -264,7 +276,7 @@ Due to the design of the NFSv4.2 COPY and CB_OFFLOAD protocol
 elements, an NFS client's callback service cannot recognize
 a copy state ID presented by a CB_OFFLOAD request until it has
 received and processed the COPY response that reports that an
-asynchronous copy operation has been started and provides
+asynchronous copy operation has been started and that provides
 the copy state ID to wait for. Under some conditions, it is
 possible for the client to process the CB_OFFLOAD request
 before it has processed the COPY reply containing the matching
@@ -302,16 +314,17 @@ bullet-proof, there are still issues with it:
   any more than one, then the referring call list becomes useless
   for disambiguating CB_OFFLOAD requests.
 
-We recommend that the implementation notes for the CB_OFFLOAD
-request contain appropriate and explicit guidance for tackling
-this race, rather than a simple reference to {{RFC8881}}.
+The authors recommend that the implementation notes for the
+CB_OFFLOAD operation contain appropriate and explicit guidance
+for tackling this race, rather than a simple reference to
+{{RFC8881}}.
 
 ## Lifetime Requirements {#lifetime}
 
 An NFS server that implements only synchronous copy does not
 require the stricter COPY state ID lifetime requirements described
 in {{Section 4.8 of RFC7862}}. A state ID used with a synchronous
-copy lives until the COPY operation has completed.
+copy lives only until the COPY operation has completed.
 
 Regarding asynchronous copy offload,
 the second paragraph of {{Section 4.8 of RFC7862}} states:
@@ -325,7 +338,7 @@ This paragraph is unclear about what "client restart" means, at least
 in terms of what specific actions a server should take and when, how
 long a COPY state ID is required to remain valid, and how a client
 needs to act during state recovery. A stronger statement about
-COPY state ID lifetime improves the guarantee of interoperability:
+COPY state ID lifetime can improve the guarantee of interoperability:
 
 > When a COPY state ID is used for an asynchronous copy, an NFS
 > server MUST retain the COPY state ID, except as follows below.
@@ -364,14 +377,15 @@ clients when recovering state after a server restart:
 provides no information, normative or otherwise, about the NFS client's
 callback service is to use CB_OFFLOAD's response status codes. The set
 of permitted status codes is listed in {{Section 11.3 of RFC7862}}.
-
 The usual collection of status codes related to compound structure
 and session parameters are available.
+
 However, Section 11.3 also lists NFS4ERR_BADHANDLE, NFS4ERR_BAD_STATEID,
 and NFS4ERR_DELAY, but {{Section 16.1.3 of RFC7862}} does not give any
 direction about when an NFS client's callback service should return them.
 In a protocol specification, it is usual practice to describe server
-responses to a malformed request, but that is entirely missing here.
+responses to a malformed request, but that is entirely missing in that
+section of {{RFC7862}}.
 
 ### NFS4ERR_BADHANDLE
 
@@ -400,8 +414,8 @@ filehandles after a copy operation has completed.
 > Is the NFS server permitted to purge the copy offload state ID if the
 > CB_OFFLOAD status code is NFS4ERR_BADHANDLE ?
 
-We recommend that {{Section 16.1.3 of RFC7862}} should be updated to
-describe this use of NFS4ERR_BADHANDLE.
+The authors recommend that {{Section 16.1.3 of RFC7862}} should be
+updated to describe this use of NFS4ERR_BADHANDLE.
 
 ### NFS4ERR_BAD_STATEID
 
@@ -444,8 +458,8 @@ NFS4ERR_BAD_STATEID.
 > Is the NFS server permitted to purge the copy offload state ID if the
 > CB_OFFLOAD status code is NFS4ERR_BAD_STATEID ?
 
-We recommend that {{Section 16.1.3 of RFC7862}} should be updated to
-describe this use of NFS4ERR_BAD_STATEID.
+The authors recommend that {{Section 16.1.3 of RFC7862}} should be
+updated to describe this use of NFS4ERR_BAD_STATEID.
 
 ### NFS4ERR_DELAY
 
@@ -474,8 +488,8 @@ number of times:
 The NFS server is not permitted to purge the copy offload state ID if
 the CB_OFFLOAD status code is NFS4ERR_DELAY.
 
-We recommend that {{Section 16.1.3 of RFC7862}} should be updated to
-describe this use of NFS4ERR_BAD_STATEID.
+The authors recommend that {{Section 16.1.3 of RFC7862}} should be
+updated to describe this use of NFS4ERR_BAD_STATEID.
 
 ## Status Codes for the OFFLOAD_CANCEL and OFFLOAD_STATUS Operations
 
@@ -490,9 +504,9 @@ The definition is directly related to the new-to-NFSv4.1
 RECLAIM_COMPLETE operation, but is otherwise not used by other
 operations.
 
-We recommend removing NFS4ERR_COMPLETE_ALREADY from the list of
-permissible status codes for the OFFLOAD_CANCEL and OFFLOAD_STATUS
-operations.
+The authors recommend removing NFS4ERR_COMPLETE_ALREADY from the
+list of permissible status codes for the OFFLOAD_CANCEL and
+OFFLOAD_STATUS operations.
 
 ## Status Codes Returned for Completed Asynchronous Copy Operations
 
@@ -586,12 +600,12 @@ issues that could have arisen during the offloaded copy:
 > NFS4ERR_SERVERFAULT,
 > NFS4ERR_STALE
 
-We recommend including a section and table that gives the valid
-status codes that the osr_complete and coa_status fields may contain.
-The status code NFS4_OK (indicating no error occurred during the
-copy operation) is not listed but should be understood to be a
-valid value for these fields. The meaning for each of these values
-is defined in {{Section 15.3 of RFC5661}}.
+The authors recommend including a section and table that gives
+the valid status codes that the osr_complete and coa_status
+fields may contain. The status code NFS4_OK (indicating no error
+occurred during the copy operation) is not listed but should be
+understood to be a valid value for these fields. The meaning for
+each of these values is defined in {{Section 15.3 of RFC5661}}.
 
 It would also be helpful to implementers to provide guidance about
 when these values are appropriate to use, or when they MUST NOT be
@@ -683,11 +697,11 @@ a COPY operation, the specification needs to state explicitly that:
 
 # Short COPY results
 
-When a COPY request might take a long time, an NFS server must
+When a COPY request takes a long time, an NFS server must
 ensure it can continue to remain responsive to other requests.
 To prevent other requests from blocking, an NFS server
 implementation might, for example, notice that a COPY operation
-is taking longer than a few seconds and stop it.
+is taking longer than a few seconds and terminate it early.
 
 {{Section 15.2.3 of RFC7862}} states:
 
@@ -697,13 +711,15 @@ is taking longer than a few seconds and stop it.
 
 This text considers only a failure status and not a short COPY, where
 the COPY response contains a byte count shorter than the client's
-request and a final status of NFS4_OK. Both the Linux and FreeBSD
-implementations of the COPY operation truncate large COPY requests
-in this way. The reason for returning a short COPY result is that
-the NFS server has need to break up a long byte range to schedule
-its resources more fairly amongst its clients.
+request, but still returns a final status of NFS4_OK. Both the Linux
+and FreeBSD implementations of the COPY operation truncate large COPY
+requests in this way. The reason for returning a short COPY result is
+that the NFS server has need to break up a long byte range to schedule
+its resources more fairly amongst its clients. Usually the purpose of
+this truncation is to avoid denial-of-service.
 
-The following text makes a short COPY result explicitly permissible:
+Including the following text can make a short COPY result explicitly
+permissible:
 
 > If a server chooses to terminate a COPY before it has completed
 > copying the full requested range of bytes, either because of a
@@ -716,10 +732,10 @@ The following text makes a short COPY result explicitly permissible:
 
 # Asynchronous Copy Completion Reliability
 
-Typically, NFSv4 server backchannel requests are not retransmitted.
-There are common scenarios where lack of a retransmit can result in
-a backchannel request getting dropped entirely. Common scenarios
-include:
+Often, NFSv4 server implementations do not retransmit backchannel
+requests. There are common scenarios where lack of a retransmit can
+result in a backchannel request getting dropped entirely. Common
+scenarios include:
 
 - The server dropped the connection because it lost a forechannel
   NFSv4 request and wishes to force the client to retransmit all
@@ -744,9 +760,9 @@ an OFFLOAD_STATUS request. Note however that Table 5 in
 Implementers of the SCSI protocol have reported that it is
 in fact not possible to make SCSI XCOPY {{XCOPY}} reliable
 without the use of polling. The NFSv4.2 COPY use case seems
-no different.
+no different in this regard.
 
-The following is a recommended addendum to {{RFC7862}}:
+The authors recommend the following addendum to {{RFC7862}}:
 
 > NFSv4 servers are not required to retransmit lost backchannel
 > requests. If an NFS client implements an asynchronous copy
@@ -807,8 +823,8 @@ state recovery.
 One critical responsibility of an NFS server implementation is
 to manage its finite set of resources in a way that minimizes the
 opportunity for network actors (such as NFS clients) to maliciously
-or unintentionally cause a denial-of-service scenario. The following
-text is an addendum to {{Section 4.9 of RFC7862}}.
+or unintentionally trigger a denial-of-service scenario.  The authors
+recommend the following addendum to {{Section 4.9 of RFC7862}}.
 
 > Restricting Copies of Special Files
 >
@@ -873,7 +889,7 @@ text is an addendum to {{Section 4.9 of RFC7862}}.
 ## Use of RPC-with-TLS for Server-to-server COPY
 
 To date, there have been no implementations of RPCSEC GSSv3
-{{RFC7861}}, which is mandatory-to-implement for security
+{{RFC7861}}, which is mandatory-to-implement for secure
 server-to-server copy (see {{Section 4.9 of RFC7862}}.
 
 There are several implementations of RPC-with-TLS {{RFC9289}},
@@ -881,8 +897,8 @@ including on systems that also implement the NFSv4.2 COPY
 operation. There has been some discussion of using TLS to
 secure the server-to-server copy mechanism.
 
-Although TLS can provide integrity and confidentiality of
-in-flight copy data, the user authentication capability
+Although TLS is able to provide integrity and confidentiality
+of in-flight copy data, the user authentication capability
 provided by RPCSEC GSSv3 is still missing. What is missing
 is the ability to pass a capability. GSSv3 generates a
 capability on the source server that is passed through the
@@ -901,11 +917,10 @@ This document requests no IANA actions.
 Special thanks to Rick Macklem and Dai Ngo for their insights
 and work on implementations of NFSv4.2 COPY.
 
-The author is grateful to Bill Baker, Jeff Layton, Greg Marsden,
+The authors are grateful to Bill Baker, Jeff Layton, Greg Marsden,
 and Martin Thomson for their input and support.
 
 Special thanks to Transport Area Directors Martin Duke and
 Zaheduzzaman Sarker, NFSV4 Working Group Chairs Chris Inacio and
 Brian Pawlowski, and NFSV4 Working Group Secretary Thomas Haynes for
 their guidance and oversight.
-
