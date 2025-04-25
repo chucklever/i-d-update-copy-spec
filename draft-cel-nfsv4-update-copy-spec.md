@@ -1,7 +1,7 @@
 ---
 
-title: "Updates to the Specification of the Network File System version 4.2 COPY Operation"
-abbrev: "Update COPY Specification"
+title: "Network File System version 4.2 COPY Operation Implementation Experience"
+abbrev: "NFSv4.2 COPY Implementation Experience"
 category: info
 
 docname: draft-cel-nfsv4-update-copy-spec-latest
