@@ -75,9 +75,12 @@ Table of Contents
      3.2.  Mandatory-To-Implement Operations
    4.  Copy state IDs
      4.1.  Terminology
-     4.2.  Use of Offload Stateids As A Completion Cookie
-     4.3.  COPY Reply Races With CB_OFFLOAD Request
-     4.4.  Lifetime Requirements
+     4.2.  Use of Delegation Stateids
+     4.3.  Use of Locking Stateids
+     4.4.  cnr_lease_time
+     4.5.  Use of Offload Stateids As A Completion Cookie
+     4.6.  COPY Reply Races With CB_OFFLOAD Request
+     4.7.  Lifetime Requirements
    5.  Status Codes, Their Meanings, and Their Usage
      5.1.  Status Codes for the CB_OFFLOAD Operation
        5.1.1.  NFS4ERR_BADHANDLE
@@ -91,15 +94,16 @@ Table of Contents
    7.  OFFLOAD_STATUS Implementation Notes
    8.  Short COPY results
    9.  Asynchronous Copy Completion Reliability
-   10. Handling NFS Server Shutdown
-     10.1.  Graceful Shutdown
-     10.2.  Client Recovery Actions
-   11. Security Considerations
-     11.1.  Use of RPC-with-TLS for Server-to-server COPY
-   12. IANA Considerations
-   13. References
-     13.1.  Normative References
-     13.2.  Informative References
+   10. Inter-server Interoperation
+   11. Handling NFS Server Shutdown
+     11.1.  Graceful Shutdown
+     11.2.  Client Recovery Actions
+   12. Security Considerations
+     12.1.  Securing Inter-server COPY
+   13. IANA Considerations
+   14. References
+     14.1.  Normative References
+     14.2.  Informative References
    Acknowledgments
    Authors' Addresses
 
@@ -206,7 +210,8 @@ Table of Contents
 
       When an NFS server implementation provides an asynchronous copy
       capability, it MUST implement the OFFLOAD_CANCEL and
-      OFFLOAD_STATUS operations and the CB_OFFLOAD callback operation.
+      OFFLOAD_STATUS operations, and MUST implement the CB_OFFLOAD
+      callback operation.
 
 4.  Copy state IDs
 
@@ -279,7 +284,93 @@ Table of Contents
    offload stateid:  A stateid that uniquely describes the completion
       state of an offloaded operation (either WRITE_SAME or COPY).
 
-4.2.  Use of Offload Stateids As A Completion Cookie
+4.2.  Use of Delegation Stateids
+
+      |  olga: Stateid used in the copy operation.  When the client does
+      |  the opens for the source and destination files, it most likely
+      |  will receive a delegation stateid.  This complicates things.
+      |  The spec says the client should use either open or locking
+      |  stateids.  To be honest, I think the client will use a
+      |  delegation stateid instead.  I should/need to verify this.  I
+      |  say it because I think nfs4_set_rw_stateid() used by the client
+      |  will return delegation stateid if the client has one.  I do
+      |  seem to recall trying to force the code to do open stateid and
+      |  not use delegation (But it's just vague memory).... But let's
+      |  set that aside.
+      |  
+      |  With this new DELEGATION_XOR_OPEN stuff, I see a problem that
+      |  the client will only get a delegation stateid from the Linux
+      |  server and then we are out of luck and need to do extra
+      |  operations of returning the delegation and then requesting
+      |  another open with deleg_not_wanted.  Which btw we can't do in
+      |  the first place because useland does the opens.  So I'm not
+      |  sure if the spec should be changed to allow the delegation
+      |  stateid usage by the copy instead (Well, it sort of already I
+      |  would think because in section 15.2.3 it says -- "The
+      |  ca_dst_stateid MUST refer to a stateid that is valid for a
+      |  WRITE operation and follows the rules for stateids in Sections
+      |  8.2.5 and 18.32.3 of RFC5661." -- and a write delegation
+      |  stateid is a valid stateid for WRITE (similar verbiage for the
+      |  src stated when it's intra copy but of read flavor) . But if we
+      |  allow a delegation stateid then there is the complexity of what
+      |  should happen when a conflicting operation arrives.  I don't
+      |  think it's covered?  Is the server required to stop the copy
+      |  before replying?  Does it send a CB_RECALL, and should the
+      |  client need to worry about "do i have any started copies that I
+      |  need to stop now"?
+
+4.3.  Use of Locking Stateids
+
+   Section 4.3.1 of [RFC7862] is possibly incorrect:
+
+      Note that when the client establishes a lock stateid on the
+      source, the context of that stateid is for the client and not the
+      destination.  As such, there might already be an outstanding
+      stateid, issued to the destination as the client of the source,
+      with the same value as that provided for the lock stateid.  The
+      source MUST interpret the lock stateid as that of the client,
+      i.e., when the destination presents it in the context of an inter-
+      server copy, it is on behalf of the client."
+
+   The destination server will never present a "locking stateid".  It
+   presents a "copy stateid" generated by the source server.
+
+   The Linux NFS client implementation locks the source and destination
+   files before doing the copy, and therefore acquires the locking
+   stateids (but only if there were no delegation given).  Those can be
+   used for the COPY operation.  For intra-copy (if I'm wrong about
+   using the delegation stateid then), I believe Linux does use locking
+   stateid but for inter-copy Linux uses "locking" for destination and
+   "copy stateid" for the source.  That "copy stateid", the destination
+   server uses to do the read against the source server.
+
+4.4.  cnr_lease_time
+
+      |  olga: COPY_NOTIFY produces a copy stateid.  How long should it
+      |  be valid?  Perhaps it's indirectly discussed by the 15.3.3 in
+      |  cnr_lease_time.  So copy stateid is valid for cnr_lease_time or
+      |  while copy is ungoing?  That's what Linux server implements
+      |  laundry thread revokes if lease period has gone by without it
+      |  being marked valid.
+      |  
+      |  I was going to complain about the uselessness (in my point of
+      |  view) of the spec's cnr_lease_time.  Source server sends that
+      |  value to the client.  Client doesn't propagate that value to
+      |  the destination server.  How can the client control the
+      |  destination starting the read by the cnr_lease_time (the
+      |  destination server doesnt know by when it needs to start the
+      |  copy)?  But I can see that the source server wants to protect
+      |  itself from "unauthorized" (really late) reading.  I just find
+      |  that telling the client isn't useful.
+      |  
+      |  I believe the Linux server implements the safeguards and
+      |  requires the start of the COPY operation to happen within a
+      |  lease period.  My grep thru the code for
+      |  "NFS4ERR_PARTNER_NO_AUTH" comes up empty.  So we don't exercise
+      |  letting the destination server know the copy isn't meeting
+      |  "copy progress" constraints.
+
+4.5.  Use of Offload Stateids As A Completion Cookie
 
    As implementation of copy offload proceeds, developers face a number
    of questions regarding the use of copy stateids to report operational
@@ -303,7 +394,7 @@ Table of Contents
       since there's no open state recovery to be done on the NFSv4
       server?
 
-4.3.  COPY Reply Races With CB_OFFLOAD Request
+4.6.  COPY Reply Races With CB_OFFLOAD Request
 
    Due to the design of the NFSv4.2 COPY and CB_OFFLOAD protocol
    elements, an NFS client's callback service cannot recognize a copy
@@ -348,7 +439,7 @@ Table of Contents
    CB_OFFLOAD operation contain appropriate and explicit guidance for
    tackling this race, rather than a simple reference to [RFC8881].
 
-4.4.  Lifetime Requirements
+4.7.  Lifetime Requirements
 
    An NFS server that implements only synchronous copy does not require
    the stricter COPY state ID lifetime requirements described in
@@ -440,8 +531,8 @@ Table of Contents
    no requirement that the NFS client's callback service remember
    filehandles after a copy operation has completed.
 
-      |  Is the NFS server permitted to purge the copy offload state ID
-      |  if the CB_OFFLOAD status code is NFS4ERR_BADHANDLE ?
+      |  cel: Is the NFS server permitted to purge the copy offload
+      |  state ID if the CB_OFFLOAD status code is NFS4ERR_BADHANDLE ?
 
    The authors recommend that Section 16.1.3 of [RFC7862] should be
    updated to describe this use of NFS4ERR_BADHANDLE.
@@ -483,8 +574,8 @@ Table of Contents
    it does not, the NFS client's callback service responds with a status
    code of NFS4ERR_BAD_STATEID.
 
-      |  Is the NFS server permitted to purge the copy offload state ID
-      |  if the CB_OFFLOAD status code is NFS4ERR_BAD_STATEID ?
+      |  cel: Is the NFS server permitted to purge the copy offload
+      |  state ID if the CB_OFFLOAD status code is NFS4ERR_BAD_STATEID ?
 
    The authors recommend that Section 16.1.3 of [RFC7862] should be
    updated to describe this use of NFS4ERR_BAD_STATEID.
@@ -652,6 +743,14 @@ Table of Contents
       OFFLOAD_STATUS report the number of bytes copied and a completion
       status of NFS4_OK.
 
+      |  olga: The section clarifies various things about OFFLOAD_CANCEL
+      |  but it reads to me geared towards an intra-copy offload.  There
+      |  isn't any mention of how the source server in inter-copy should
+      |  react when it receives an OFFLOAD_CANCEL.  Receiving an
+      |  OFFLOAD_CANCEL can allow the source server to invalidate the
+      |  copy stateid it's keeping active to allow reads with that copy
+      |  stateid.
+
 7.  OFFLOAD_STATUS Implementation Notes
 
    Paragraph 2 of Section 15.9.3 of [RFC7862] states:
@@ -782,9 +881,17 @@ Table of Contents
    REQUIRED (i.e., column 3 of the OFFLOAD_STATUS row should read the
    same as column 3 of the CB_OFFLOAD row in Table 6).
 
-10.  Handling NFS Server Shutdown
+10.  Inter-server Interoperation
 
-10.1.  Graceful Shutdown
+      |  olga: If Linux server were to ever interoperate with other
+      |  server implementations of being either the source server or the
+      |  destination server: I don't know how important are the IPs
+      |  being listed in the copy_notify reply.  I don't believe either
+      |  the Linux client or server does anything with them.
+
+11.  Handling NFS Server Shutdown
+
+11.1.  Graceful Shutdown
 
    This section discusses what happens to ongoing asynchronous copy
    operations when an NFS server shuts down due to an administrator
@@ -820,14 +927,19 @@ Table of Contents
    were pending during the previous server epoch, as described in the
    next subsection.
 
-10.2.  Client Recovery Actions
+      |  olga: This graceful shutdown seems like putting too much
+      |  requirement on the server.  Say the server was in the middle of
+      |  doing lots of WRITEs, does graceful shutdown terminate the
+      |  writes and send short write response back?  Or read....
+
+11.2.  Client Recovery Actions
 
    In order to ensure the proper completion of asynchronous COPY
    operations that were active during an NFS server restart, clients
    need to track these operations and restart them as part of NFSv4
    state recovery.
 
-11.  Security Considerations
+12.  Security Considerations
 
    One critical responsibility of an NFS server implementation is to
    manage its finite set of resources in a way that minimizes the
@@ -876,7 +988,7 @@ Table of Contents
       Managing Abandoned COPY State on the Server
 
       A related issue is how much COPY state can accrue on a server due
-      to lost CB_OFFLOAD requests.  The mandates in Section 4.4 require
+      to lost CB_OFFLOAD requests.  The mandates in Section 4.7 require
       a server to retain abandoned COPY state indefinitely.  A server
       can reject new asynchronous COPY requests using
       NFS4ERR_OFFLOAD_NO_REQS when there are many abandoned COPY state
@@ -895,7 +1007,7 @@ Table of Contents
       client's callback service must take care to prune any cached state
       in order to avoid a potential denial of service.
 
-11.1.  Use of RPC-with-TLS for Server-to-server COPY
+12.1.  Securing Inter-server COPY
 
    To date, there have been no implementations of RPCSEC GSSv3
    [RFC7861], which is mandatory-to-implement for secure server-to-
@@ -913,13 +1025,19 @@ Table of Contents
    that is passed through the client to the destination server to be
    used against the source server.
 
-12.  IANA Considerations
+      |  olga: If we're ever going to "require" GSSv3, I think the
+      |  overhead of establishing the krb5 context would greatly impact
+      |  copy performance.... Even if we are going to require TLS.  That
+      |  might be even more?  Not sure how krb5 handshake cost compares
+      |  to TLS handshake cost.
+
+13.  IANA Considerations
 
    This document requests no IANA actions.
 
-13.  References
+14.  References
 
-13.1.  Normative References
+14.1.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -949,7 +1067,7 @@ Table of Contents
               DOI 10.17487/RFC8881, August 2020,
               <https://www.rfc-editor.org/rfc/rfc8881>.
 
-13.2.  Informative References
+14.2.  Informative References
 
    [RFC7861]  Adamson, A. and N. Williams, "Remote Procedure Call (RPC)
               Security Version 3", RFC 7861, DOI 10.17487/RFC7861,
