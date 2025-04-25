@@ -93,14 +93,14 @@ the COPY operation in {{RFC7862}}.
 
 {::boilerplate bcp14-tagged}
 
-This document is Informational. However, it utilizes BCP14 compliance
+This document is Informative. However, it utilizes BCP14 compliance
 keywords in two ways:
 
-- As part of a quotation of a Normative RFC, or
+- As part of quotations of Normative RFCs, or
 - As part of suggested improvements to Normative language found in
-  other, Normative RFCs.
+  Normative RFCs.
 
-These keyword usages are Informational only.
+These BCP14 keyword usages are Informative only.
 
 # Synchronous versus Asynchronous COPY
 
