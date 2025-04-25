@@ -128,15 +128,15 @@ Table of Contents
    BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
    capitals, as shown here.
 
-   This document is Informational.  However, it utilizes BCP14
-   compliance keywords in two ways:
+   This document is Informative.  However, it utilizes BCP14 compliance
+   keywords in two ways:
 
-   *  As part of a quotation of a Normative RFC, or
+   *  As part of quotations of Normative RFCs, or
 
    *  As part of suggested improvements to Normative language found in
-      other, Normative RFCs.
+      Normative RFCs.
 
-   These keyword usages are Informational only.
+   These BCP14 keyword usages are Informative only.
 
 3.  Synchronous versus Asynchronous COPY
 
