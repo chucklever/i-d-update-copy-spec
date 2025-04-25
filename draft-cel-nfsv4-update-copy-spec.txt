@@ -9,8 +9,7 @@ Expires: 27 October 2025                                          Oracle
                                                            25 April 2025
 
 
-Updates to the Specification of the Network File System version 4.2 COPY
-                               Operation
+Network File System version 4.2 COPY Operation Implementation Experience
                 draft-cel-nfsv4-update-copy-spec-latest
 
 Abstract
