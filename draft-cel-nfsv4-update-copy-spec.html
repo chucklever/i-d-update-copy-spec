@@ -14,6 +14,8 @@ NFSv4.2 COPY operation, as described in  .
 <meta content="xml2rfc 3.28.1" name="generator">
 <meta content="NFSv4.2" name="keyword">
 <meta content="COPY" name="keyword">
+<meta content="CLONE" name="keyword">
+<meta content="WRITE_SAME" name="keyword">
 <meta content="offload" name="keyword">
 <meta content="draft-cel-nfsv4-update-copy-spec-latest" name="ietf.draft">
 <!-- Generator version information:
@@ -1052,7 +1054,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Kornievskaia &amp; Lever</td>
-<td class="center">Expires 27 October 2025</td>
+<td class="center">Expires 28 October 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1065,12 +1067,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-cel-nfsv4-update-copy-spec-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-04-25" class="published">25 April 2025</time>
+<time datetime="2025-04-26" class="published">26 April 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-10-27">27 October 2025</time></dd>
+<dd class="expires"><time datetime="2025-10-28">28 October 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1126,7 +1128,7 @@ NFSv4.2 COPY operation, as described in <span>[<a href="#RFC7862" class="cite xr
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 27 October 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 28 October 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1236,46 +1238,59 @@ NFSv4.2 COPY operation, as described in <span>[<a href="#RFC7862" class="cite xr
             <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-asynchronous-copy-completio" class="internal xref">Asynchronous Copy Completion Reliability</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
-            <p id="section-toc.1-1.10.1"><a href="#section-10" class="auto internal xref">10</a>. <a href="#name-inter-server-interoperation" class="internal xref">Inter-server Interoperation</a></p>
+            <p id="section-toc.1-1.10.1"><a href="#section-10" class="auto internal xref">10</a>. <a href="#name-inter-server-copy-interoper" class="internal xref">Inter-server Copy Interoperation</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
-            <p id="section-toc.1-1.11.1"><a href="#section-11" class="auto internal xref">11</a>. <a href="#name-handling-nfs-server-shutdow" class="internal xref">Handling NFS Server Shutdown</a></p>
+            <p id="section-toc.1-1.11.1"><a href="#section-11" class="auto internal xref">11</a>. <a href="#name-nfsv42-clone-operation" class="internal xref">NFSv4.2 CLONE Operation</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.1">
-                <p id="section-toc.1-1.11.2.1.1"><a href="#section-11.1" class="auto internal xref">11.1</a>.  <a href="#name-graceful-shutdown" class="internal xref">Graceful Shutdown</a></p>
+                <p id="section-toc.1-1.11.2.1.1"><a href="#section-11.1" class="auto internal xref">11.1</a>.  <a href="#name-the-fattr4_clone_blksize-at" class="internal xref">The FATTR4_CLONE_BLKSIZE Attribute</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.1.2.1">
+                    <p id="section-toc.1-1.11.2.1.2.1.1"><a href="#section-11.1.1" class="auto internal xref">11.1.1</a>.  <a href="#name-possible-deprecation-of-the" class="internal xref">Possible Deprecation of the FATTR4_CLONE_BLKSIZE Attribute</a></p>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.2">
-                <p id="section-toc.1-1.11.2.2.1"><a href="#section-11.2" class="auto internal xref">11.2</a>.  <a href="#name-client-recovery-actions" class="internal xref">Client Recovery Actions</a></p>
+                </ul>
 </li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
-            <p id="section-toc.1-1.12.1"><a href="#section-12" class="auto internal xref">12</a>. <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
+            <p id="section-toc.1-1.12.1"><a href="#section-12" class="auto internal xref">12</a>. <a href="#name-handling-nfs-server-shutdow" class="internal xref">Handling NFS Server Shutdown</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.1">
-                <p id="section-toc.1-1.12.2.1.1"><a href="#section-12.1" class="auto internal xref">12.1</a>.  <a href="#name-securing-inter-server-copy" class="internal xref">Securing Inter-server COPY</a></p>
+                <p id="section-toc.1-1.12.2.1.1"><a href="#section-12.1" class="auto internal xref">12.1</a>.  <a href="#name-graceful-shutdown" class="internal xref">Graceful Shutdown</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.2">
+                <p id="section-toc.1-1.12.2.2.1"><a href="#section-12.2" class="auto internal xref">12.2</a>.  <a href="#name-client-recovery-actions" class="internal xref">Client Recovery Actions</a></p>
 </li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13">
-            <p id="section-toc.1-1.13.1"><a href="#section-13" class="auto internal xref">13</a>. <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
-</li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14">
-            <p id="section-toc.1-1.14.1"><a href="#section-14" class="auto internal xref">14</a>. <a href="#name-references" class="internal xref">References</a></p>
+            <p id="section-toc.1-1.13.1"><a href="#section-13" class="auto internal xref">13</a>. <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
 <ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14.2.1">
-                <p id="section-toc.1-1.14.2.1.1"><a href="#section-14.1" class="auto internal xref">14.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14.2.2">
-                <p id="section-toc.1-1.14.2.2.1"><a href="#section-14.2" class="auto internal xref">14.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.1">
+                <p id="section-toc.1-1.13.2.1.1"><a href="#section-13.1" class="auto internal xref">13.1</a>.  <a href="#name-securing-inter-server-copy" class="internal xref">Securing Inter-server COPY</a></p>
 </li>
             </ul>
 </li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14">
+            <p id="section-toc.1-1.14.1"><a href="#section-14" class="auto internal xref">14</a>. <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
+</li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.15">
-            <p id="section-toc.1-1.15.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+            <p id="section-toc.1-1.15.1"><a href="#section-15" class="auto internal xref">15</a>. <a href="#name-references" class="internal xref">References</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.15.2.1">
+                <p id="section-toc.1-1.15.2.1.1"><a href="#section-15.1" class="auto internal xref">15.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.15.2.2">
+                <p id="section-toc.1-1.15.2.2.1"><a href="#section-15.2" class="auto internal xref">15.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.16">
-            <p id="section-toc.1-1.16.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
+            <p id="section-toc.1-1.16.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17">
+            <p id="section-toc.1-1.17.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
 </li>
         </ul>
 </nav>
@@ -2218,10 +2233,10 @@ one such mechanism in the form of the OFFLOAD_STATUS operation.<a href="#section
 read the same as column 3 of the CB_OFFLOAD row in Table 6).<a href="#section-9-10" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="inter-server-interoperation">
+<div id="inter-server-copy-interoperation">
 <section id="section-10">
-      <h2 id="name-inter-server-interoperation">
-<a href="#section-10" class="section-number selfRef">10. </a><a href="#name-inter-server-interoperation" class="section-name selfRef">Inter-server Interoperation</a>
+      <h2 id="name-inter-server-copy-interoper">
+<a href="#section-10" class="section-number selfRef">10. </a><a href="#name-inter-server-copy-interoper" class="section-name selfRef">Inter-server Copy Interoperation</a>
       </h2>
 <aside id="section-10-1">
         <p id="section-10-1.1">olga:
@@ -2233,171 +2248,251 @@ server does anything with them.<a href="#section-10-1.1" class="pilcrow">¶</a><
 </aside>
 </section>
 </div>
-<div id="handling-nfs-server-shutdown">
+<div id="nfsv42-clone-operation">
 <section id="section-11">
+      <h2 id="name-nfsv42-clone-operation">
+<a href="#section-11" class="section-number selfRef">11. </a><a href="#name-nfsv42-clone-operation" class="section-name selfRef">NFSv4.2 CLONE Operation</a>
+      </h2>
+<div id="the-fattr4cloneblksize-attribute">
+<section id="section-11.1">
+        <h3 id="name-the-fattr4_clone_blksize-at">
+<a href="#section-11.1" class="section-number selfRef">11.1. </a><a href="#name-the-fattr4_clone_blksize-at" class="section-name selfRef">The FATTR4_CLONE_BLKSIZE Attribute</a>
+        </h3>
+<p id="section-11.1-1"><span><a href="https://rfc-editor.org/rfc/rfc7862#section-4.1.2" class="relref">Section 4.1.2</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span> states that an NFS server that implements
+the CLONE operation is required to implement the FATTR4_CLONE_BLKSIZE
+attribute:<a href="#section-11.1-1" class="pilcrow">¶</a></p>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-11.1-2.1">
+            <p id="section-11.1-2.1.1">If a server supports the CLONE feature, then it <span class="bcp14">MUST</span> support the
+CLONE operation and the clone_blksize attribute on any file system on
+which CLONE is supported (as either source or destination file).<a href="#section-11.1-2.1.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-11.1-3">Although the Linux NFS server implements the NFSv4.2 CLONE operation,
+it does not implement FATTR4_CLONE_BLKSIZE.<a href="#section-11.1-3" class="pilcrow">¶</a></p>
+<p id="section-11.1-4">The specification has very little to say about what this attribute
+conveys. <span><a href="https://rfc-editor.org/rfc/rfc7862#section-12.2.1" class="relref">Section 12.2.1</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span> states only:<a href="#section-11.1-4" class="pilcrow">¶</a></p>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-11.1-5.1">
+            <p id="section-11.1-5.1.1">The clone_blksize attribute indicates the granularity of a CLONE
+operation.<a href="#section-11.1-5.1.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-11.1-6">There are no units mentioned in this section. There are several
+plausible alternatives: bytes, kilobytes, or even sectors.
+<span>[<a href="#RFC7862" class="cite xref">RFC7862</a>]</span> needs to make clear the underlying semantics of this
+attribute value.<a href="#section-11.1-6" class="pilcrow">¶</a></p>
+<p id="section-11.1-7">There is no mention of what value should be used when the shared
+file system does not provide or require a restrictive clone block
+size. The Linux NFS client assumes that "0" means no alignment
+restrictions; it skips clone alignment checking if clone_blksize
+value happens to be zero. That implementation also appears to
+tolerate a server that does not return the FATTR4_CLONE_BLKSIZE
+attribute at all.<a href="#section-11.1-7" class="pilcrow">¶</a></p>
+<p id="section-11.1-8">The change history of draft-ietf-nfsv4-minorversion2 suggests that
+at one point, the NFSv4.2 specification contained much more detail
+about how FATTR4_CLONE_BLKSIZE was to be used. For example, older
+revisions of that draft stated:<a href="#section-11.1-8" class="pilcrow">¶</a></p>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-11.1-9.1">
+            <p id="section-11.1-9.1.1">Both cl_src_offset and cl_dst_offset must be aligned to the clone
+block size Section 12.2.1. The number of bytes to be cloned must
+be a multiple of the clone block size, except in the case in which
+cl_src_offset plus the number of bytes to be cloned is equal to
+the source file size.<a href="#section-11.1-9.1.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-11.1-10"><span><a href="https://rfc-editor.org/rfc/rfc7862#section-12" class="relref">Section 12</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span> does not specify whether FATTR4_CLONE_BLKSIZE
+is a per-file, per-file system, or per-server attribute. Per-file is
+perhaps the most appropriate because some modern file systems can use
+different block sizes for different files.<a href="#section-11.1-10" class="pilcrow">¶</a></p>
+<p id="section-11.1-11">Note that <span><a href="https://rfc-editor.org/rfc/rfc7862#section-4.1.2" class="relref">Section 4.1.2</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span> states that the attribute <span class="bcp14">MUST</span>
+be implemented, but <span><a href="https://rfc-editor.org/rfc/rfc7862#section-12.2" class="relref">Section 12.2</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span> defines this attribute
+as <span class="bcp14">RECOMMENDED</span>. This contradiction needs to be rectified.<a href="#section-11.1-11" class="pilcrow">¶</a></p>
+<div id="possible-deprecation-of-the-fattr4cloneblksize-attribute">
+<section id="section-11.1.1">
+          <h4 id="name-possible-deprecation-of-the">
+<a href="#section-11.1.1" class="section-number selfRef">11.1.1. </a><a href="#name-possible-deprecation-of-the" class="section-name selfRef">Possible Deprecation of the FATTR4_CLONE_BLKSIZE Attribute</a>
+          </h4>
+<p id="section-11.1.1-1">An alternative to correcting the missing details is to instead
+deprecate the FATTR4_CLONE_BLKSIZE attribute. Server and filesystem
+combinations that cannot provide a fast, unrestricted byte-range clone
+mechanism can simply not make an NFSv4.2 CLONE operation available to
+NFSv4 clients.<a href="#section-11.1.1-1" class="pilcrow">¶</a></p>
+<p id="section-11.1.1-2">It might be that was the intention of the redaction of the alignment
+text from draft-ietf-nfsv4-minorversion2, and the FATTR4_CLONE_BLKSIZE
+attribute was simply missed during that edit of the document.<a href="#section-11.1.1-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+</section>
+</div>
+<div id="handling-nfs-server-shutdown">
+<section id="section-12">
       <h2 id="name-handling-nfs-server-shutdow">
-<a href="#section-11" class="section-number selfRef">11. </a><a href="#name-handling-nfs-server-shutdow" class="section-name selfRef">Handling NFS Server Shutdown</a>
+<a href="#section-12" class="section-number selfRef">12. </a><a href="#name-handling-nfs-server-shutdow" class="section-name selfRef">Handling NFS Server Shutdown</a>
       </h2>
 <div id="graceful-shutdown">
-<section id="section-11.1">
+<section id="section-12.1">
         <h3 id="name-graceful-shutdown">
-<a href="#section-11.1" class="section-number selfRef">11.1. </a><a href="#name-graceful-shutdown" class="section-name selfRef">Graceful Shutdown</a>
+<a href="#section-12.1" class="section-number selfRef">12.1. </a><a href="#name-graceful-shutdown" class="section-name selfRef">Graceful Shutdown</a>
         </h3>
-<p id="section-11.1-1">This section discusses what happens to ongoing asynchronous copy
+<p id="section-12.1-1">This section discusses what happens to ongoing asynchronous copy
 operations when an NFS server shuts down due to an administrator
-action.<a href="#section-11.1-1" class="pilcrow">¶</a></p>
-<p id="section-11.1-2">When an NFS server shuts down, it typically stops accepting work
+action.<a href="#section-12.1-1" class="pilcrow">¶</a></p>
+<p id="section-12.1-2">When an NFS server shuts down, it typically stops accepting work
 from the network. However, asynchronous copy is work the NFS server
 has already accepted. Normal network corking will not terminate
-ongoing work; corking stops only new work from being accepted.<a href="#section-11.1-2" class="pilcrow">¶</a></p>
-<p id="section-11.1-3">Thus, as an early part of NFS server shut down processing, the NFS
+ongoing work; corking stops only new work from being accepted.<a href="#section-12.1-2" class="pilcrow">¶</a></p>
+<p id="section-12.1-3">Thus, as an early part of NFS server shut down processing, the NFS
 server <span class="bcp14">SHOULD</span> explicitly terminate ongoing asynchronous copy operations.
 This triggers sending CB_OFFLOAD notifications for each terminated
 copy operation prior to the backchannel closing down. Each completion
 notification shows how many bytes the NFS server successfully copied
-before the copy operation was terminated by the shutdown.<a href="#section-11.1-3" class="pilcrow">¶</a></p>
-<p id="section-11.1-4">To prevent the destruction of the backchannel while asynchronous
+before the copy operation was terminated by the shutdown.<a href="#section-12.1-3" class="pilcrow">¶</a></p>
+<p id="section-12.1-4">To prevent the destruction of the backchannel while asynchronous
 copy operations are ongoing, the DESTROY_SESSION and DESTROY_CLIENTID
 operations <span class="bcp14">MUST</span> return a status of NFS4ERR_CLIENTID_BUSY until pending
 asynchronous copy operations have terminated
-(see <span><a href="https://rfc-editor.org/rfc/rfc8881#section-18.50.3" class="relref">Section 18.50.3</a> of [<a href="#RFC8881" class="cite xref">RFC8881</a>]</span>).<a href="#section-11.1-4" class="pilcrow">¶</a></p>
-<p id="section-11.1-5">Once copy activity has completed, shut down processing can also
+(see <span><a href="https://rfc-editor.org/rfc/rfc8881#section-18.50.3" class="relref">Section 18.50.3</a> of [<a href="#RFC8881" class="cite xref">RFC8881</a>]</span>).<a href="#section-12.1-4" class="pilcrow">¶</a></p>
+<p id="section-12.1-5">Once copy activity has completed, shut down processing can also
 proceed to remove all copy completion state (copy state IDs, copy
-offload state IDs, and copy completion status codes).<a href="#section-11.1-5" class="pilcrow">¶</a></p>
-<p id="section-11.1-6">An alternative implementation is that ongoing COPY operations are
+offload state IDs, and copy completion status codes).<a href="#section-12.1-5" class="pilcrow">¶</a></p>
+<p id="section-12.1-6">An alternative implementation is that ongoing COPY operations are
 simply terminated without a CB_OFFLOAD notification. In that case,
 NFS clients recognize that the NFS server has restarted, and as part
 of their state recovery, they can reissue any COPY operations that
 were pending during the previous server epoch, as described in the
-next subsection.<a href="#section-11.1-6" class="pilcrow">¶</a></p>
-<aside id="section-11.1-7">
-          <p id="section-11.1-7.1">olga: This graceful shutdown seems like putting too much
+next subsection.<a href="#section-12.1-6" class="pilcrow">¶</a></p>
+<aside id="section-12.1-7">
+          <p id="section-12.1-7.1">olga: This graceful shutdown seems like putting too much
 requirement on the server. Say the server was in the middle of doing
 lots of WRITEs, does graceful shutdown terminate the writes and send
-short write response back? Or read....<a href="#section-11.1-7.1" class="pilcrow">¶</a></p>
+short write response back? Or read....<a href="#section-12.1-7.1" class="pilcrow">¶</a></p>
 </aside>
 </section>
 </div>
 <div id="client-recovery-actions">
-<section id="section-11.2">
+<section id="section-12.2">
         <h3 id="name-client-recovery-actions">
-<a href="#section-11.2" class="section-number selfRef">11.2. </a><a href="#name-client-recovery-actions" class="section-name selfRef">Client Recovery Actions</a>
+<a href="#section-12.2" class="section-number selfRef">12.2. </a><a href="#name-client-recovery-actions" class="section-name selfRef">Client Recovery Actions</a>
         </h3>
-<p id="section-11.2-1">In order to ensure the proper completion of asynchronous COPY
+<p id="section-12.2-1">In order to ensure the proper completion of asynchronous COPY
 operations that were active during an NFS server restart, clients
 need to track these operations and restart them as part of NFSv4
-state recovery.<a href="#section-11.2-1" class="pilcrow">¶</a></p>
+state recovery.<a href="#section-12.2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
 </div>
 <div id="security-considerations">
-<section id="section-12">
+<section id="section-13">
       <h2 id="name-security-considerations">
-<a href="#section-12" class="section-number selfRef">12. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
+<a href="#section-13" class="section-number selfRef">13. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
-<p id="section-12-1">One critical responsibility of an NFS server implementation is
+<p id="section-13-1">One critical responsibility of an NFS server implementation is
 to manage its finite set of resources in a way that minimizes the
 opportunity for network actors (such as NFS clients) to maliciously
 or unintentionally trigger a denial-of-service scenario.  The authors
-recommend the following addendum to <span><a href="https://rfc-editor.org/rfc/rfc7862#section-4.9" class="relref">Section 4.9</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span>.<a href="#section-12-1" class="pilcrow">¶</a></p>
+recommend the following addendum to <span><a href="https://rfc-editor.org/rfc/rfc7862#section-4.9" class="relref">Section 4.9</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span>.<a href="#section-13-1" class="pilcrow">¶</a></p>
 <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-12-2.1">
-          <p id="section-12-2.1.1">Restricting Copies of Special Files<a href="#section-12-2.1.1" class="pilcrow">¶</a></p>
-<p id="section-12-2.1.2">Certain files on Unix-based systems act as an infinite source of
+<li class="normal ulEmpty" id="section-13-2.1">
+          <p id="section-13-2.1.1">Restricting Copies of Special Files<a href="#section-13-2.1.1" class="pilcrow">¶</a></p>
+<p id="section-13-2.1.2">Certain files on Unix-based systems act as an infinite source of
 data. One example is /dev/null. Another example is the system's
 random data generator. Server implementators should recognize
 these data sources and prevent unlimited copy operations from
-them (or to their sink counterparts).<a href="#section-12-2.1.2" class="pilcrow">¶</a></p>
-<p id="section-12-2.1.3">Limiting Size of Individual COPY Operations<a href="#section-12-2.1.3" class="pilcrow">¶</a></p>
-<p id="section-12-2.1.4">NFS server implementations have so far chosen to limit the byte
+them (or to their sink counterparts).<a href="#section-13-2.1.2" class="pilcrow">¶</a></p>
+<p id="section-13-2.1.3">Limiting Size of Individual COPY Operations<a href="#section-13-2.1.3" class="pilcrow">¶</a></p>
+<p id="section-13-2.1.4">NFS server implementations have so far chosen to limit the byte
 range of COPY operations, either by setting a fixed limit on the
 number of bytes a single COPY can process, where the server
 truncates the copied byte range, or by setting a timeout). In
-either case, the NFS server returns a short COPY result.<a href="#section-12-2.1.4" class="pilcrow">¶</a></p>
-<p id="section-12-2.1.5">Client implementations accommodate a short COPY result by sending
+either case, the NFS server returns a short COPY result.<a href="#section-13-2.1.4" class="pilcrow">¶</a></p>
+<p id="section-13-2.1.5">Client implementations accommodate a short COPY result by sending
 a fresh COPY for the remainder of the byte range, until the
-full byte range has been processed.<a href="#section-12-2.1.5" class="pilcrow">¶</a></p>
-<p id="section-12-2.1.6">An alternative approach is to convert all large synchronous copy
+full byte range has been processed.<a href="#section-13-2.1.5" class="pilcrow">¶</a></p>
+<p id="section-13-2.1.6">An alternative approach is to convert all large synchronous copy
 requests into asynchronous copy requests, if the server supports
-asynchronous copy.<a href="#section-12-2.1.6" class="pilcrow">¶</a></p>
-<p id="section-12-2.1.7">Limiting the Number of Outstanding Asynchronous COPY Operations<a href="#section-12-2.1.7" class="pilcrow">¶</a></p>
-<p id="section-12-2.1.8">It is easily possible for NFS clients to send more asynchronous
+asynchronous copy.<a href="#section-13-2.1.6" class="pilcrow">¶</a></p>
+<p id="section-13-2.1.7">Limiting the Number of Outstanding Asynchronous COPY Operations<a href="#section-13-2.1.7" class="pilcrow">¶</a></p>
+<p id="section-13-2.1.8">It is easily possible for NFS clients to send more asynchronous
 COPY requests than NFS server resources can handle. For example, a
 client could create a large file, and then request multiple copies
-of that file's contents.<a href="#section-12-2.1.8" class="pilcrow">¶</a></p>
-<p id="section-12-2.1.9">A good quality server implementation <span class="bcp14">SHOULD</span> block clients from
+of that file's contents.<a href="#section-13-2.1.8" class="pilcrow">¶</a></p>
+<p id="section-13-2.1.9">A good quality server implementation <span class="bcp14">SHOULD</span> block clients from
 starting many COPY operations. The implementation might apply a
 fixed per-client limit, a per-server limit, or a dynamic limit
 based on available resources. When that limit has been reached,
 subsequent COPY requests will receive NFS4ERR_OFFLOAD_NO_REQS
-in response until more server resources become available.<a href="#section-12-2.1.9" class="pilcrow">¶</a></p>
-<p id="section-12-2.1.10">Managing Abandoned COPY State on the Server<a href="#section-12-2.1.10" class="pilcrow">¶</a></p>
-<p id="section-12-2.1.11">A related issue is how much COPY state can accrue on a server
+in response until more server resources become available.<a href="#section-13-2.1.9" class="pilcrow">¶</a></p>
+<p id="section-13-2.1.10">Managing Abandoned COPY State on the Server<a href="#section-13-2.1.10" class="pilcrow">¶</a></p>
+<p id="section-13-2.1.11">A related issue is how much COPY state can accrue on a server
 due to lost CB_OFFLOAD requests. The mandates in <a href="#lifetime" class="auto internal xref">Section 4.7</a>
 require a server to retain abandoned COPY state indefinitely.
 A server can reject new asynchronous COPY requests using
 NFS4ERR_OFFLOAD_NO_REQS when there are many abandoned COPY
-state IDs.<a href="#section-12-2.1.11" class="pilcrow">¶</a></p>
-<p id="section-12-2.1.12">Considerations For The NFSv4 Callback Service<a href="#section-12-2.1.12" class="pilcrow">¶</a></p>
-<p id="section-12-2.1.13">There is a network service running on each NFSv4.2 client to
+state IDs.<a href="#section-13-2.1.11" class="pilcrow">¶</a></p>
+<p id="section-13-2.1.12">Considerations For The NFSv4 Callback Service<a href="#section-13-2.1.12" class="pilcrow">¶</a></p>
+<p id="section-13-2.1.13">There is a network service running on each NFSv4.2 client to
 handle CB_OFFLOAD operations. This service might handle only
 reverse-direction operations on an existing forward channel
 RPC transport, or it could also be available via separate
-transport connections from the NFS server.<a href="#section-12-2.1.13" class="pilcrow">¶</a></p>
-<p id="section-12-2.1.14">The CB_OFFLOAD operation manages state IDs that can have a
+transport connections from the NFS server.<a href="#section-13-2.1.13" class="pilcrow">¶</a></p>
+<p id="section-13-2.1.14">The CB_OFFLOAD operation manages state IDs that can have a
 lifetime longer than a single NFSv4 callback operation. The
 client's callback service must take care to prune any cached
-state in order to avoid a potential denial of service.<a href="#section-12-2.1.14" class="pilcrow">¶</a></p>
+state in order to avoid a potential denial of service.<a href="#section-13-2.1.14" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <div id="securing-inter-server-copy">
-<section id="section-12.1">
+<section id="section-13.1">
         <h3 id="name-securing-inter-server-copy">
-<a href="#section-12.1" class="section-number selfRef">12.1. </a><a href="#name-securing-inter-server-copy" class="section-name selfRef">Securing Inter-server COPY</a>
+<a href="#section-13.1" class="section-number selfRef">13.1. </a><a href="#name-securing-inter-server-copy" class="section-name selfRef">Securing Inter-server COPY</a>
         </h3>
-<p id="section-12.1-1">To date, there have been no implementations of RPCSEC GSSv3
+<p id="section-13.1-1">To date, there have been no implementations of RPCSEC GSSv3
 <span>[<a href="#RFC7861" class="cite xref">RFC7861</a>]</span>, which is mandatory-to-implement for secure
-server-to-server copy (see <span><a href="https://rfc-editor.org/rfc/rfc7862#section-4.9" class="relref">Section 4.9</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span>.<a href="#section-12.1-1" class="pilcrow">¶</a></p>
-<p id="section-12.1-2">There are several implementations of RPC-with-TLS <span>[<a href="#RFC9289" class="cite xref">RFC9289</a>]</span>,
+server-to-server copy (see <span><a href="https://rfc-editor.org/rfc/rfc7862#section-4.9" class="relref">Section 4.9</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span>.<a href="#section-13.1-1" class="pilcrow">¶</a></p>
+<p id="section-13.1-2">There are several implementations of RPC-with-TLS <span>[<a href="#RFC9289" class="cite xref">RFC9289</a>]</span>,
 including on systems that also implement the NFSv4.2 COPY
 operation. There has been some discussion of using TLS to
-secure the server-to-server copy mechanism.<a href="#section-12.1-2" class="pilcrow">¶</a></p>
-<p id="section-12.1-3">Although TLS is able to provide integrity and confidentiality
+secure the server-to-server copy mechanism.<a href="#section-13.1-2" class="pilcrow">¶</a></p>
+<p id="section-13.1-3">Although TLS is able to provide integrity and confidentiality
 of in-flight copy data, the user authentication capability
 provided by RPCSEC GSSv3 is still missing. What is missing
 is the ability to pass a capability. GSSv3 generates a
 capability on the source server that is passed through the
 client to the destination server to be used against the
-source server.<a href="#section-12.1-3" class="pilcrow">¶</a></p>
-<aside id="section-12.1-4">
-          <p id="section-12.1-4.1">olga: If we're ever going to "require" GSSv3, I think the
+source server.<a href="#section-13.1-3" class="pilcrow">¶</a></p>
+<aside id="section-13.1-4">
+          <p id="section-13.1-4.1">olga: If we're ever going to "require" GSSv3, I think the
 overhead of establishing the krb5 context would greatly
 impact copy performance.... Even if we are going to require
 TLS. That might be even more? Not sure how krb5 handshake
-cost compares to TLS handshake cost.<a href="#section-12.1-4.1" class="pilcrow">¶</a></p>
+cost compares to TLS handshake cost.<a href="#section-13.1-4.1" class="pilcrow">¶</a></p>
 </aside>
 </section>
 </div>
 </section>
 </div>
 <div id="iana-considerations">
-<section id="section-13">
+<section id="section-14">
       <h2 id="name-iana-considerations">
-<a href="#section-13" class="section-number selfRef">13. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
+<a href="#section-14" class="section-number selfRef">14. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
-<p id="section-13-1">This document requests no IANA actions.<a href="#section-13-1" class="pilcrow">¶</a></p>
+<p id="section-14-1">This document requests no IANA actions.<a href="#section-14-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-combined-references">
-<section id="section-14">
+<section id="section-15">
       <h2 id="name-references">
-<a href="#section-14" class="section-number selfRef">14. </a><a href="#name-references" class="section-name selfRef">References</a>
+<a href="#section-15" class="section-number selfRef">15. </a><a href="#name-references" class="section-name selfRef">References</a>
       </h2>
 <div id="sec-normative-references">
-<section id="section-14.1">
+<section id="section-15.1">
         <h3 id="name-normative-references">
-<a href="#section-14.1" class="section-number selfRef">14.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+<a href="#section-15.1" class="section-number selfRef">15.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
         </h3>
 <dl class="references">
 <dt id="RFC2119">[RFC2119]</dt>
@@ -2428,9 +2523,9 @@ cost compares to TLS handshake cost.<a href="#section-12.1-4.1" class="pilcrow">
 </section>
 </div>
 <div id="sec-informative-references">
-<section id="section-14.2">
+<section id="section-15.2">
         <h3 id="name-informative-references">
-<a href="#section-14.2" class="section-number selfRef">14.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+<a href="#section-15.2" class="section-number selfRef">15.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
         </h3>
 <dl class="references">
 <dt id="RFC7861">[RFC7861]</dt>

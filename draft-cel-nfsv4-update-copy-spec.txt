@@ -5,8 +5,8 @@
 Network File System Version 4                            O. Kornievskaia
 Internet-Draft                                                    RedHat
 Intended status: Informational                             C. Lever, Ed.
-Expires: 27 October 2025                                          Oracle
-                                                           25 April 2025
+Expires: 28 October 2025                                          Oracle
+                                                           26 April 2025
 
 
 Network File System version 4.2 COPY Operation Implementation Experience
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 27 October 2025.
+   This Internet-Draft will expire on 28 October 2025.
 
 Copyright Notice
 
@@ -94,16 +94,20 @@ Table of Contents
    7.  OFFLOAD_STATUS Implementation Notes
    8.  Short COPY results
    9.  Asynchronous Copy Completion Reliability
-   10. Inter-server Interoperation
-   11. Handling NFS Server Shutdown
-     11.1.  Graceful Shutdown
-     11.2.  Client Recovery Actions
-   12. Security Considerations
-     12.1.  Securing Inter-server COPY
-   13. IANA Considerations
-   14. References
-     14.1.  Normative References
-     14.2.  Informative References
+   10. Inter-server Copy Interoperation
+   11. NFSv4.2 CLONE Operation
+     11.1.  The FATTR4_CLONE_BLKSIZE Attribute
+       11.1.1.  Possible Deprecation of the FATTR4_CLONE_BLKSIZE
+               Attribute
+   12. Handling NFS Server Shutdown
+     12.1.  Graceful Shutdown
+     12.2.  Client Recovery Actions
+   13. Security Considerations
+     13.1.  Securing Inter-server COPY
+   14. IANA Considerations
+   15. References
+     15.1.  Normative References
+     15.2.  Informative References
    Acknowledgments
    Authors' Addresses
 
@@ -881,7 +885,7 @@ Table of Contents
    REQUIRED (i.e., column 3 of the OFFLOAD_STATUS row should read the
    same as column 3 of the CB_OFFLOAD row in Table 6).
 
-10.  Inter-server Interoperation
+10.  Inter-server Copy Interoperation
 
       |  olga: If Linux server were to ever interoperate with other
       |  server implementations of being either the source server or the
@@ -889,9 +893,76 @@ Table of Contents
       |  being listed in the copy_notify reply.  I don't believe either
       |  the Linux client or server does anything with them.
 
-11.  Handling NFS Server Shutdown
+11.  NFSv4.2 CLONE Operation
 
-11.1.  Graceful Shutdown
+11.1.  The FATTR4_CLONE_BLKSIZE Attribute
+
+   Section 4.1.2 of [RFC7862] states that an NFS server that implements
+   the CLONE operation is required to implement the FATTR4_CLONE_BLKSIZE
+   attribute:
+
+      If a server supports the CLONE feature, then it MUST support the
+      CLONE operation and the clone_blksize attribute on any file system
+      on which CLONE is supported (as either source or destination
+      file).
+
+   Although the Linux NFS server implements the NFSv4.2 CLONE operation,
+   it does not implement FATTR4_CLONE_BLKSIZE.
+
+   The specification has very little to say about what this attribute
+   conveys.  Section 12.2.1 of [RFC7862] states only:
+
+      The clone_blksize attribute indicates the granularity of a CLONE
+      operation.
+
+   There are no units mentioned in this section.  There are several
+   plausible alternatives: bytes, kilobytes, or even sectors.  [RFC7862]
+   needs to make clear the underlying semantics of this attribute value.
+
+   There is no mention of what value should be used when the shared file
+   system does not provide or require a restrictive clone block size.
+   The Linux NFS client assumes that "0" means no alignment
+   restrictions; it skips clone alignment checking if clone_blksize
+   value happens to be zero.  That implementation also appears to
+   tolerate a server that does not return the FATTR4_CLONE_BLKSIZE
+   attribute at all.
+
+   The change history of draft-ietf-nfsv4-minorversion2 suggests that at
+   one point, the NFSv4.2 specification contained much more detail about
+   how FATTR4_CLONE_BLKSIZE was to be used.  For example, older
+   revisions of that draft stated:
+
+      Both cl_src_offset and cl_dst_offset must be aligned to the clone
+      block size Section 12.2.1.  The number of bytes to be cloned must
+      be a multiple of the clone block size, except in the case in which
+      cl_src_offset plus the number of bytes to be cloned is equal to
+      the source file size.
+
+   Section 12 of [RFC7862] does not specify whether FATTR4_CLONE_BLKSIZE
+   is a per-file, per-file system, or per-server attribute.  Per-file is
+   perhaps the most appropriate because some modern file systems can use
+   different block sizes for different files.
+
+   Note that Section 4.1.2 of [RFC7862] states that the attribute MUST
+   be implemented, but Section 12.2 of [RFC7862] defines this attribute
+   as RECOMMENDED.  This contradiction needs to be rectified.
+
+11.1.1.  Possible Deprecation of the FATTR4_CLONE_BLKSIZE Attribute
+
+   An alternative to correcting the missing details is to instead
+   deprecate the FATTR4_CLONE_BLKSIZE attribute.  Server and filesystem
+   combinations that cannot provide a fast, unrestricted byte-range
+   clone mechanism can simply not make an NFSv4.2 CLONE operation
+   available to NFSv4 clients.
+
+   It might be that was the intention of the redaction of the alignment
+   text from draft-ietf-nfsv4-minorversion2, and the
+   FATTR4_CLONE_BLKSIZE attribute was simply missed during that edit of
+   the document.
+
+12.  Handling NFS Server Shutdown
+
+12.1.  Graceful Shutdown
 
    This section discusses what happens to ongoing asynchronous copy
    operations when an NFS server shuts down due to an administrator
@@ -932,14 +1003,14 @@ Table of Contents
       |  doing lots of WRITEs, does graceful shutdown terminate the
       |  writes and send short write response back?  Or read....
 
-11.2.  Client Recovery Actions
+12.2.  Client Recovery Actions
 
    In order to ensure the proper completion of asynchronous COPY
    operations that were active during an NFS server restart, clients
    need to track these operations and restart them as part of NFSv4
    state recovery.
 
-12.  Security Considerations
+13.  Security Considerations
 
    One critical responsibility of an NFS server implementation is to
    manage its finite set of resources in a way that minimizes the
@@ -1007,7 +1078,7 @@ Table of Contents
       client's callback service must take care to prune any cached state
       in order to avoid a potential denial of service.
 
-12.1.  Securing Inter-server COPY
+13.1.  Securing Inter-server COPY
 
    To date, there have been no implementations of RPCSEC GSSv3
    [RFC7861], which is mandatory-to-implement for secure server-to-
@@ -1031,13 +1102,13 @@ Table of Contents
       |  might be even more?  Not sure how krb5 handshake cost compares
       |  to TLS handshake cost.
 
-13.  IANA Considerations
+14.  IANA Considerations
 
    This document requests no IANA actions.
 
-14.  References
+15.  References
 
-14.1.  Normative References
+15.1.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -1067,7 +1138,7 @@ Table of Contents
               DOI 10.17487/RFC8881, August 2020,
               <https://www.rfc-editor.org/rfc/rfc8881>.
 
-14.2.  Informative References
+15.2.  Informative References
 
    [RFC7861]  Adamson, A. and N. Williams, "Remote Procedure Call (RPC)
               Security Version 3", RFC 7861, DOI 10.17487/RFC7861,
