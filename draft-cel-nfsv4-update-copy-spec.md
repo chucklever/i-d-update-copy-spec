@@ -17,6 +17,8 @@ obsoletes:
 keyword:
  - NFSv4.2
  - COPY
+ - CLONE
+ - WRITE_SAME
  - offload
 
 author:
@@ -865,7 +867,7 @@ In addition, Table 5 should be updated to make OFFLOAD_STATUS
 REQUIRED (i.e., column 3 of the OFFLOAD_STATUS row should
 read the same as column 3 of the CB_OFFLOAD row in Table 6).
 
-# Inter-server Interoperation
+# Inter-server Copy Interoperation
 
 {:aside}
 > olga:
@@ -874,6 +876,72 @@ read the same as column 3 of the CB_OFFLOAD row in Table 6).
 > server: I don't know how important are the IPs being listed in the
 > copy_notify reply. I don't believe either the Linux client or
 > server does anything with them.
+
+# NFSv4.2 CLONE Operation
+
+## The FATTR4_CLONE_BLKSIZE Attribute
+
+{{Section 4.1.2 of RFC7862}} states that an NFS server that implements
+the CLONE operation is required to implement the FATTR4_CLONE_BLKSIZE
+attribute:
+
+> If a server supports the CLONE feature, then it MUST support the
+> CLONE operation and the clone_blksize attribute on any file system on
+> which CLONE is supported (as either source or destination file).
+
+Although the Linux NFS server implements the NFSv4.2 CLONE operation,
+it does not implement FATTR4_CLONE_BLKSIZE.
+
+The specification has very little to say about what this attribute
+conveys. {{Section 12.2.1 of RFC7862}} states only:
+
+> The clone_blksize attribute indicates the granularity of a CLONE
+> operation.
+
+There are no units mentioned in this section. There are several
+plausible alternatives: bytes, kilobytes, or even sectors.
+{{RFC7862}} needs to make clear the underlying semantics of this
+attribute value.
+
+There is no mention of what value should be used when the shared
+file system does not provide or require a restrictive clone block
+size. The Linux NFS client assumes that "0" means no alignment
+restrictions; it skips clone alignment checking if clone_blksize
+value happens to be zero. That implementation also appears to
+tolerate a server that does not return the FATTR4_CLONE_BLKSIZE
+attribute at all.
+
+The change history of draft-ietf-nfsv4-minorversion2 suggests that
+at one point, the NFSv4.2 specification contained much more detail
+about how FATTR4_CLONE_BLKSIZE was to be used. For example, older
+revisions of that draft stated:
+
+> Both cl_src_offset and cl_dst_offset must be aligned to the clone
+> block size Section 12.2.1. The number of bytes to be cloned must
+> be a multiple of the clone block size, except in the case in which
+> cl_src_offset plus the number of bytes to be cloned is equal to
+> the source file size.
+
+{{Section 12 of RFC7862}} does not specify whether FATTR4_CLONE_BLKSIZE
+is a per-file, per-file system, or per-server attribute. Per-file is
+perhaps the most appropriate because some modern file systems can use
+different block sizes for different files.
+
+Note that {{Section 4.1.2 of RFC7862}} states that the attribute MUST
+be implemented, but {{Section 12.2 of RFC7862}} defines this attribute
+as RECOMMENDED. This contradiction needs to be rectified.
+
+### Possible Deprecation of the FATTR4_CLONE_BLKSIZE Attribute
+
+An alternative to correcting the missing details is to instead
+deprecate the FATTR4_CLONE_BLKSIZE attribute. Server and filesystem
+combinations that cannot provide a fast, unrestricted byte-range clone
+mechanism can simply not make an NFSv4.2 CLONE operation available to
+NFSv4 clients.
+
+It might be that was the intention of the redaction of the alignment
+text from draft-ietf-nfsv4-minorversion2, and the FATTR4_CLONE_BLKSIZE
+attribute was simply missed during that edit of the document.
 
 # Handling NFS Server Shutdown
 
