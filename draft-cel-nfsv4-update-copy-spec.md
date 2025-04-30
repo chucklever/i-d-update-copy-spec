@@ -1102,7 +1102,14 @@ and work on implementations of NFSv4.2 COPY.
 The authors are grateful to Bill Baker, Jeff Layton, Greg Marsden,
 and Martin Thomson for their input and support.
 
-Special thanks to Transport Area Directors Martin Duke and
-Zaheduzzaman Sarker, NFSV4 Working Group Chairs Chris Inacio and
-Brian Pawlowski, and NFSV4 Working Group Secretary Thomas Haynes for
-their guidance and oversight.
+Special thanks to
+Area Director
+Gorry Fairhurst,
+NFSV4 Working Group Chairs
+Brian Pawlowski
+and
+Christopher Inacio,
+and
+NFSV4 Working Group Secretary
+Thomas Haynes
+for their guidance and oversight.
