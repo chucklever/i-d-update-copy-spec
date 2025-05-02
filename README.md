@@ -4,10 +4,10 @@
 
 This is the working area for the individual Internet-Draft, "Network File System version 4.2 COPY Operation Implementation Experience".
 
-* [Editor's Copy](https://chucklever.github.io/i-d-update-copy-spec/#go.draft-cel-nfsv4-update-copy-spec.html)
-* [Datatracker Page](https://datatracker.ietf.org/doc/draft-cel-nfsv4-update-copy-spec)
-* [Individual Draft](https://datatracker.ietf.org/doc/html/draft-cel-nfsv4-update-copy-spec)
-* [Compare Editor's Copy to Individual Draft](https://chucklever.github.io/i-d-update-copy-spec/#go.draft-cel-nfsv4-update-copy-spec.diff)
+* [Editor's Copy](https://chucklever.github.io/i-d-update-copy-spec/#go.draft-cel-nfsv4-copy-implementation-experience.html)
+* [Datatracker Page](https://datatracker.ietf.org/doc/draft-cel-nfsv4-copy-implementation-experience)
+* [Individual Draft](https://datatracker.ietf.org/doc/html/draft-cel-nfsv4-copy-implementation-experience)
+* [Compare Editor's Copy to Individual Draft](https://chucklever.github.io/i-d-update-copy-spec/#go.draft-cel-nfsv4-copy-implementation-experience.diff)
 
 
 ## Contributing
