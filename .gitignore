@@ -17,6 +17,7 @@
 /node_modules/
 /versioned/
 archive.json
+draft-cel-nfsv4-copy-implementation-experience.xml
 draft-cel-nfsv4-update-copy-spec.xml
 Gemfile.lock
 package-lock.json
