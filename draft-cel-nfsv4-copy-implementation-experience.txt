@@ -5,12 +5,12 @@
 Network File System Version 4                            O. Kornievskaia
 Internet-Draft                                                    RedHat
 Intended status: Informational                             C. Lever, Ed.
-Expires: 1 November 2025                                          Oracle
-                                                           30 April 2025
+Expires: 3 November 2025                                          Oracle
+                                                              2 May 2025
 
 
 Network File System version 4.2 COPY Operation Implementation Experience
-                draft-cel-nfsv4-update-copy-spec-latest
+         draft-cel-nfsv4-copy-implementation-experience-latest
 
 Abstract
 
@@ -25,7 +25,7 @@ About This Document
    https://chucklever.github.io/i-d-update-copy-spec/#go.draft-cel-
    nfsv4-update-copy-spec.html.  Status information for this document
    may be found at https://datatracker.ietf.org/doc/draft-cel-nfsv4-
-   update-copy-spec/.
+   copy-implementation-experience/.
 
    Discussion of this document takes place on the nfsv4 Working Group
    mailing list (mailto:nfsv4@ietf.org), which is archived at
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 1 November 2025.
+   This Internet-Draft will expire on 3 November 2025.
 
 Copyright Notice
 
