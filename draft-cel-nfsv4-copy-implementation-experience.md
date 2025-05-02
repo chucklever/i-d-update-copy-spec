@@ -4,7 +4,7 @@ title: "Network File System version 4.2 COPY Operation Implementation Experience
 abbrev: "NFSv4.2 COPY Implementation Experience"
 category: info
 
-docname: draft-cel-nfsv4-update-copy-spec-latest
+docname: draft-cel-nfsv4-copy-implementation-experience-latest
 pi: [toc, sortrefs, symrefs, docmapping]
 stand_alone: yes
 v: 3
