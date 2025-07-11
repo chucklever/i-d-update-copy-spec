@@ -734,14 +734,6 @@ The following is a recommended addendum to {{RFC7862}}:
 > OFFLOAD_STATUS report the number of bytes copied and a
 > completion status of NFS4_OK.
 
-{:aside}
-> olga: The section clarifies various things about OFFLOAD_CANCEL
-> but it reads to me geared towards an intra-copy offload. There isn't
-> any mention of how the source server in inter-copy should react when
-> it receives an OFFLOAD_CANCEL. Receiving an OFFLOAD_CANCEL can allow
-> the source server to invalidate the copy stateid it's keeping active
-> to allow reads with that copy stateid.
-
 # OFFLOAD_STATUS Implementation Notes
 
 Paragraph 2 of {{Section 15.9.3 of RFC7862}} states:
