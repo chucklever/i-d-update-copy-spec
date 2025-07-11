@@ -1021,10 +1021,6 @@ recommend the following addendum to {{Section 4.9 of RFC7862}}.
 > a fresh COPY for the remainder of the byte range, until the
 > full byte range has been processed.
 >
-> An alternative approach is to convert all large synchronous copy
-> requests into asynchronous copy requests, if the server supports
-> asynchronous copy.
->
 > Limiting the Number of Outstanding Asynchronous COPY Operations
 >
 > It is easily possible for NFS clients to send more asynchronous
