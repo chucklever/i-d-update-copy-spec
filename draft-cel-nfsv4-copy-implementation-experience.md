@@ -243,6 +243,8 @@ might be helpful:
 copy stateid:
 : A stateid that uniquely and globally describes the state
 needed on the source server to track a COPY operation.
+A copy stateid begins its lifetime when an NFS server forms
+the response to a COPY_NOTIFY operation.
 
 offload stateid:
 : A stateid that uniquely describes the completion state of an
