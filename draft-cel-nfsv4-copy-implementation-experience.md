@@ -893,12 +893,10 @@ Note that {{Section 4.1.2 of RFC7862}} states that the attribute MUST
 be implemented, but {{Section 12.2 of RFC7862}} defines this attribute
 as RECOMMENDED. This contradiction needs to be rectified.
 
-### Possible Deprecation of the FATTR4_CLONE_BLKSIZE Attribute
-
 An alternative to correcting the missing details is to instead
 deprecate the FATTR4_CLONE_BLKSIZE attribute. Server and filesystem
 combinations that cannot provide a fast, unrestricted byte-range clone
-mechanism can simply not make an NFSv4.2 CLONE operation available to
+mechanism would simply not make an NFSv4.2 CLONE operation available to
 NFSv4 clients.
 
 It might be that was the intention of the redaction of the alignment
