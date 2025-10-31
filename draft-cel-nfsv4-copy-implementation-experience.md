@@ -425,6 +425,13 @@ clients when recovering state after a server restart:
 
 # Status Codes, Their Meanings, and Their Usage
 
+{{RFC7862}} specifies the use of certain status codes for use with copy
+offload operations but provides insufficient guidance on when and how
+these codes should be used, particularly for the CB_OFFLOAD callback
+operation. The lack of clarity around error handling creates
+interoperability risks, as client and server implementers may make
+different assumptions about compliant behavior.
+
 ## Status Codes for the CB_OFFLOAD Operation
 
 {{Section 16.1.3 of RFC7862}} describes the CB_OFFLOAD command, but
@@ -904,6 +911,19 @@ text from draft-ietf-nfsv4-minorversion2, and the FATTR4_CLONE_BLKSIZE
 attribute was simply missed during that edit of the document.
 
 # Handling NFS Server Shutdown
+
+Asynchronous copy operations present unique challenges during server
+shutdown and restart events. Unlike other NFSv4 operations that typically
+complete quickly, asynchronous copies can be long-running operations
+that are still in progress when an NFS server needs to shut down.
+
+Additionally, clients must be able to recover the state of pending
+copy operations after a server restart. {{RFC7862}} does not provide
+guidance for either scenario, leaving implementors to guess at
+appropriate and safe behavior. This section addresses how servers
+should handle ongoing asynchronous copy operations during server
+shutdown, and how clients should handle state recovery after detecting
+a server restart.
 
 ## Graceful Shutdown
 
