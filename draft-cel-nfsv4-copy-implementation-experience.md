@@ -569,7 +569,7 @@ The NFS server is not permitted to purge the copy offload state ID if
 the CB_OFFLOAD status code is NFS4ERR_DELAY.
 
 The authors recommend that {{Section 16.1.3 of RFC7862}} should be
-updated to describe this use of NFS4ERR_BAD_STATEID.
+updated to describe this use of NFS4ERR_DELAY.
 
 ## Status Codes for the OFFLOAD_CANCEL and OFFLOAD_STATUS Operations
 
