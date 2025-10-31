@@ -73,7 +73,9 @@ venue:
 --- abstract
 
 This document describes the authors' experience implementing the
-NFSv4.2 COPY operation, as described in {{RFC7862}}.
+NFSv4.2 COPY operation, as described in {{RFC7862}}. It then
+recommends and motivates updates to that document. This is not
+a normative document.
 
 --- middle
 
@@ -92,6 +94,40 @@ These are mostly errors of omission that allow interoperability gaps to
 arise due to subtleties and ambiguities in the original specification of
 the COPY operation in {{RFC7862}}.
 
+## Executive Summary
+
+This document addresses several areas where the copy offload specification
+in {{RFC7862}} has shown to be insufficient to ensure good interoperability:
+
+- The specification does not clearly state which copy offload operations
+  are mandatory-to-implement for servers supporting synchronous versus
+  asynchronous copy ({{sec-sync-v-async}}).
+- Multiple issues affect copy stateids, including
+  inconsistent terminology ({{sec-stateid-terms}}),
+  race conditions between operations ({{sec-reply-race}}),
+  and
+  unclear lifetime requirements ({{sec-lifetime}}).
+- Insufficient guidance exists for when callback services should return
+  specific status codes ({{sec-cb-offload-status}}),
+  which status codes are valid for reporting
+  completion ({{sec-completion-status}}),
+  and
+  whether callbacks are required after cancellation
+  ({{sec-cancel-implementation}}).
+- Several operations lack clarity, including the meaning of "optional"
+  fields in OFFLOAD_STATUS ({{sec-status-implementation}}),
+  permission for short COPY results ({{sec-short-copy-results}}),
+  and
+  requirements for polling when callbacks are lost
+  ({{sec-completion-reliability}}).
+- The description of the FATTR4_CLONE_BLKSIZE attribute lacks essential
+  details about units, semantics, and scope ({{sec-fattr4-clone-blksize}}).
+- No guidance exists for handling asynchronous copies during server
+  shutdown or client state recovery after server restart
+  ({{sec-server-shutdown}}).
+- Missing recommendations for denial-of-service mitigations specific
+  to copy offload operations ({{sec-security-considerations}}).
+
 # Requirements Language
 
 {::boilerplate bcp14-tagged}
@@ -105,7 +141,7 @@ keywords in two ways:
 
 These BCP14 keyword usages are Informative only.
 
-# Synchronous versus Asynchronous COPY
+# Synchronous versus Asynchronous COPY {#sec-sync-v-async}
 
 The NFSv4.2 protocol is designed so that an NFSv4.2 server
 is considered protocol compliant whether it implements the COPY
@@ -181,7 +217,7 @@ addition of the following text can make this requirement clear:
 There are a number of areas where {{RFC7862}} is mute or unclear on
 the details of copy stateids. We start by defining some terms.
 
-## Terminology
+## Terminology {#sec-stateid-terms}
 
 An NFSv4 stateid is a fixed-length blob of data (a hash, if you will)
 that represents operational state known to both an NFSv4 client and
@@ -325,7 +361,7 @@ need to be addressed by the specification:
   action should the server take, since there's no open state
   recovery to be done on the NFSv4 server?
 
-## COPY Reply Races With CB_OFFLOAD Request
+## COPY Reply Races With CB_OFFLOAD Request {#sec-reply-race}
 
 Due to the design of the NFSv4.2 COPY and COPY_OFFLOAD
 operations, an NFS clietn's callback service cannot recognize
@@ -373,7 +409,7 @@ CB_OFFLOAD operation contain appropriate and explicit guidance
 for tackling this race, rather than a simple reference to
 {{RFC8881}}.
 
-## Lifetime Requirements {#lifetime}
+## Lifetime Requirements {#sec-lifetime}
 
 An NFS server that implements only synchronous copy does not
 require the stricter COPY stateid lifetime requirements described
@@ -432,7 +468,7 @@ operation. The lack of clarity around error handling creates
 interoperability risks, as client and server implementers may make
 different assumptions about compliant behavior.
 
-## Status Codes for the CB_OFFLOAD Operation
+## Status Codes for the CB_OFFLOAD Operation {#sec-cb-offload-status}
 
 {{Section 16.1.3 of RFC7862}} describes the CB_OFFLOAD command, but
 provides no information, normative or otherwise, about the NFS client's
@@ -553,7 +589,7 @@ the CB_OFFLOAD status code is NFS4ERR_DELAY.
 The authors recommend that {{Section 16.1.3 of RFC7862}} should be
 updated to describe this use of NFS4ERR_DELAY.
 
-## Status Codes for the OFFLOAD_CANCEL and OFFLOAD_STATUS Operations
+## Status Codes for the OFFLOAD_CANCEL and OFFLOAD_STATUS Operations {#sec-completion-status}
 
 The NFSv4.2 OFFLOAD_STATUS and OFFLOAD_CANCEL operations both list
 NFS4ERR_COMPLETE_ALREADY as a permitted status code. However, it
@@ -673,7 +709,7 @@ It would also be helpful to implementers to provide guidance about
 when these values are appropriate to use, or when they MUST NOT be
 used.
 
-# OFFLOAD_CANCEL Implementation Notes
+# OFFLOAD_CANCEL Implementation Notes {#sec-cancel-implementation}
 
 The NFSv4.2 OFFLOAD_CANCEL operation, described in
 {{Section 15.8.3 of RFC7862}}, is used to terminate an offloaded
@@ -711,7 +747,7 @@ The following is a recommended addendum to {{RFC7862}}:
 > OFFLOAD_STATUS report the number of bytes copied and a
 > completion status of NFS4_OK.
 
-# OFFLOAD_STATUS Implementation Notes
+# OFFLOAD_STATUS Implementation Notes {#sec-status-implementation}
 
 Paragraph 2 of {{Section 15.9.3 of RFC7862}} states:
 
@@ -757,7 +793,7 @@ a COPY operation, the specification needs to state explicitly that:
 > element MUST contain only one of status codes permitted for the
 > COPY operation (see {{Section 11.2 of RFC7862}}) or NFS4_OK.
 
-# Short COPY results
+# Short COPY results {#sec-short-copy-results}
 
 When a COPY request takes a long time, an NFS server must
 ensure it can continue to remain responsive to other requests.
@@ -792,7 +828,7 @@ permissible:
 > In this way, a client can send a subsequent COPY for the
 > remaining byte range, ensure that forward progress is made.
 
-# Asynchronous Copy Completion Reliability
+# Asynchronous Copy Completion Reliability {#sec-completion-reliability}
 
 Often, NFSv4 server implementations do not retransmit backchannel
 requests. There are common scenarios where lack of a retransmit can
@@ -848,7 +884,7 @@ read the same as column 3 of the CB_OFFLOAD row in Table 6).
 
 # NFSv4.2 CLONE Operation
 
-## The FATTR4_CLONE_BLKSIZE Attribute
+## The FATTR4_CLONE_BLKSIZE Attribute {#sec-fattr4-clone-blksize}
 
 {{Section 4.1.2 of RFC7862}} states that an NFS server that implements
 the CLONE operation is required to implement the FATTR4_CLONE_BLKSIZE
@@ -910,7 +946,7 @@ It might be that was the intention of the redaction of the alignment
 text from draft-ietf-nfsv4-minorversion2, and the FATTR4_CLONE_BLKSIZE
 attribute was simply missed during that edit of the document.
 
-# Handling NFS Server Shutdown
+# Handling NFS Server Shutdown {#sec-server-shutdown}
 
 Asynchronous copy operations present unique challenges during server
 shutdown and restart events. Unlike other NFSv4 operations that typically
@@ -973,7 +1009,7 @@ operations that were active during an NFS server restart, clients
 need to track these operations and restart them as part of NFSv4
 state recovery.
 
-# Security Considerations
+# Security Considerations {#sec-security-considerations}
 
 One critical responsibility of an NFS server implementation is
 to manage its finite set of resources in a way that minimizes the
@@ -1018,7 +1054,7 @@ recommend the following addendum to {{Section 4.9 of RFC7862}}.
 > Managing Abandoned COPY State on the Server
 >
 > A related issue is how much COPY state can accrue on a server
-> due to lost CB_OFFLOAD requests. The mandates in {{lifetime}}
+> due to lost CB_OFFLOAD requests. The mandates in {{sec-lifetime}}
 > require a server to retain abandoned COPY state indefinitely.
 > A server can reject new asynchronous COPY requests using
 > NFS4ERR_OFFLOAD_NO_REQS when there are many abandoned COPY
