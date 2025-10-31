@@ -86,7 +86,7 @@ of file data between client and server during the copy operation.
 This reduces latency, network bandwidth requirements, and the exposure
 of file data to third parties when handling the copy request.
 
-Based on implementation experience, the authors report on areas where
+Based on implementation experience, this document reports on areas where
 specification wording can be improved to better guarantee interoperation.
 These are mostly errors of omission that allow interoperability gaps to
 arise due to subtleties and ambiguities in the original specification of
@@ -176,10 +176,10 @@ addition of the following text can make this requirement clear:
 > capability, it MUST implement the OFFLOAD_CANCEL and OFFLOAD_STATUS
 > operations, and MUST implement the CB_OFFLOAD callback operation.
 
-# Copy state IDs
+# Copy stateIDs
 
 There are a number of areas where {{RFC7862}} is mute or unclear on
-the details of copy state IDs. We start by defining some terms.
+the details of copy stateids. We start by defining some terms.
 
 ## Terminology
 
@@ -189,11 +189,11 @@ server. A stateid can represent open file state, file lock state, or
 a delegation.
 
 {{RFC7862}} introduces a new category of stateid that it calls a
-"copy stateid". A specific definition of the term is missing in
-that document. The term is applied to at least two different
-usages of a stateid, neither of which can be used for the other
-use, and neither of which can be used for existing categories of
-stateid (open, lock, and delegation).
+"copy stateid". That document lacks a specific definition of this
+term. The term is applied to at least two different usages of a
+stateid, neither of which can be used for the other use, and
+neither of which can be used for existing categories of stateid
+(open, lock, and delegation).
 
 {{RFC7862}} refers to what is returned in cnr_stateid result of a
 COPY_NOTIFY response ({{Section 15.3.2 of RFC7862}})
@@ -223,13 +223,13 @@ and states:
 > OFFLOAD_STATUS, and CB_OFFLOAD operations.
 
 The term "copy offload stateid" is not used anywhere else in {{RFC7862}},
-thus it is not clear whether this section refers only to the values
+therefore it is unclear whether this section refers only to the values
 that can appear in a wr_stateid field, or if it refers to all copy
 stateids.
 
 Note also that {{Section 15.8.3 of RFC7862}} does not refer to
 the oca_stateid argument of an OFFLOAD_CANCEL request by any
-special name, nor does it restrict the category of state ID
+special name, nor does it restrict the category of stateid
 that may appear in this argument.
 Likewise for the osa_stateid argument of an OFFLOAD_STATUS request
 ({{Section 15.9.3 of RFC7862}})
@@ -308,17 +308,17 @@ a number of questions regarding the use of copy stateids to
 report operational completion. For completion, these issues
 need to be addressed by the specification:
 
-- How is sequence number in a copy state ID handled?  Under
+- How is sequence number in a copy stateid handled?  Under
   what circumstances is its sequence number bumped? Do peers
-  match copy state IDs via only their "other" fields, or must
+  match copy stateids via only their "other" fields, or must
   they match everything including the sequence number?
 
 - Under what circumstances may a server re-use the same copy
-  state ID during one NFSv4.1 session?
+  stateid during one NFSv4.1 session?
 
 - How long does the client's callback service have to remember
-  copy state IDs? Is the callback service responsible for
-  remembering and reporting previously-used copy state IDs?
+  copy stateids? Is the callback service responsible for
+  remembering and reporting previously-used copy stateids?
 
 - When does the client's callback service return
   NFS4ERR_BAD_STATEID to a CB_OFFLOAD operation, and what
@@ -327,15 +327,14 @@ need to be addressed by the specification:
 
 ## COPY Reply Races With CB_OFFLOAD Request
 
-Due to the design of the NFSv4.2 COPY and CB_OFFLOAD protocol
-elements, an NFS client's callback service cannot recognize
-a copy state ID presented by a CB_OFFLOAD request until it has
-received and processed the COPY response that reports that an
-asynchronous copy operation has been started and that provides
-the copy state ID to wait for. Under some conditions, it is
-possible for the client to process the CB_OFFLOAD request
-before it has processed the COPY reply containing the matching
-copy state ID.
+Due to the design of the NFSv4.2 COPY and COPY_OFFLOAD
+operations, an NFS clietn's callback service cannot recognize
+a copy stateid presented by a CB_OFFLOAD request until after
+the client has received and processed the COPY response. This
+COPY response both confirms that an asynchronous copy
+operation has started and provides the copy stateid. Under
+some conditions, the client may process the CB_OFFLOAD request
+before processing the matching COPY reply.
 
 There are a few alternatives to consider when designing the
 client callback service implementation of the CB_OFFLOAD
@@ -344,9 +343,9 @@ choose to:
 
 - Maintain a cache of unmatched CB_OFFLOAD requests in the
   expectation of a matching COPY response arriving imminently.
-  (Danger of accruing unmatched copy state IDs over time).
+  (Danger of accruing unmatched copy stateids over time).
 
-- Have CB_OFFLOAD return NFS4ERR_DELAY if the copy state ID
+- Have CB_OFFLOAD return NFS4ERR_DELAY if the copy stateid
   is not recognized. (Danger of infinite looping).
 
 - Utilize a referring call list contained in the CB_SEQUENCE
@@ -377,8 +376,8 @@ for tackling this race, rather than a simple reference to
 ## Lifetime Requirements {#lifetime}
 
 An NFS server that implements only synchronous copy does not
-require the stricter COPY state ID lifetime requirements described
-in {{Section 4.8 of RFC7862}}. A state ID used with a synchronous
+require the stricter COPY stateid lifetime requirements described
+in {{Section 4.8 of RFC7862}}. A stateid used with a synchronous
 copy lives only until the COPY operation has completed.
 
 Regarding asynchronous copy offload,
@@ -391,13 +390,13 @@ the second paragraph of {{Section 4.8 of RFC7862}} states:
 
 This paragraph is unclear about what "client restart" means, at least
 in terms of what specific actions a server should take and when, how
-long a COPY state ID is required to remain valid, and how a client
+long a COPY stateid is required to remain valid, and how a client
 needs to act during state recovery. A stronger statement about
-COPY state ID lifetime can improve the guarantee of interoperability:
+COPY stateid lifetime can improve the guarantee of interoperability:
 
-> When a COPY state ID is used for an asynchronous copy, an NFS
-> server MUST retain the COPY state ID, except as follows below.
-> An NFS server MAY invalidate and purge a COPY state ID in the
+> When a COPY stateid is used for an asynchronous copy, an NFS
+> server MUST retain the COPY stateid, except as follows below.
+> An NFS server MAY invalidate and purge a COPY stateid in the
 > following circumstances:
 >
 > o The server instance restarts.
@@ -409,10 +408,10 @@ COPY state ID lifetime can improve the guarantee of interoperability:
 >   client's lease.
 >
 > o The server receives an OFFLOAD_CANCEL request from the owning
->   client that matches the COPY state ID.
+>   client that matches the COPY stateid.
 >
 > o The server receives a reply to a CB_OFFLOAD request from the
->   owning client that matches the COPY state ID.
+>   owning client that matches the COPY stateid.
 
 Implementers have found the following behavior to work well for
 clients when recovering state after a server restart:
@@ -461,12 +460,13 @@ operation. {{Section 20.2.3 of RFC8881}} states:
 
 Thus, if the coa_fh argument specifies a filehandle for which the
 NFS client currently has no pending copy operation, the NFS client's
-callback service returns the status code NFS4ERR_BADHANDLE. There is
-no requirement that the NFS client's callback service remember
-filehandles after a copy operation has completed.
+callback service returns the status code NFS4ERR_BADHANDLE. The
+protocol specification does not mandate that the NFS client's
+callback service remember filehandles after a copy operation has
+completed.
 
 {:aside}
-> cel: Is the NFS server permitted to purge the copy offload state ID
+> cel: Is the NFS server permitted to purge the copy offload stateid
 > if the CB_OFFLOAD status code is NFS4ERR_BADHANDLE ?
 
 The authors recommend that {{Section 16.1.3 of RFC7862}} should be
@@ -480,17 +480,17 @@ that:
 > A stateid does not properly designate any valid state.
 
 In the context of a CB_OFFLOAD operation, "valid state" refers to
-either the coa_stateid argument, which is a copy state ID, or the
-wr_callback_id argument, which is a copy offload state ID.
+either the coa_stateid argument, which is a copy stateid, or the
+wr_callback_id argument, which is a copy offload stateid.
 
-If the NFS client's callback service does not recognize the state ID
+If the NFS client's callback service does not recognize the stateid
 contained in the coa_stateid argument, the NFS client's callback
 service responds with a status code of NFS4ERR_BAD_STATEID.
 
-The NFS client is made aware of the copy offload state ID by a response
+The NFS client is made aware of the copy offload stateid by a response
 to a COPY operation. If the CB_OFFLOAD request arrives before the
 COPY response, the NFS client's callback service will not recognize that
-copy offload state ID.
+copy offload stateid.
 
  * The NFS server might have provided a referring call in the CB_SEQUENCE
    operation included in the COMPOUND with the CB_OFFLOAD (see
@@ -504,13 +504,13 @@ copy offload state ID.
    callback service may proceed immediately.
 
 Once the NFS client's callback service is ready to proceed, it can
-resolve whether the copy offload state ID contained in the wr_state_id
+resolve whether the copy offload stateid contained in the wr_state_id
 argument matches a currently pending copy operation. If it does not,
 the NFS client's callback service responds with a status code of
 NFS4ERR_BAD_STATEID.
 
 {:aside}
-> cel: Is the NFS server permitted to purge the copy offload state ID
+> cel: Is the NFS server permitted to purge the copy offload stateid
 > if the CB_OFFLOAD status code is NFS4ERR_BAD_STATEID ?
 
 The authors recommend that {{Section 16.1.3 of RFC7862}} should be
@@ -525,7 +525,7 @@ updated to describe this use of NFS4ERR_BAD_STATEID.
 > and then try the request with a new slot and sequence value.
 
 When an NFS client's callback service does not recognize the copy
-offload state ID in the wr_callback_id argument but the NFS server has
+offload stateid in the wr_callback_id argument but the NFS server has
 not provided a referring call information, an appropriate response
 to that situation is for the NFS client's callback service
 to respond with a status code of NFS4ERR_DELAY.
@@ -540,7 +540,7 @@ number of times:
    an NFS4ERR_DELAY status code, resulting in an infinite loop if the
    NFS server never stops retrying.
 
-The NFS server is not permitted to purge the copy offload state ID if
+The NFS server is not permitted to purge the copy offload stateid if
 the CB_OFFLOAD status code is NFS4ERR_DELAY.
 
 The authors recommend that {{Section 16.1.3 of RFC7862}} should be
@@ -682,7 +682,7 @@ In both cases, a subsequent OFFLOAD_STATUS returns the number
 of bytes actually copied and a status code of NFS4_OK to
 signify that the copy operation is no longer running. The
 server should obey the usual lifetime rules for the copy
-state ID associated with a canceled asynchronous copy
+stateid associated with a canceled asynchronous copy
 operation so that an NFS client can determine the status of
 the operation as usual.
 
@@ -713,9 +713,9 @@ Paragraph 2 of {{Section 15.9.3 of RFC7862}} states:
 > the result of the asynchronous operation.
 
 The use of the term "optional" can be (and has been) construed to mean
-that a server is not required to set that field to one, ever. This is
-due to the conflation of the term "optional" with the common use of
-the compliance keyword OPTIONAL in other NFS-related documents.
+that a server is not required to set that field to one, ever. This
+confusion arises from conflating the the term "optional" with the
+BCP14 keyword OPTIONAL.
 
 Moreover, this XDR data item is always present. The protocol's XDR
 definition does not permit an NFS server not to include the field
@@ -725,7 +725,7 @@ The following text makes it more clear what was originally intended:
 
 > To process an OFFLOAD_STATUS request, an NFS server must first
 > find an outstanding COPY operation that matches the request's
-> COPY state ID argument.
+> COPY stateid argument.
 >
 > If that COPY operation is still ongoing, the server forms a response
 > with an osr_complete array containing zero elements, fills in the
@@ -740,7 +740,7 @@ The following text makes it more clear what was originally intended:
 > COPY operation, and sets the osr_status to NFS4_OK.
 >
 > If the server can find no copy operation that matches the presented
-> COPY state ID, the server sets the osr_status field to
+> COPY stateid, the server sets the osr_status field to
 > NFS4ERR_BAD_STATEID.
 
 Since a single-element osr_complete array contains the status code of
@@ -804,9 +804,9 @@ NFSv4 clients and servers can recover when operations such as
 CB_RECALL and CB_GETATTR go missing: After a delay, the server
 revokes the delegation and operation continues.
 
-A lost CB_OFFLOAD means that the client workload waits for a
-completion event that never arrives, unless that client has a
-mechanism for probing the pending COPY.
+A lost CB_OFFLOAD causes the client's workload to wait
+indefinitely for a completion event that will never arrive,
+unless that client has a mechanism for probing the pending COPY.
 
 Typically, polling for completion means the client sends
 an OFFLOAD_STATUS request. Note however that Table 5 in
@@ -932,8 +932,8 @@ asynchronous copy operations have terminated
 (see {{Section 18.50.3 of RFC8881}}).
 
 Once copy activity has completed, shut down processing can also
-proceed to remove all copy completion state (copy state IDs, copy
-offload state IDs, and copy completion status codes).
+proceed to remove all copy completion state (copy stateids, copy
+offload stateids, and copy completion status codes).
 
 An alternative implementation is that ongoing COPY operations are
 simply terminated without a CB_OFFLOAD notification. In that case,
@@ -1004,7 +1004,7 @@ recommend the following addendum to {{Section 4.9 of RFC7862}}.
 > require a server to retain abandoned COPY state indefinitely.
 > A server can reject new asynchronous COPY requests using
 > NFS4ERR_OFFLOAD_NO_REQS when there are many abandoned COPY
-> state IDs.
+> stateids.
 >
 > Considerations For The NFSv4 Callback Service
 >
@@ -1014,7 +1014,7 @@ recommend the following addendum to {{Section 4.9 of RFC7862}}.
 > RPC transport, or it could also be available via separate
 > transport connections from the NFS server.
 >
-> The CB_OFFLOAD operation manages state IDs that can have a
+> The CB_OFFLOAD operation manages stateids that can have a
 > lifetime longer than a single NFSv4 callback operation. The
 > client's callback service must take care to prune any cached
 > state in order to avoid a potential denial of service.
@@ -1032,8 +1032,8 @@ secure the server-to-server copy mechanism.
 
 Although TLS is able to provide integrity and confidentiality
 of in-flight copy data, the user authentication capability
-provided by RPCSEC GSSv3 is still missing. What is missing
-is the ability to pass a capability. GSSv3 generates a
+provided by RPCSEC GSSv3 is still missing. What is still missing
+is the ability to pass a capability token. GSSv3 generates a
 capability on the source server that is passed through the
 client to the destination server to be used against the
 source server.
