@@ -145,7 +145,11 @@ These BCP14 keyword usages are Informative only.
 
 The NFSv4.2 protocol is designed so that an NFSv4.2 server
 is considered protocol compliant whether it implements the COPY
-operation or not. However, COPY comes in two distinct flavors:
+operation or not. This means that NFSv4.2 server implementers
+are free to not implement COPY.
+
+If implementers choose to provide it, the COPY operation comes
+in two distinct flavors:
 
 - synchronous, where the server reports the final status of the
   operation directly in the response to the client's COPY request
@@ -160,6 +164,10 @@ copy is mandatory-to-implement.
 The implementation requirements for these two forms of copy offload
 are quite distinct from each other. Some implementers have chosen
 to avoid the more complex asynchronous form of COPY.
+
+However, NFS clients must be able to detect what an NFS server
+provides in order to fall back quickly and gracefully when the copy
+offload facility of their choice is not available.
 
 ## Detecting Support For COPY
 
