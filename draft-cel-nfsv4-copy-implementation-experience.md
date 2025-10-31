@@ -45,6 +45,7 @@ normative:
 informative:
   RFC7861:
   RFC9289:
+  RFC9754:
   XCOPY:
     -: XCOPY
     target: https://www.t10.org/ftp/t10/document.99/99-143r1.pdf
@@ -252,35 +253,27 @@ offloaded operation (either WRITE_SAME or COPY).
 
 ## Use of Delegation Stateids
 
-{:aside}
-> olga:
-> Stateid used in the copy operation. When the client does the opens
-> for the source and destination files, it most likely will receive a
-> delegation stateid. This complicates things. The spec says the client
-> should use either open or locking stateids. To be honest, I think the
-> client will use a delegation stateid instead. I should/need to verify
-> this. I say it because I think nfs4_set_rw_stateid() used by the
-> client will return delegation stateid if the client has one. I do seem
-> to recall trying to force the code to do open stateid and not use
-> delegation (But it's just vague memory).... But let's set that aside.
->
-> With this new DELEGATION_XOR_OPEN stuff, I see a problem that the
-> client will only get a delegation stateid from the Linux server and
-> then we are out of luck and need to do extra operations of returning
-> the delegation and then requesting another open with deleg_not_wanted.
-> Which btw we can't do in the first place because useland does the
-> opens. So I'm not sure if the spec should be changed to allow the
-> delegation stateid usage by the copy instead (Well, it sort of already
-> I would think because in section 15.2.3 it says -- "The ca_dst_stateid
-> MUST refer to a stateid that is valid for a WRITE operation and
-> follows the rules for stateids in Sections 8.2.5 and 18.32.3 of
-> RFC5661." -- and a write delegation stateid is a valid stateid for
-> WRITE (similar verbiage for the src stated when it's intra copy but of
-> read flavor) . But if we allow a delegation stateid then there is the
-> complexity of what should happen when a conflicting operation arrives.
-> I don't think it's covered? Is the server required to stop the copy
-> before replying? Does it send a CB_RECALL, and should the client need
-> to worry about "do i have any started copies that I need to stop now"?
+According to {{Section 15.2.1 of RFC7862}}:
+
+> The ca_dst_stateid MUST refer to a stateid that is valid for a WRITE
+> operation and follows the rules for stateids in Sections 8.2.5 and
+> 18.32.3 of [RFC5661].  For an inter-server copy, the ca_src_stateid
+> MUST be the cnr_stateid returned from the earlier COPY_NOTIFY
+> operation, while for an intra-server copy ca_src_stateid MUST refer
+> to a stateid that is valid for a READ operation and follows the rules
+> for stateids in Sections 8.2.5 and 18.22.3 of [RFC5661].
+
+The first sentence appears to allow the use of delegation stateids,
+while the second seems to clearly exclude the use of delegation stateids.
+Since the specification does not describe how a server needs to respond
+to operations that conflict with delegation stateids, one must assume
+that the first sentence is incorrect.
+
+In terms of implementation guidance, in light of types of open permitted
+by {{RFC9754}}, in particular, OPEN4_SHARE_ACCESS_WANT_OPEN_XOR_DELEGATION,
+OPEN operations performed to acquire stateids for a COPY operation might
+receive only a delegation stateid. When preparing for a COPY operation,
+NFSv4 clients need to indicate that a delegation is not wanted.
 
 ## Use of Locking Stateids
 
