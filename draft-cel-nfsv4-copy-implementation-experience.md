@@ -801,7 +801,9 @@ a COPY operation, the specification needs to state explicitly that:
 > element MUST contain only one of status codes permitted for the
 > COPY operation (see {{Section 11.2 of RFC7862}}) or NFS4_OK.
 
-# Short COPY results {#sec-short-copy-results}
+# COPY Implementation Notes {#sec-copy-implementation}
+
+## Short COPY results {#sec-short-copy-results}
 
 When a COPY request takes a long time, an NFS server must
 ensure it can continue to remain responsive to other requests.
@@ -836,7 +838,7 @@ permissible:
 > In this way, a client can send a subsequent COPY for the
 > remaining byte range, ensure that forward progress is made.
 
-# Asynchronous Copy Completion Reliability {#sec-completion-reliability}
+## Asynchronous Copy Completion Reliability {#sec-completion-reliability}
 
 Often, NFSv4 server implementations do not retransmit backchannel
 requests. There are common scenarios where lack of a retransmit can
@@ -880,7 +882,83 @@ In addition, Table 5 should be updated to make OFFLOAD_STATUS
 REQUIRED (i.e., column 3 of the OFFLOAD_STATUS row should
 read the same as column 3 of the CB_OFFLOAD row in Table 6).
 
-# Inter-server Copy Interoperation
+## Inter-server Copy Considerations
+
+### Managing Foreign File Handles
+
+A NFSv4.2 COPY operation operates on file handle arguments that
+are provided by PUTFH operations that precede the COPY operation
+in an NFSv4 COMPOUND, as described in {{Section 15.2 of RFC7862}}:
+
+> The COPY operation requests that a range in the file specified
+> by SAVED_FH be copied to a range in the file specified by
+> CURRENT_FH.
+
+Typically an NFSv4 server performs checking of a file handle
+presented by a PUTFH operation. {{Section 18.19 of RFC8881}} gives
+examples of such checking, which might include access control based
+on security policy. In fact, {{Section 15.2 of RFC8881}} permits a
+long list of possible status codes in response to a PUTFH:
+
+> NFS4ERR_BADHANDLE, NFS4ERR_BADXDR, NFS4ERR_DEADSESSION,
+> NFS4ERR_DELAY, NFS4ERR_MOVED, NFS4ERR_OP_NOT_IN_SESSION,
+> NFS4ERR_REP_TOO_BIG, NFS4ERR_REP_TOO_BIG_TO_CACHE,
+> NFS4ERR_REQ_TOO_BIG, NFS4ERR_RETRY_UNCACHED_REP,
+> NFS4ERR_SERVERFAULT, NFS4ERR_STALE, NFS4ERR_TOO_MANY_OPS,
+> NFS4ERR_WRONGSEC
+
+Setting aside status codes having to do with NFSv4 session
+management, at least NFS4ERR_BADHANDLE, NFS4ERR_MOVED,
+NFS4ERR_STALE, or NFS4ERR_WRONGSEC might be the result of the
+server's examination of the presented file handle argument.
+
+During an inter-server COPY operation, at least one of the file
+handle arguments presented via PUTFH is for a file that does not
+reside on the server receiving the COPY request. Special
+considerations must be taken to avoid treating that foreign file
+handle as a local file handle; otherwise the PUTFH operation fails
+and the COPY will never be executed. {{Section 15.2.3 of RFC7862}}
+therefore notes that:
+
+> If a server supports the inter-server copy feature, a PUTFH followed
+> by a SAVEFH MUST NOT return NFS4ERR_STALE for either operation.
+> These restrictions do not pose substantial difficulties for servers.
+> CURRENT_FH and SAVED_FH may be validated in the context of the
+> operation referencing them and an NFS4ERR_STALE error returned for an
+> invalid filehandle at that point.
+
+This section appears to permit PUTFH in this scenario to return
+NFS4ERR_BADHANDLE, NFS4ERR_MOVED, and NFS4ERR_WRONGSEC by omitting
+their mention.
+
+The Linux NFS server implementation's PUTFH operation, for example,
+is likely to return an NFS4ERR_BADHANDLE status code for a file
+handle that is foreign to it. A server implementer can reasonably
+extrapolate from the above text that other status codes, in addition
+to NFS4ERR_STALE, are to be excluded; otherwise inter-server COPY
+will not work at all.  However, an explicit BCP14 "MUST NOT" for
+NFS4ERR_STALE but not for other likely status code responses lacks
+is potentially confusing.
+
+Further, this NFSv4.2 COPY-related usage of PUTFH re-purposes the
+PUTFH operation. In all previous usages of PUTFH, careful checking
+of an incoming file handle is a critical part of the mission of the
+PUTFH operation. However, if a COPY operation is present in a
+COMPOUND, the server must defer assessment of file handle arguments
+until it is clear that the client has requested an inter-server
+COPY. Because PUTFH is used in nearly every NFSv4 COMPOUND, this is
+a significant new burden for servers that implement inter-server
+COPY.
+
+A protocol design that enables more efficient server implementation
+might have been the addition of a new operation that enables a client
+to provide a file handle that might be expected to fail local
+checking on the server, for the sole use of inter-server COPY.
+Call this putative operation "PUTFOREIGNFH".
+
+# COPY_NOTIFY Implementation Notes {#sec-copy-notify-implementation}
+
+## IP Addresses in a COPY_NOTIFY Response
 
 {:aside}
 > olga:
@@ -890,7 +968,7 @@ read the same as column 3 of the CB_OFFLOAD row in Table 6).
 > copy_notify reply. I don't believe either the Linux client or
 > server does anything with them.
 
-# NFSv4.2 CLONE Operation
+# CLONE Implementation Notes {#sec-clone-implementation}
 
 ## The FATTR4_CLONE_BLKSIZE Attribute {#sec-fattr4-clone-blksize}
 
