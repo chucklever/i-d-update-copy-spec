@@ -5,8 +5,8 @@
 Network File System Version 4                            O. Kornievskaia
 Internet-Draft                                                    RedHat
 Intended status: Informational                             C. Lever, Ed.
-Expires: 4 May 2026                                               Oracle
-                                                         31 October 2025
+Expires: 8 June 2026                                              Oracle
+                                                         5 December 2025
 
 
 Network File System version 4.2 COPY Operation Implementation Experience
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 May 2026.
+   This Internet-Draft will expire on 8 June 2026.
 
 Copyright Notice
 
@@ -94,20 +94,24 @@ Table of Contents
            Operations
    6.  OFFLOAD_CANCEL Implementation Notes
    7.  OFFLOAD_STATUS Implementation Notes
-   8.  Short COPY results
-   9.  Asynchronous Copy Completion Reliability
-   10. Inter-server Copy Interoperation
-   11. NFSv4.2 CLONE Operation
-     11.1.  The FATTR4_CLONE_BLKSIZE Attribute
-   12. Handling NFS Server Shutdown
-     12.1.  Graceful Shutdown
-     12.2.  Client Recovery Actions
-   13. Security Considerations
-     13.1.  Securing Inter-server COPY
-   14. IANA Considerations
-   15. References
-     15.1.  Normative References
-     15.2.  Informative References
+   8.  COPY Implementation Notes
+     8.1.  Short COPY results
+     8.2.  Asynchronous Copy Completion Reliability
+     8.3.  Inter-server Copy Considerations
+       8.3.1.  Managing Foreign File Handles
+   9.  COPY_NOTIFY Implementation Notes
+     9.1.  IP Addresses in a COPY_NOTIFY Response
+   10. CLONE Implementation Notes
+     10.1.  The FATTR4_CLONE_BLKSIZE Attribute
+   11. Handling NFS Server Shutdown
+     11.1.  Graceful Shutdown
+     11.2.  Client Recovery Actions
+   12. Security Considerations
+     12.1.  Securing Inter-server COPY
+   13. IANA Considerations
+   14. References
+     14.1.  Normative References
+     14.2.  Informative References
    Acknowledgments
    Authors' Addresses
 
@@ -148,19 +152,19 @@ Table of Contents
 
    *  Several operations lack clarity, including the meaning of
       "optional" fields in OFFLOAD_STATUS (Section 7), permission for
-      short COPY results (Section 8), and requirements for polling when
-      callbacks are lost (Section 9).
+      short COPY results (Section 8.1), and requirements for polling
+      when callbacks are lost (Section 8.2).
 
    *  The description of the FATTR4_CLONE_BLKSIZE attribute lacks
       essential details about units, semantics, and scope
-      (Section 11.1).
+      (Section 10.1).
 
    *  No guidance exists for handling asynchronous copies during server
       shutdown or client state recovery after server restart
-      (Section 12).
+      (Section 11).
 
    *  Missing recommendations for denial-of-service mitigations specific
-      to copy offload operations (Section 13).
+      to copy offload operations (Section 12).
 
 2.  Requirements Language
 
@@ -813,7 +817,9 @@ Table of Contents
       element MUST contain only one of status codes permitted for the
       COPY operation (see Section 11.2 of [RFC7862]) or NFS4_OK.
 
-8.  Short COPY results
+8.  COPY Implementation Notes
+
+8.1.  Short COPY results
 
    When a COPY request takes a long time, an NFS server must ensure it
    can continue to remain responsive to other requests.  To prevent
@@ -848,7 +854,7 @@ Table of Contents
       client can send a subsequent COPY for the remaining byte range,
       ensure that forward progress is made.
 
-9.  Asynchronous Copy Completion Reliability
+8.2.  Asynchronous Copy Completion Reliability
 
    Often, NFSv4 server implementations do not retransmit backchannel
    requests.  There are common scenarios where lack of a retransmit can
@@ -894,7 +900,82 @@ Table of Contents
    REQUIRED (i.e., column 3 of the OFFLOAD_STATUS row should read the
    same as column 3 of the CB_OFFLOAD row in Table 6).
 
-10.  Inter-server Copy Interoperation
+8.3.  Inter-server Copy Considerations
+
+8.3.1.  Managing Foreign File Handles
+
+   A NFSv4.2 COPY operation operates on file handle arguments that are
+   provided by PUTFH operations that precede the COPY operation in an
+   NFSv4 COMPOUND, as described in Section 15.2 of [RFC7862]:
+
+      The COPY operation requests that a range in the file specified by
+      SAVED_FH be copied to a range in the file specified by CURRENT_FH.
+
+   Typically an NFSv4 server performs checking of a file handle
+   presented by a PUTFH operation.  Section 18.19 of [RFC8881] gives
+   examples of such checking, which might include access control based
+   on security policy.  In fact, Section 15.2 of [RFC8881] permits a
+   long list of possible status codes in response to a PUTFH:
+
+      NFS4ERR_BADHANDLE, NFS4ERR_BADXDR, NFS4ERR_DEADSESSION,
+      NFS4ERR_DELAY, NFS4ERR_MOVED, NFS4ERR_OP_NOT_IN_SESSION,
+      NFS4ERR_REP_TOO_BIG, NFS4ERR_REP_TOO_BIG_TO_CACHE,
+      NFS4ERR_REQ_TOO_BIG, NFS4ERR_RETRY_UNCACHED_REP,
+      NFS4ERR_SERVERFAULT, NFS4ERR_STALE, NFS4ERR_TOO_MANY_OPS,
+      NFS4ERR_WRONGSEC
+
+   Setting aside status codes having to do with NFSv4 session
+   management, at least NFS4ERR_BADHANDLE, NFS4ERR_MOVED, NFS4ERR_STALE,
+   or NFS4ERR_WRONGSEC might be the result of the server's examination
+   of the presented file handle argument.
+
+   During an inter-server COPY operation, at least one of the file
+   handle arguments presented via PUTFH is for a file that does not
+   reside on the server receiving the COPY request.  Special
+   considerations must be taken to avoid treating that foreign file
+   handle as a local file handle; otherwise the PUTFH operation fails
+   and the COPY will never be executed.  Section 15.2.3 of [RFC7862]
+   therefore notes that:
+
+      If a server supports the inter-server copy feature, a PUTFH
+      followed by a SAVEFH MUST NOT return NFS4ERR_STALE for either
+      operation.  These restrictions do not pose substantial
+      difficulties for servers.  CURRENT_FH and SAVED_FH may be
+      validated in the context of the operation referencing them and an
+      NFS4ERR_STALE error returned for an invalid filehandle at that
+      point.
+
+   This section appears to permit PUTFH in this scenario to return
+   NFS4ERR_BADHANDLE, NFS4ERR_MOVED, and NFS4ERR_WRONGSEC by omitting
+   their mention.
+
+   The Linux NFS server implementation's PUTFH operation, for example,
+   is likely to return an NFS4ERR_BADHANDLE status code for a file
+   handle that is foreign to it.  A server implementer can reasonably
+   extrapolate from the above text that other status codes, in addition
+   to NFS4ERR_STALE, are to be excluded; otherwise inter-server COPY
+   will not work at all.  However, an explicit BCP14 "MUST NOT" for
+   NFS4ERR_STALE but not for other likely status code responses lacks is
+   potentially confusing.
+
+   Further, this NFSv4.2 COPY-related usage of PUTFH re-purposes the
+   PUTFH operation.  In all previous usages of PUTFH, careful checking
+   of an incoming file handle is a critical part of the mission of the
+   PUTFH operation.  However, if a COPY operation is present in a
+   COMPOUND, the server must defer assessment of file handle arguments
+   until it is clear that the client has requested an inter-server COPY.
+   Because PUTFH is used in nearly every NFSv4 COMPOUND, this is a
+   significant new burden for servers that implement inter-server COPY.
+
+   A protocol design that enables more efficient server implementation
+   might have been the addition of a new operation that enables a client
+   to provide a file handle that might be expected to fail local
+   checking on the server, for the sole use of inter-server COPY.  Call
+   this putative operation "PUTFOREIGNFH".
+
+9.  COPY_NOTIFY Implementation Notes
+
+9.1.  IP Addresses in a COPY_NOTIFY Response
 
       |  olga: If Linux server were to ever interoperate with other
       |  server implementations of being either the source server or the
@@ -902,9 +983,9 @@ Table of Contents
       |  being listed in the copy_notify reply.  I don't believe either
       |  the Linux client or server does anything with them.
 
-11.  NFSv4.2 CLONE Operation
+10.  CLONE Implementation Notes
 
-11.1.  The FATTR4_CLONE_BLKSIZE Attribute
+10.1.  The FATTR4_CLONE_BLKSIZE Attribute
 
    Section 4.1.2 of [RFC7862] states that an NFS server that implements
    the CLONE operation is required to implement the FATTR4_CLONE_BLKSIZE
@@ -967,7 +1048,7 @@ Table of Contents
    FATTR4_CLONE_BLKSIZE attribute was simply missed during that edit of
    the document.
 
-12.  Handling NFS Server Shutdown
+11.  Handling NFS Server Shutdown
 
    Asynchronous copy operations present unique challenges during server
    shutdown and restart events.  Unlike other NFSv4 operations that
@@ -983,7 +1064,7 @@ Table of Contents
    shutdown, and how clients should handle state recovery after
    detecting a server restart.
 
-12.1.  Graceful Shutdown
+11.1.  Graceful Shutdown
 
    This section discusses what happens to ongoing asynchronous copy
    operations when an NFS server shuts down due to an administrator
@@ -1024,14 +1105,14 @@ Table of Contents
       |  doing lots of WRITEs, does graceful shutdown terminate the
       |  writes and send short write response back?  Or read....
 
-12.2.  Client Recovery Actions
+11.2.  Client Recovery Actions
 
    In order to ensure the proper completion of asynchronous COPY
    operations that were active during an NFS server restart, clients
    need to track these operations and restart them as part of NFSv4
    state recovery.
 
-13.  Security Considerations
+12.  Security Considerations
 
    One critical responsibility of an NFS server implementation is to
    manage its finite set of resources in a way that minimizes the
@@ -1095,7 +1176,7 @@ Table of Contents
       callback service must take care to prune any cached state in order
       to avoid a potential denial of service.
 
-13.1.  Securing Inter-server COPY
+12.1.  Securing Inter-server COPY
 
    To date, there have been no implementations of RPCSEC GSSv3
    [RFC7861], which is mandatory-to-implement for secure server-to-
@@ -1119,13 +1200,13 @@ Table of Contents
       |  might be even more?  Not sure how krb5 handshake cost compares
       |  to TLS handshake cost.
 
-14.  IANA Considerations
+13.  IANA Considerations
 
    This document requests no IANA actions.
 
-15.  References
+14.  References
 
-15.1.  Normative References
+14.1.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -1155,7 +1236,7 @@ Table of Contents
               DOI 10.17487/RFC8881, August 2020,
               <https://www.rfc-editor.org/rfc/rfc8881>.
 
-15.2.  Informative References
+14.2.  Informative References
 
    [RFC7861]  Adamson, A. and N. Williams, "Remote Procedure Call (RPC)
               Security Version 3", RFC 7861, DOI 10.17487/RFC7861,
