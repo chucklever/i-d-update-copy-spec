@@ -37,7 +37,6 @@ author:
     email: chuck.lever@oracle.com
 
 normative:
-  RFC5661:
   RFC7862:
   RFC7863:
   RFC8881:
@@ -73,9 +72,9 @@ venue:
 --- abstract
 
 This document describes the authors' experience implementing the
-NFSv4.2 COPY operation, as described in {{RFC7862}}. It then
-recommends and motivates updates to that document. This is not
-a normative document.
+NFSv4.2 COPY operation. It recommends and motivates updates to
+the specification of that operation. This is not a normative
+document.
 
 --- middle
 
@@ -303,11 +302,11 @@ According to {{Section 15.2.1 of RFC7862}}:
 
 > The ca_dst_stateid MUST refer to a stateid that is valid for a WRITE
 > operation and follows the rules for stateids in Sections 8.2.5 and
-> 18.32.3 of [RFC5661].  For an inter-server copy, the ca_src_stateid
+> 18.32.3 of [RFC8881].  For an inter-server copy, the ca_src_stateid
 > MUST be the cnr_stateid returned from the earlier COPY_NOTIFY
 > operation, while for an intra-server copy ca_src_stateid MUST refer
 > to a stateid that is valid for a READ operation and follows the rules
-> for stateids in Sections 8.2.5 and 18.22.3 of [RFC5661].
+> for stateids in Sections 8.2.5 and 18.22.3 of [RFC8881].
 
 The first sentence appears to allow the use of delegation stateids,
 while the second seems to clearly exclude the use of delegation stateids.
@@ -607,10 +606,10 @@ is not otherwise mentioned or defined in {{RFC7862}}. {{RFC7863}}
 defines a value of 10054 for that status code, but is not otherwise
 forthcoming about what its purpose is.
 
-We find a definition of NFS4ERR_COMPLETE_ALREADY in {{RFC5661}}.
-The definition is directly related to the new-to-NFSv4.1
-RECLAIM_COMPLETE operation, but is otherwise not used by other
-operations.
+We find a definition of NFS4ERR_COMPLETE_ALREADY in
+{{Section 15.1.9.1 of RFC8881}}. The definition is directly related to
+the new-to-NFSv4.1 RECLAIM_COMPLETE operation, but is otherwise not
+used by other operations.
 
 The authors recommend removing NFS4ERR_COMPLETE_ALREADY from the
 list of permissible status codes for the OFFLOAD_CANCEL and
