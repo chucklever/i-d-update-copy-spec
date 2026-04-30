@@ -5,8 +5,8 @@
 Network File System Version 4                            O. Kornievskaia
 Internet-Draft                                                    RedHat
 Intended status: Informational                             C. Lever, Ed.
-Expires: 8 June 2026                                              Oracle
-                                                         5 December 2025
+Expires: 1 November 2026                                          Oracle
+                                                           30 April 2026
 
 
 Network File System version 4.2 COPY Operation Implementation Experience
@@ -15,9 +15,8 @@ Network File System version 4.2 COPY Operation Implementation Experience
 Abstract
 
    This document describes the authors' experience implementing the
-   NFSv4.2 COPY operation, as described in [RFC7862].  It then
-   recommends and motivates updates to that document.  This is not a
-   normative document.
+   NFSv4.2 COPY operation.  It recommends and motivates updates to the
+   specification of that operation.  This is not a normative document.
 
 About This Document
 
@@ -25,9 +24,9 @@ About This Document
 
    The latest revision of this draft can be found at
    https://chucklever.github.io/i-d-update-copy-spec/#go.draft-cel-
-   nfsv4-update-copy-spec.html.  Status information for this document
-   may be found at https://datatracker.ietf.org/doc/draft-cel-nfsv4-
-   copy-implementation-experience/.
+   nfsv4-copy-implementation-experience.html.  Status information for
+   this document may be found at https://datatracker.ietf.org/doc/draft-
+   cel-nfsv4-copy-implementation-experience/.
 
    Discussion of this document takes place on the nfsv4 Working Group
    mailing list (mailto:nfsv4@ietf.org), which is archived at
@@ -52,11 +51,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 8 June 2026.
+   This Internet-Draft will expire on 1 November 2026.
 
 Copyright Notice
 
-   Copyright (c) 2025 IETF Trust and the persons identified as the
+   Copyright (c) 2026 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -254,10 +253,11 @@ Table of Contents
 
    The asynchronous form of copy offload is not possible without the
    implementation of CB_OFFLOAD, and not reliable without the
-   implementation of OFFLOAD_STATUS.  The original specification of copy
-   offload does not make these two operations mandatory-to-implement
-   when an implementation claims to support asynchronous COPY.  The
-   addition of the following text can make this requirement clear:
+   implementation of OFFLOAD_STATUS.  Section 4.1.2 of [RFC7862] ties
+   the requirement to implement these operations to the condition that
+   the server's COPY operation returns a stateid, rather than directly
+   to declared support for asynchronous COPY.  Tying the requirement to
+   the declared capability instead can make this requirement clearer:
 
       When an NFS server implementation provides an asynchronous copy
       capability, it MUST implement the OFFLOAD_CANCEL and
@@ -343,12 +343,12 @@ Table of Contents
 
       The ca_dst_stateid MUST refer to a stateid that is valid for a
       WRITE operation and follows the rules for stateids in Sections
-      8.2.5 and 18.32.3 of [RFC5661].  For an inter-server copy, the
+      8.2.5 and 18.32.3 of [RFC8881].  For an inter-server copy, the
       ca_src_stateid MUST be the cnr_stateid returned from the earlier
       COPY_NOTIFY operation, while for an intra-server copy
       ca_src_stateid MUST refer to a stateid that is valid for a READ
       operation and follows the rules for stateids in Sections 8.2.5 and
-      18.22.3 of [RFC5661].
+      18.22.3 of [RFC8881].
 
    The first sentence appears to allow the use of delegation stateids,
    while the second seems to clearly exclude the use of delegation
@@ -416,7 +416,7 @@ Table of Contents
 4.5.  COPY Reply Races With CB_OFFLOAD Request
 
    Due to the design of the NFSv4.2 COPY and COPY_OFFLOAD operations, an
-   NFS clietn's callback service cannot recognize a copy stateid
+   NFS client's callback service cannot recognize a copy stateid
    presented by a CB_OFFLOAD request until after the client has received
    and processed the COPY response.  This COPY response both confirms
    that an asynchronous copy operation has started and provides the copy
@@ -520,7 +520,7 @@ Table of Contents
 5.1.  Status Codes for the CB_OFFLOAD Operation
 
    Section 16.1.3 of [RFC7862] describes the CB_OFFLOAD command, but
-   provides no information, normative or otherwise, about the NFS
+   provides no information, normative or otherwise, about how the NFS
    client's callback service is to use CB_OFFLOAD's response status
    codes.  The set of permitted status codes is listed in Section 11.3
    of [RFC7862].  The usual collection of status codes related to
@@ -585,9 +585,9 @@ Table of Contents
 
    *  The NFS server might have provided a referring call in the
       CB_SEQUENCE operation included in the COMPOUND with the CB_OFFLOAD
-      (see Section 2.10.6.3 of [RFC8881].  In that case the NFS client's
-      callback service waits for the matching COPY response before
-      taking further action.
+      (see Section 2.10.6.3 of [RFC8881]).  In that case the NFS
+      client's callback service waits for the matching COPY response
+      before taking further action.
 
    *  If the NFS server provided referring call information but the NFS
       client can not find a matching pending COPY request, or if the NFS
@@ -616,7 +616,7 @@ Table of Contents
 
    When an NFS client's callback service does not recognize the copy
    offload stateid in the wr_callback_id argument but the NFS server has
-   not provided a referring call information, an appropriate response to
+   not provided referring call information, an appropriate response to
    that situation is for the NFS client's callback service to respond
    with a status code of NFS4ERR_DELAY.
 
@@ -644,9 +644,10 @@ Table of Contents
    value of 10054 for that status code, but is not otherwise forthcoming
    about what its purpose is.
 
-   We find a definition of NFS4ERR_COMPLETE_ALREADY in [RFC5661].  The
-   definition is directly related to the new-to-NFSv4.1 RECLAIM_COMPLETE
-   operation, but is otherwise not used by other operations.
+   We find a definition of NFS4ERR_COMPLETE_ALREADY in Section 15.1.9.1
+   of [RFC8881].  The definition is directly related to the new-to-
+   NFSv4.1 RECLAIM_COMPLETE operation, but is otherwise not used by
+   other operations.
 
    The authors recommend removing NFS4ERR_COMPLETE_ALREADY from the list
    of permissible status codes for the OFFLOAD_CANCEL and OFFLOAD_STATUS
@@ -727,7 +728,8 @@ Table of Contents
    contain.  The status code NFS4_OK (indicating no error occurred
    during the copy operation) is not listed but should be understood to
    be a valid value for these fields.  The meaning for each of these
-   values is defined in Section 15.3 of [RFC5661].
+   values is defined in Section 15.1 of [RFC8881], or, for
+   NFSv4.2-specific codes, in Section 11.1 of [RFC7862].
 
    It would also be helpful to implementers to provide guidance about
    when these values are appropriate to use, or when they MUST NOT be
@@ -852,7 +854,7 @@ Table of Contents
       a short COPY result, where the response contains the actual number
       of bytes copied and a final status of NFS4_OK.  In this way, a
       client can send a subsequent COPY for the remaining byte range,
-      ensure that forward progress is made.
+      ensuring that forward progress is made.
 
 8.2.  Asynchronous Copy Completion Reliability
 
@@ -955,7 +957,7 @@ Table of Contents
    extrapolate from the above text that other status codes, in addition
    to NFS4ERR_STALE, are to be excluded; otherwise inter-server COPY
    will not work at all.  However, an explicit BCP14 "MUST NOT" for
-   NFS4ERR_STALE but not for other likely status code responses lacks is
+   NFS4ERR_STALE but not for other likely status code responses is
    potentially confusing.
 
    Further, this NFSv4.2 COPY-related usage of PUTFH re-purposes the
@@ -1034,7 +1036,7 @@ Table of Contents
    different block sizes for different files.
 
    Note that Section 4.1.2 of [RFC7862] states that the attribute MUST
-   be implemented, but Section 12.2 of [RFC7862] defines this attribute
+   be implemented, but Section 12.1 of [RFC7862] defines this attribute
    as RECOMMENDED.  This contradiction needs to be rectified.
 
    An alternative to correcting the missing details is to instead
@@ -1212,11 +1214,6 @@ Table of Contents
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/rfc/rfc2119>.
-
-   [RFC5661]  Shepler, S., Ed., Eisler, M., Ed., and D. Noveck, Ed.,
-              "Network File System (NFS) Version 4 Minor Version 1
-              Protocol", RFC 5661, DOI 10.17487/RFC5661, January 2010,
-              <https://www.rfc-editor.org/rfc/rfc5661>.
 
    [RFC7862]  Haynes, T., "Network File System (NFS) Version 4 Minor
               Version 2 Protocol", RFC 7862, DOI 10.17487/RFC7862,

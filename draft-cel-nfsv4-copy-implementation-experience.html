@@ -9,11 +9,11 @@
 <meta content="Chuck Lever" name="author">
 <meta content="
        This document describes the authors' experience implementing the
-NFSv4.2 COPY operation, as described in  . It then
-recommends and motivates updates to that document. This is not
-a normative document. 
+NFSv4.2 COPY operation. It recommends and motivates updates to
+the specification of that operation. This is not a normative
+document. 
     " name="description">
-<meta content="xml2rfc 3.31.0" name="generator">
+<meta content="xml2rfc 3.33.0" name="generator">
 <meta content="NFSv4.2" name="keyword">
 <meta content="COPY" name="keyword">
 <meta content="CLONE" name="keyword">
@@ -21,18 +21,18 @@ a normative document.
 <meta content="offload" name="keyword">
 <meta content="draft-cel-nfsv4-copy-implementation-experience-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.31.0
-    Python 3.12.12
+  xml2rfc 3.33.0
+    Python 3.12.13
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
-    intervaltree 3.1.0
+    intervaltree 3.2.1
     Jinja2 3.1.6
-    lxml 5.3.1
-    platformdirs 4.5.0
+    lxml 6.0.2
+    platformdirs 4.9.6
     pycountry 24.6.1
-    PyYAML 6.0.2
+    PyYAML 6.0.3
     requests 2.32.5
-    wcwidth 0.2.14
+    wcwidth 0.6.0
 -->
 <link href="draft-cel-nfsv4-copy-implementation-experience.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -173,7 +173,7 @@ a normative document.
   font-weight: 400;
   font-display: swap;
   src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin-ext.woff2') format('woff2');
-  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 @font-face {
   font-family: 'Oxygen Mono';
@@ -181,7 +181,8 @@ a normative document.
   font-weight: 400;
   font-display: swap;
   src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
 }
 
 @font-face {
@@ -573,6 +574,7 @@ aside, blockquote {
 }
 blockquote {
   margin: 1em 0;
+  border-left: 2px var(--pilcrow-strong) solid;
 }
 cite {
   display: block;
@@ -643,7 +645,7 @@ a.pilcrow {
   }
 }
 @media not print {
-  :hover > a.pilcrow {
+  :hover > a.pilcrow, a.pilcrow:focus {
     opacity: 1;
   }
   a.pilcrow[href]:hover {
@@ -1051,11 +1053,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">NFSv4.2 COPY Implementation Experience</td>
-<td class="right">December 2025</td>
+<td class="right">April 2026</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Kornievskaia &amp; Lever</td>
-<td class="center">Expires 8 June 2026</td>
+<td class="center">Expires 1 November 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1068,12 +1070,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-cel-nfsv4-copy-implementation-experience-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-12-05" class="published">5 December 2025</time>
+<time datetime="2026-04-30" class="published">30 April 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-06-08">8 June 2026</time></dd>
+<dd class="expires"><time datetime="2026-11-01">1 November 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1092,9 +1094,9 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
 <p id="section-abstract-1">This document describes the authors' experience implementing the
-NFSv4.2 COPY operation, as described in <span>[<a href="#RFC7862" class="cite xref">RFC7862</a>]</span>. It then
-recommends and motivates updates to that document. This is not
-a normative document.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+NFSv4.2 COPY operation. It recommends and motivates updates to
+the specification of that operation. This is not a normative
+document.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-about-this-document">
@@ -1102,7 +1104,7 @@ a normative document.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
       </h2>
 <p id="section-note.1-1">This note is to be removed before publishing as an RFC.<a href="#section-note.1-1" class="pilcrow">¶</a></p>
 <p id="section-note.1-2">
-        The latest revision of this draft can be found at <span><a href="https://chucklever.github.io/i-d-update-copy-spec/#go.draft-cel-nfsv4-update-copy-spec.html">https://chucklever.github.io/i-d-update-copy-spec/#go.draft-cel-nfsv4-update-copy-spec.html</a></span>.
+        The latest revision of this draft can be found at <span><a href="https://chucklever.github.io/i-d-update-copy-spec/#go.draft-cel-nfsv4-copy-implementation-experience.html">https://chucklever.github.io/i-d-update-copy-spec/#go.draft-cel-nfsv4-copy-implementation-experience.html</a></span>.
         Status information for this document may be found at <span><a href="https://datatracker.ietf.org/doc/draft-cel-nfsv4-copy-implementation-experience/">https://datatracker.ietf.org/doc/draft-cel-nfsv4-copy-implementation-experience/</a></span>.<a href="#section-note.1-2" class="pilcrow">¶</a></p>
 <p id="section-note.1-3">
         Discussion of this document takes place on the
@@ -1131,7 +1133,7 @@ a normative document.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 8 June 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 1 November 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1140,7 +1142,7 @@ a normative document.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 <a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
         </h2>
 <p id="section-boilerplate.2-1">
-            Copyright (c) 2025 IETF Trust and the persons identified as the
+            Copyright (c) 2026 IETF Trust and the persons identified as the
             document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.2-2">
             This document is subject to BCP 78 and the IETF Trust's Legal
@@ -1490,10 +1492,12 @@ implementing only the COPY operation and can leave the other
 three operations mentioned here unimplemented.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
 <p id="section-3.2-3">The asynchronous form of copy offload is not possible without
 the implementation of CB_OFFLOAD, and not reliable without the
-implementation of OFFLOAD_STATUS. The original specification of
-copy offload does not make these two operations mandatory-to-implement
-when an implementation claims to support asynchronous COPY. The
-addition of the following text can make this requirement clear:<a href="#section-3.2-3" class="pilcrow">¶</a></p>
+implementation of OFFLOAD_STATUS. <span><a href="https://rfc-editor.org/rfc/rfc7862#section-4.1.2" class="relref">Section 4.1.2</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span>
+ties the requirement to implement these operations to the
+condition that the server's COPY operation returns a stateid,
+rather than directly to declared support for asynchronous COPY.
+Tying the requirement to the declared capability instead can
+make this requirement clearer:<a href="#section-3.2-3" class="pilcrow">¶</a></p>
 <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.2-4.1">
             <p id="section-3.2-4.1.1">When an NFS server implementation provides an asynchronous copy
@@ -1603,11 +1607,11 @@ offloaded operation (either WRITE_SAME or COPY).<a href="#section-4.1-13.4.1" cl
 <li class="normal ulEmpty" id="section-4.2-2.1">
             <p id="section-4.2-2.1.1">The ca_dst_stateid <span class="bcp14">MUST</span> refer to a stateid that is valid for a WRITE
 operation and follows the rules for stateids in Sections 8.2.5 and
-18.32.3 of <span>[<a href="#RFC5661" class="cite xref">RFC5661</a>]</span>.  For an inter-server copy, the ca_src_stateid
+18.32.3 of <span>[<a href="#RFC8881" class="cite xref">RFC8881</a>]</span>.  For an inter-server copy, the ca_src_stateid
 <span class="bcp14">MUST</span> be the cnr_stateid returned from the earlier COPY_NOTIFY
 operation, while for an intra-server copy ca_src_stateid <span class="bcp14">MUST</span> refer
 to a stateid that is valid for a READ operation and follows the rules
-for stateids in Sections 8.2.5 and 18.22.3 of <span>[<a href="#RFC5661" class="cite xref">RFC5661</a>]</span>.<a href="#section-4.2-2.1.1" class="pilcrow">¶</a></p>
+for stateids in Sections 8.2.5 and 18.22.3 of <span>[<a href="#RFC8881" class="cite xref">RFC8881</a>]</span>.<a href="#section-4.2-2.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-4.2-3">The first sentence appears to allow the use of delegation stateids,
@@ -1691,7 +1695,7 @@ recovery to be done on the NFSv4 server?<a href="#section-4.4-2.4.1" class="pilc
 <a href="#section-4.5" class="section-number selfRef">4.5. </a><a href="#name-copy-reply-races-with-cb_of" class="section-name selfRef">COPY Reply Races With CB_OFFLOAD Request</a>
         </h3>
 <p id="section-4.5-1">Due to the design of the NFSv4.2 COPY and COPY_OFFLOAD
-operations, an NFS clietn's callback service cannot recognize
+operations, an NFS client's callback service cannot recognize
 a copy stateid presented by a CB_OFFLOAD request until after
 the client has received and processed the COPY response. This
 COPY response both confirms that an asynchronous copy
@@ -1817,8 +1821,8 @@ different assumptions about compliant behavior.<a href="#section-5-1" class="pil
 <a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-status-codes-for-the-cb_off" class="section-name selfRef">Status Codes for the CB_OFFLOAD Operation</a>
         </h3>
 <p id="section-5.1-1"><span><a href="https://rfc-editor.org/rfc/rfc7862#section-16.1.3" class="relref">Section 16.1.3</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span> describes the CB_OFFLOAD command, but
-provides no information, normative or otherwise, about the NFS client's
-callback service is to use CB_OFFLOAD's response status codes. The set
+provides no information, normative or otherwise, about how the NFS
+client's callback service is to use CB_OFFLOAD's response status codes. The set
 of permitted status codes is listed in <span><a href="https://rfc-editor.org/rfc/rfc7862#section-11.3" class="relref">Section 11.3</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span>.
 The usual collection of status codes related to compound structure
 and session parameters are available.<a href="#section-5.1-1" class="pilcrow">¶</a></p>
@@ -1891,7 +1895,7 @@ copy offload stateid.<a href="#section-5.1.2-5" class="pilcrow">¶</a></p>
 <li class="normal" id="section-5.1.2-6.1">
               <p id="section-5.1.2-6.1.1">The NFS server might have provided a referring call in the CB_SEQUENCE
 operation included in the COMPOUND with the CB_OFFLOAD (see
-<span><a href="https://rfc-editor.org/rfc/rfc8881#section-2.10.6.3" class="relref">Section 2.10.6.3</a> of [<a href="#RFC8881" class="cite xref">RFC8881</a>]</span>. In that case the NFS client's
+<span><a href="https://rfc-editor.org/rfc/rfc8881#section-2.10.6.3" class="relref">Section 2.10.6.3</a> of [<a href="#RFC8881" class="cite xref">RFC8881</a>]</span>). In that case the NFS client's
 callback service waits for the matching COPY response before taking
 further action.<a href="#section-5.1.2-6.1.1" class="pilcrow">¶</a></p>
 </li>
@@ -1930,7 +1934,7 @@ and then try the request with a new slot and sequence value.<a href="#section-5.
           </ul>
 <p id="section-5.1.3-3">When an NFS client's callback service does not recognize the copy
 offload stateid in the wr_callback_id argument but the NFS server has
-not provided a referring call information, an appropriate response
+not provided referring call information, an appropriate response
 to that situation is for the NFS client's callback service
 to respond with a status code of NFS4ERR_DELAY.<a href="#section-5.1.3-3" class="pilcrow">¶</a></p>
 <p id="section-5.1.3-4">The NFS server should retry the CB_OFFLOAD operation only a limited
@@ -1964,10 +1968,10 @@ NFS4ERR_COMPLETE_ALREADY as a permitted status code. However, it
 is not otherwise mentioned or defined in <span>[<a href="#RFC7862" class="cite xref">RFC7862</a>]</span>. <span>[<a href="#RFC7863" class="cite xref">RFC7863</a>]</span>
 defines a value of 10054 for that status code, but is not otherwise
 forthcoming about what its purpose is.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
-<p id="section-5.2-2">We find a definition of NFS4ERR_COMPLETE_ALREADY in <span>[<a href="#RFC5661" class="cite xref">RFC5661</a>]</span>.
-The definition is directly related to the new-to-NFSv4.1
-RECLAIM_COMPLETE operation, but is otherwise not used by other
-operations.<a href="#section-5.2-2" class="pilcrow">¶</a></p>
+<p id="section-5.2-2">We find a definition of NFS4ERR_COMPLETE_ALREADY in
+<span><a href="https://rfc-editor.org/rfc/rfc8881#section-15.1.9.1" class="relref">Section 15.1.9.1</a> of [<a href="#RFC8881" class="cite xref">RFC8881</a>]</span>. The definition is directly related to
+the new-to-NFSv4.1 RECLAIM_COMPLETE operation, but is otherwise not
+used by other operations.<a href="#section-5.2-2" class="pilcrow">¶</a></p>
 <p id="section-5.2-3">The authors recommend removing NFS4ERR_COMPLETE_ALREADY from the
 list of permissible status codes for the OFFLOAD_CANCEL and
 OFFLOAD_STATUS operations.<a href="#section-5.2-3" class="pilcrow">¶</a></p>
@@ -2080,7 +2084,8 @@ the valid status codes that the osr_complete and coa_status
 fields may contain. The status code NFS4_OK (indicating no error
 occurred during the copy operation) is not listed but should be
 understood to be a valid value for these fields. The meaning for
-each of these values is defined in <span><a href="https://rfc-editor.org/rfc/rfc5661#section-15.3" class="relref">Section 15.3</a> of [<a href="#RFC5661" class="cite xref">RFC5661</a>]</span>.<a href="#section-5.3-12" class="pilcrow">¶</a></p>
+each of these values is defined in <span><a href="https://rfc-editor.org/rfc/rfc8881#section-15.1" class="relref">Section 15.1</a> of [<a href="#RFC8881" class="cite xref">RFC8881</a>]</span>, or,
+for NFSv4.2-specific codes, in <span><a href="https://rfc-editor.org/rfc/rfc7862#section-11.1" class="relref">Section 11.1</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span>.<a href="#section-5.3-12" class="pilcrow">¶</a></p>
 <p id="section-5.3-13">It would also be helpful to implementers to provide guidance about
 when these values are appropriate to use, or when they <span class="bcp14">MUST NOT</span> be
 used.<a href="#section-5.3-13" class="pilcrow">¶</a></p>
@@ -2222,7 +2227,7 @@ the server wants to avoid a possible denial of service, it <span class="bcp14">M
 return a short COPY result, where the response contains the
 actual number of bytes copied and a final status of NFS4_OK.
 In this way, a client can send a subsequent COPY for the
-remaining byte range, ensure that forward progress is made.<a href="#section-8.1-6.1.1" class="pilcrow">¶</a></p>
+remaining byte range, ensuring that forward progress is made.<a href="#section-8.1-6.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -2343,7 +2348,7 @@ handle that is foreign to it. A server implementer can reasonably
 extrapolate from the above text that other status codes, in addition
 to NFS4ERR_STALE, are to be excluded; otherwise inter-server COPY
 will not work at all.  However, an explicit BCP14 "<span class="bcp14">MUST NOT</span>" for
-NFS4ERR_STALE but not for other likely status code responses lacks
+NFS4ERR_STALE but not for other likely status code responses
 is potentially confusing.<a href="#section-8.3.1-9" class="pilcrow">¶</a></p>
 <p id="section-8.3.1-10">Further, this NFSv4.2 COPY-related usage of PUTFH re-purposes the
 PUTFH operation. In all previous usages of PUTFH, careful checking
@@ -2446,7 +2451,7 @@ is a per-file, per-file system, or per-server attribute. Per-file is
 perhaps the most appropriate because some modern file systems can use
 different block sizes for different files.<a href="#section-10.1-10" class="pilcrow">¶</a></p>
 <p id="section-10.1-11">Note that <span><a href="https://rfc-editor.org/rfc/rfc7862#section-4.1.2" class="relref">Section 4.1.2</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span> states that the attribute <span class="bcp14">MUST</span>
-be implemented, but <span><a href="https://rfc-editor.org/rfc/rfc7862#section-12.2" class="relref">Section 12.2</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span> defines this attribute
+be implemented, but <span><a href="https://rfc-editor.org/rfc/rfc7862#section-12.1" class="relref">Section 12.1</a> of [<a href="#RFC7862" class="cite xref">RFC7862</a>]</span> defines this attribute
 as <span class="bcp14">RECOMMENDED</span>. This contradiction needs to be rectified.<a href="#section-10.1-11" class="pilcrow">¶</a></p>
 <p id="section-10.1-12">An alternative to correcting the missing details is to instead
 deprecate the FATTR4_CLONE_BLKSIZE attribute. Server and filesystem
@@ -2638,10 +2643,6 @@ cost compares to TLS handshake cost.<a href="#section-12.1-4.1" class="pilcrow">
 <dt id="RFC2119">[RFC2119]</dt>
         <dd>
 <span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="RFC5661">[RFC5661]</dt>
-        <dd>
-<span class="refAuthor">Shepler, S., Ed.</span>, <span class="refAuthor">Eisler, M., Ed.</span>, and <span class="refAuthor">D. Noveck, Ed.</span>, <span class="refTitle">"Network File System (NFS) Version 4 Minor Version 1 Protocol"</span>, <span class="seriesInfo">RFC 5661</span>, <span class="seriesInfo">DOI 10.17487/RFC5661</span>, <time datetime="2010-01" class="refDate">January 2010</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc5661">https://www.rfc-editor.org/rfc/rfc5661</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC7862">[RFC7862]</dt>
         <dd>
