@@ -211,10 +211,12 @@ three operations mentioned here unimplemented.
 
 The asynchronous form of copy offload is not possible without
 the implementation of CB_OFFLOAD, and not reliable without the
-implementation of OFFLOAD_STATUS. The original specification of
-copy offload does not make these two operations mandatory-to-implement
-when an implementation claims to support asynchronous COPY. The
-addition of the following text can make this requirement clear:
+implementation of OFFLOAD_STATUS. {{Section 4.1.2 of RFC7862}}
+ties the requirement to implement these operations to the
+condition that the server's COPY operation returns a stateid,
+rather than directly to declared support for asynchronous COPY.
+Tying the requirement to the declared capability instead can
+make this requirement clearer:
 
 > When an NFS server implementation provides an asynchronous copy
 > capability, it MUST implement the OFFLOAD_CANCEL and OFFLOAD_STATUS
