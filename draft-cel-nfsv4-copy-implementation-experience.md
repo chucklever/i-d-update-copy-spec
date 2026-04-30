@@ -68,7 +68,7 @@ venue:
   mail: nfsv4@ietf.org
   arch: https://mailarchive.ietf.org/arch/browse/nfsv4/
   repo: https://github.com/chucklever/i-d-update-copy-spec
-  latest: https://chucklever.github.io/i-d-update-copy-spec/#go.draft-cel-nfsv4-update-copy-spec.html
+  latest: https://chucklever.github.io/i-d-update-copy-spec/#go.draft-cel-nfsv4-copy-implementation-experience.html
 
 --- abstract
 
@@ -374,7 +374,7 @@ need to be addressed by the specification:
 ## COPY Reply Races With CB_OFFLOAD Request {#sec-reply-race}
 
 Due to the design of the NFSv4.2 COPY and COPY_OFFLOAD
-operations, an NFS clietn's callback service cannot recognize
+operations, an NFS client's callback service cannot recognize
 a copy stateid presented by a CB_OFFLOAD request until after
 the client has received and processed the COPY response. This
 COPY response both confirms that an asynchronous copy
@@ -481,8 +481,8 @@ different assumptions about compliant behavior.
 ## Status Codes for the CB_OFFLOAD Operation {#sec-cb-offload-status}
 
 {{Section 16.1.3 of RFC7862}} describes the CB_OFFLOAD command, but
-provides no information, normative or otherwise, about the NFS client's
-callback service is to use CB_OFFLOAD's response status codes. The set
+provides no information, normative or otherwise, about how the NFS
+client's callback service is to use CB_OFFLOAD's response status codes. The set
 of permitted status codes is listed in {{Section 11.3 of RFC7862}}.
 The usual collection of status codes related to compound structure
 and session parameters are available.
@@ -547,7 +547,7 @@ copy offload stateid.
 
  * The NFS server might have provided a referring call in the CB_SEQUENCE
    operation included in the COMPOUND with the CB_OFFLOAD (see
-   {{Section 2.10.6.3 of RFC8881}}. In that case the NFS client's
+   {{Section 2.10.6.3 of RFC8881}}). In that case the NFS client's
    callback service waits for the matching COPY response before taking
    further action.
 
@@ -579,7 +579,7 @@ updated to describe this use of NFS4ERR_BAD_STATEID.
 
 When an NFS client's callback service does not recognize the copy
 offload stateid in the wr_callback_id argument but the NFS server has
-not provided a referring call information, an appropriate response
+not provided referring call information, an appropriate response
 to that situation is for the NFS client's callback service
 to respond with a status code of NFS4ERR_DELAY.
 
@@ -839,7 +839,7 @@ permissible:
 > return a short COPY result, where the response contains the
 > actual number of bytes copied and a final status of NFS4_OK.
 > In this way, a client can send a subsequent COPY for the
-> remaining byte range, ensure that forward progress is made.
+> remaining byte range, ensuring that forward progress is made.
 
 ## Asynchronous Copy Completion Reliability {#sec-completion-reliability}
 
@@ -940,7 +940,7 @@ handle that is foreign to it. A server implementer can reasonably
 extrapolate from the above text that other status codes, in addition
 to NFS4ERR_STALE, are to be excluded; otherwise inter-server COPY
 will not work at all.  However, an explicit BCP14 "MUST NOT" for
-NFS4ERR_STALE but not for other likely status code responses lacks
+NFS4ERR_STALE but not for other likely status code responses
 is potentially confusing.
 
 Further, this NFSv4.2 COPY-related usage of PUTFH re-purposes the
