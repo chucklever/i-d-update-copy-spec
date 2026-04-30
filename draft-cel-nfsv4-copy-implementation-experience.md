@@ -711,7 +711,8 @@ the valid status codes that the osr_complete and coa_status
 fields may contain. The status code NFS4_OK (indicating no error
 occurred during the copy operation) is not listed but should be
 understood to be a valid value for these fields. The meaning for
-each of these values is defined in {{Section 15.3 of RFC5661}}.
+each of these values is defined in {{Section 15.1 of RFC8881}}, or,
+for NFSv4.2-specific codes, in {{Section 11.1 of RFC7862}}.
 
 It would also be helpful to implementers to provide guidance about
 when these values are appropriate to use, or when they MUST NOT be
@@ -1019,7 +1020,7 @@ perhaps the most appropriate because some modern file systems can use
 different block sizes for different files.
 
 Note that {{Section 4.1.2 of RFC7862}} states that the attribute MUST
-be implemented, but {{Section 12.2 of RFC7862}} defines this attribute
+be implemented, but {{Section 12.1 of RFC7862}} defines this attribute
 as RECOMMENDED. This contradiction needs to be rectified.
 
 An alternative to correcting the missing details is to instead
