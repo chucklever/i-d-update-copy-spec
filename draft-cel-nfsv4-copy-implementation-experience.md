@@ -554,7 +554,7 @@ copy offload stateid.
    callback service may proceed immediately.
 
 Once the NFS client's callback service is ready to proceed, it can
-resolve whether the copy offload stateid contained in the wr_state_id
+resolve whether the copy offload stateid contained in the coa_stateid
 argument matches a currently pending copy operation. If it does not,
 the NFS client's callback service responds with a status code of
 NFS4ERR_BAD_STATEID.
@@ -888,7 +888,7 @@ read the same as column 3 of the CB_OFFLOAD row in Table 6).
 
 A NFSv4.2 COPY operation operates on file handle arguments that
 are provided by PUTFH operations that precede the COPY operation
-in an NFSv4 COMPOUND, as described in {{Section 15.2 of RFC7862}}:
+in an NFSv4 COMPOUND, as described in {{Section 15.2.3 of RFC7862}}:
 
 > The COPY operation requests that a range in the file specified
 > by SAVED_FH be copied to a range in the file specified by
@@ -1066,10 +1066,11 @@ notification shows how many bytes the NFS server successfully copied
 before the copy operation was terminated by the shutdown.
 
 To prevent the destruction of the backchannel while asynchronous
-copy operations are ongoing, the DESTROY_SESSION and DESTROY_CLIENTID
-operations MUST return a status of NFS4ERR_CLIENTID_BUSY until pending
-asynchronous copy operations have terminated
-(see {{Section 18.50.3 of RFC8881}}).
+copy operations are ongoing, DESTROY_SESSION SHOULD return
+NFS4ERR_BACK_CHAN_BUSY and DESTROY_CLIENTID MUST return
+NFS4ERR_CLIENTID_BUSY until pending asynchronous copy operations
+have terminated
+(see {{Section 18.37 of RFC8881}} and {{Section 18.50.3 of RFC8881}}).
 
 Once copy activity has completed, shut down processing can also
 proceed to remove all copy completion state (copy stateids, copy
