@@ -319,7 +319,7 @@ NFSv4 clients need to indicate that a delegation is not wanted.
 > COPY_NOTIFY produces a copy stateid. How long should it be valid?
 > Perhaps it's indirectly discussed by the 15.3.3 in cnr_lease_time.
 > So copy stateid is valid for
-> cnr_lease_time or while copy is ungoing? That's what Linux server
+> cnr_lease_time or while copy is ongoing? That's what Linux server
 > implements laundry thread revokes if lease period has gone by without
 > it being marked valid.
 >
@@ -1102,7 +1102,7 @@ recommend the following addendum to {{Section 4.9 of RFC7862}}.
 >
 > Certain files on Unix-based systems act as an infinite source of
 > data. One example is /dev/null. Another example is the system's
-> random data generator. Server implementators should recognize
+> random data generator. Server implementers should recognize
 > these data sources and prevent unlimited copy operations from
 > them (or to their sink counterparts).
 >
@@ -1111,7 +1111,7 @@ recommend the following addendum to {{Section 4.9 of RFC7862}}.
 > NFS server implementations have so far chosen to limit the byte
 > range of COPY operations, either by setting a fixed limit on the
 > number of bytes a single COPY can process, where the server
-> truncates the copied byte range, or by setting a timeout). In
+> truncates the copied byte range, or by setting a timeout. In
 > either case, the NFS server returns a short COPY result.
 >
 > Client implementations accommodate a short COPY result by sending
