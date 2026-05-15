@@ -35,11 +35,11 @@ author:
 
 normative:
   RFC7862:
-  RFC7863:
   RFC8881:
 
 informative:
   RFC7861:
+  RFC7863:
   RFC9289:
   RFC9754:
   XCOPY:
