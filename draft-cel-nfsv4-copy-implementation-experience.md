@@ -31,10 +31,8 @@ author:
  -
     fullname: Chuck Lever
     role: editor
-    organization: Oracle Corporation
-    abbrev: Oracle
     country: United States of America
-    email: chuck.lever@oracle.com
+    email: cel-ietf@chucklever.net
 
 normative:
   RFC7862:
