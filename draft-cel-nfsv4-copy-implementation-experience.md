@@ -13,7 +13,6 @@ submissiontype: IETF
 ipr: trust200902
 area: "Web and Internet Transport"
 workgroup: "Network File System Version 4"
-obsoletes:
 keyword:
  - NFSv4.2
  - COPY
@@ -45,19 +44,14 @@ informative:
   RFC9754:
   XCOPY:
     -: XCOPY
-    target: https://www.t10.org/ftp/t10/document.99/99-143r1.pdf
-    title: "T10/99-143r1: 7.1 EXTENDED COPY command"
+    target: https://webstore.ansi.org/standards/incits/ansiincits4082005
+    title: "Information Technology - SCSI Primary Commands - 3 (SPC-3)"
     author:
       -
-        ins: Unknown
-        name: Author Unknown
-        org: T10 Organization
+        org: INCITS T10
     seriesinfo:
-      ISBN:
-      DOI:
-    date: 1999-04-02
-    format:
-      PDF: https://www.t10.org/ftp/t10/document.99/99-143r1.pdf
+      "ANSI INCITS": "408-2005"
+    date: 2005
 
 venue:
   group: nfsv4
