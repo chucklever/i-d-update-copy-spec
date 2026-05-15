@@ -9,7 +9,6 @@ pi: [toc, sortrefs, symrefs, docmapping]
 stand_alone: yes
 v: 3
 
-submissiontype: IETF
 ipr: trust200902
 area: "Web and Internet Transport"
 workgroup: "Network File System Version 4"
@@ -30,6 +29,7 @@ author:
  -
     fullname: Chuck Lever
     role: editor
+    organization: Independent
     country: United States of America
     email: cel-ietf@chucklever.net
 
