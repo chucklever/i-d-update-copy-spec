@@ -314,53 +314,63 @@ NFSv4 clients need to indicate that a delegation is not wanted.
 
 ## cnr_lease_time
 
-{:aside}
-> olga:
-> COPY_NOTIFY produces a copy stateid. How long should it be valid?
-> Perhaps it's indirectly discussed by the 15.3.3 in cnr_lease_time.
-> So copy stateid is valid for
-> cnr_lease_time or while copy is ongoing? That's what Linux server
-> implements laundry thread revokes if lease period has gone by without
-> it being marked valid.
->
-> I was going to complain about the uselessness (in my point of
-> view) of the spec's cnr_lease_time. Source server sends that value to
-> the client. Client doesn't propagate that value to the destination
-> server. How can the client control the destination starting the read
-> by the cnr_lease_time (the destination server doesnt know by when it
-> needs to start the copy)? But I can see that the source server wants
-> to protect itself from "unauthorized" (really late) reading. I just
-> find that telling the client isn't useful.
->
-> I believe the Linux server implements the safeguards and requires the
-> start of the COPY operation to happen within a lease period. My grep
-> thru the code for "NFS4ERR_PARTNER_NO_AUTH" comes up empty. So we
-> don't exercise letting the destination server know the copy isn't
-> meeting "copy progress" constraints.
+{{Section 15.3.3 of RFC7862}} states that the copy stateid returned
+by COPY_NOTIFY is valid for `cnr_lease_time` seconds, as chosen by
+the source server. A value of zero indicates an infinite lease. To
+renew the copy lease, the client resends the same COPY_NOTIFY request
+to the source server before the lease expires.
+
+The `cnr_lease_time` value is not propagated to the destination
+server. The destination server therefore has no direct knowledge of
+the deadline by which it must begin reading from the source. Instead,
+the source server enforces the deadline by revoking the copy stateid
+once the lease expires, causing any subsequent read attempt by the
+destination to fail with NFS4ERR_PARTNER_NO_AUTH. The purpose of
+`cnr_lease_time` is thus to allow the source server to bound the
+window during which it must hold resources for a copy that may never
+start, not to coordinate timing with the destination.
+
+The Linux NFS server implements a periodic cleanup of expired copy
+stateids. The Linux NFS client does not currently exercise the
+NFS4ERR_PARTNER_NO_AUTH recovery path.
 
 ## Use of Offload Stateids As A Completion Cookie
 
 As implementation of copy offload proceeds, developers face
 a number of questions regarding the use of copy stateids to
-report operational completion. For completion, these issues
-need to be addressed by the specification:
+report operational completion.
 
-- How is sequence number in a copy stateid handled?  Under
-  what circumstances is its sequence number bumped? Do peers
-  match copy stateids via only their "other" fields, or must
-  they match everything including the sequence number?
+{{Section 4.8 of RFC7862}} states that a copy offload stateid's seqid
+MUST NOT be zero. Unlike ordinary open or lock stateids, there is no
+defined mechanism for the seqid of a copy offload stateid to be
+incremented: the stateid is created by the COPY response and freed
+when the client replies to CB_OFFLOAD or issues OFFLOAD_CANCEL. The
+seqid SHOULD be set to 1 at creation and left unchanged thereafter.
+Peers SHOULD match copy offload stateids using the `other` field
+only, since there is no state transition that would cause the seqid to
+change.
 
-- Under what circumstances may a server re-use the same copy
-  stateid during one NFSv4.1 session?
+A server MUST NOT re-use a copy offload stateid for a new operation
+while the original stateid is still active. Once freed — either by a
+client reply to CB_OFFLOAD or by OFFLOAD_CANCEL — the server MAY
+re-use the stateid value for a subsequent operation.
 
-- How long does the client's callback service have to remember
-  copy stateids? Is the callback service responsible for
-  remembering and reporting previously-used copy stateids?
+The client's callback service must remember a copy offload stateid
+from the time it appears in a COPY response until the corresponding
+CB_OFFLOAD has been received and replied to. The callback service is
+not required to remember stateids after the CB_OFFLOAD reply has
+been sent.
 
-- When does the client's callback service return
-  NFS4ERR_BAD_STATEID to a CB_OFFLOAD operation, and what
-  action should the server take, since there's no open state
-  recovery to be done on the NFSv4 server?
+When the client's callback service receives a CB_OFFLOAD for a
+stateid it does not recognize, it returns NFS4ERR_BAD_STATEID. This
+can occur if the CB_OFFLOAD arrives before the matching COPY response
+has been processed; {{sec-reply-race}} describes how the callback
+service should handle that race. If the callback service has
+definitively determined that the stateid is unknown, the server SHOULD
+treat the NFS4ERR_BAD_STATEID reply as authorization to purge the
+copy offload stateid, as described in {{sec-cb-offload-status}}.
+There is no open state on the NFSv4 server to recover in this
+situation.
 
 ## COPY Reply Races With CB_OFFLOAD Request {#sec-reply-race}
 
@@ -509,9 +519,12 @@ protocol specification does not mandate that the NFS client's
 callback service remember filehandles after a copy operation has
 completed.
 
-{:aside}
-> cel: Is the NFS server permitted to purge the copy offload stateid
-> if the CB_OFFLOAD status code is NFS4ERR_BADHANDLE ?
+Per {{Section 4.8 of RFC7862}}, a copy offload stateid is freed when
+the client replies to a CB_OFFLOAD operation. Any reply, including
+an error status, constitutes such a reply. The NFS server SHOULD
+therefore purge the copy offload stateid upon receiving
+NFS4ERR_BADHANDLE from the callback service, since there is no
+recovery action available for this permanent error.
 
 The authors recommend that {{Section 16.1.3 of RFC7862}} should be
 updated to describe this use of NFS4ERR_BADHANDLE.
@@ -553,9 +566,11 @@ argument matches a currently pending copy operation. If it does not,
 the NFS client's callback service responds with a status code of
 NFS4ERR_BAD_STATEID.
 
-{:aside}
-> cel: Is the NFS server permitted to purge the copy offload stateid
-> if the CB_OFFLOAD status code is NFS4ERR_BAD_STATEID ?
+Per {{Section 4.8 of RFC7862}}, a copy offload stateid is freed when
+the client replies to a CB_OFFLOAD operation. The NFS server SHOULD
+therefore purge the copy offload stateid upon receiving
+NFS4ERR_BAD_STATEID from the callback service, as the client has
+indicated it cannot correlate the stateid with any pending operation.
 
 The authors recommend that {{Section 16.1.3 of RFC7862}} should be
 updated to describe this use of NFS4ERR_BAD_STATEID.
@@ -954,13 +969,26 @@ Call this putative operation "PUTFOREIGNFH".
 
 ## IP Addresses in a COPY_NOTIFY Response
 
-{:aside}
-> olga:
-> If Linux server were to ever interoperate with other server
-> implementations of being either the source server or the destination
-> server: I don't know how important are the IPs being listed in the
-> copy_notify reply. I don't believe either the Linux client or
-> server does anything with them.
+The `cnr_source_server` list returned by COPY_NOTIFY contains one or
+more `netloc4` network locations ({{Section 4.7 of RFC7862}}) that
+the source server is willing to accept connections from for the
+inter-server copy. The NFS client passes these network locations
+unchanged as the `ca_source_server` list in the subsequent COPY
+request to the destination server ({{Section 15.2.3 of RFC7862}}).
+
+In practice, the Linux NFS client and server treat the
+`cnr_source_server` list as an opaque token: the client passes it
+through to the destination without interpretation, and the Linux NFS
+server acting as destination does not currently use the listed network
+locations to select a connection endpoint. Connection establishment
+proceeds using whatever network path is available.
+
+A source server that needs to direct the destination to a specific
+copy protocol or service endpoint can use a URL-type `netloc4` entry
+for this purpose (see {{Section 4.6 of RFC7862}}). Implementations
+that do not support this mechanism SHOULD return at least one
+`NL4_NETADDR` entry so that a destination that does consult the list
+has a usable address.
 
 # CLONE Implementation Notes {#sec-clone-implementation}
 
@@ -1077,11 +1105,15 @@ of their state recovery, they can reissue any COPY operations that
 were pending during the previous server epoch, as described in the
 next subsection.
 
-{:aside}
-> olga: This graceful shutdown seems like putting too much
-> requirement on the server. Say the server was in the middle of doing
-> lots of WRITEs, does graceful shutdown terminate the writes and send
-> short write response back? Or read....
+Unlike a synchronous operation such as WRITE or READ, an asynchronous
+COPY has already received its initial response: the client holds a
+copy offload stateid and cannot make forward progress until it
+receives CB_OFFLOAD or determines that the server has restarted.
+Sending CB_OFFLOAD before closing the backchannel allows the client to
+proceed immediately, rather than waiting until the lease expires or
+another indication of server restart arrives. The alternative recovery
+path described above is available regardless, but it imposes
+additional delay on the client.
 
 ## Client Recovery Actions
 
@@ -1089,6 +1121,19 @@ In order to ensure the proper completion of asynchronous COPY
 operations that were active during an NFS server restart, clients
 need to track these operations and restart them as part of NFSv4
 state recovery.
+
+Per {{Section 4.8 of RFC7862}}, a copy offload stateid is invalidated
+when the client or server restarts. Upon detecting a server restart,
+copy offload stateids from the previous server epoch are no longer
+valid; any attempt to use them via OFFLOAD_STATUS or OFFLOAD_CANCEL
+will result in an error response from the server.
+
+As part of NFSv4 state recovery following a server restart, the
+client SHOULD reissue any COPY operations that were pending at the
+time of the restart. The client is responsible for tracking which
+asynchronous COPY operations were in flight and for restarting them
+once the server is available and the client has completed the NFSv4
+state recovery protocol.
 
 # Security Considerations {#sec-security-considerations}
 
@@ -1173,12 +1218,14 @@ capability on the source server that is passed through the
 client to the destination server to be used against the
 source server.
 
-{:aside}
-> olga: If we're ever going to "require" GSSv3, I think the
-> overhead of establishing the krb5 context would greatly
-> impact copy performance.... Even if we are going to require
-> TLS. That might be even more? Not sure how krb5 handshake
-> cost compares to TLS handshake cost.
+Both Kerberos context establishment and TLS handshake are one-time
+costs per transport connection, not per-operation costs. For
+inter-server copy operations, which are long-running by nature, those
+setup costs are amortized over the lifetime of the connection and are
+unlikely to dominate overall copy performance. The more significant
+obstacle to using TLS as a substitute for RPCSEC GSSv3 is the missing
+user authentication capability described above, not connection
+establishment overhead.
 
 # IANA Considerations
 
